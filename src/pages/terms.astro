@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+<Base title="Terms of Service — WP Flame" noindex={true}>
+  <Nav />
+  <section class="section" style="min-height:60vh;">
+    <div class="container">
+      <h1 style="font-size:clamp(28px,3.5vw,40px);font-weight:700;color:white;letter-spacing:-0.02em;margin-bottom:20px;">Terms of Service</h1>
+      <p style="font-size:17px;color:var(--carbon-300);line-height:1.7;max-width:640px;">
+        Our terms of service are being prepared and will be published here before launch. The free WP Flame plugin is open-source software. AI Insights is a paid subscription service with separate terms.
+      </p>
+      <p style="font-size:15px;color:var(--carbon-400);margin-top:24px;">
+        Questions? Contact us at <a href="mailto:hello@wpflame.com" style="color:var(--flame-400);">hello@wpflame.com</a>
+      </p>
+    </div>
+  </section>
+  <Footer />
+</Base>

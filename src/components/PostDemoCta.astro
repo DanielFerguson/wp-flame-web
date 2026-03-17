@@ -1,0 +1,50 @@
+---
+interface Props {
+  headline?: string;
+  primary?: string;
+  primaryHref?: string;
+  secondary?: string;
+  secondaryHref?: string;
+}
+const {
+  headline = "See this on your own site in 30 seconds.",
+  primary = "Install free",
+  primaryHref = "#download",
+  secondary = "See pricing",
+  secondaryHref = "#pricing",
+} = Astro.props;
+---
+
+<div class="post-demo-cta reveal">
+  <p class="post-demo-headline">{headline}</p>
+  <div class="post-demo-actions">
+    <a href={primaryHref} class="btn-primary">{primary}</a>
+    <a href={secondaryHref} class="btn-ai">{secondary}</a>
+  </div>
+</div>
+
+<style>
+  .post-demo-cta {
+    text-align: center;
+    padding: 48px 40px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .post-demo-headline {
+    font-size: clamp(18px, 2.2vw, 22px);
+    font-weight: 600;
+    color: white;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+  .post-demo-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 640px) {
+    .post-demo-cta { padding: 32px 20px; }
+  }
+</style>

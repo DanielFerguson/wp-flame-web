@@ -1,0 +1,569 @@
+---
+interface Props {
+  variant?: "default" | "woocommerce" | "elementor" | "agency";
+  showAi?: boolean;
+}
+const { variant = "default", showAi = true } = Astro.props;
+
+// Configure demo data per variant
+const configs = {
+  default: {
+    url: "/sample-page/",
+    time: 847,
+    queries: 47,
+    plugins: 18,
+    memory: 42,
+  },
+  woocommerce: {
+    url: "/shop/winter-jacket/",
+    time: 1240,
+    queries: 83,
+    plugins: 22,
+    memory: 68,
+  },
+  elementor: {
+    url: "/landing-page/",
+    time: 962,
+    queries: 38,
+    plugins: 16,
+    memory: 54,
+  },
+  agency: {
+    url: "/client-homepage/",
+    time: 1480,
+    queries: 96,
+    plugins: 24,
+    memory: 78,
+  },
+};
+const config = configs[variant];
+---
+
+<div class="demo-window reveal">
+  <div class="demo-toolbar">
+    <div class="demo-dot"></div><div class="demo-dot"></div><div
+      class="demo-dot"
+    >
+    </div>
+    <div class="demo-url">yoursite.com/wp-admin/tools.php?page=wp-flame</div>
+  </div>
+  <div class="demo-body">
+    <div class="demo-header">
+      <div class="demo-title">Request flame graph</div>
+      <div class="demo-req">GET {config.url} &mdash; {config.time}ms</div>
+    </div>
+    <div class="demo-stats">
+      <div class="demo-stat">
+        <div class="demo-stat-label">Total time</div><div class="demo-stat-val">
+          {config.time}<small>ms</small>
+        </div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-label">DB queries</div><div class="demo-stat-val">
+          {config.queries}
+          <small>(112ms)</small>
+        </div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-label">Plugins</div><div class="demo-stat-val">
+          {config.plugins}
+          <small>active</small>
+        </div>
+      </div>
+      <div class="demo-stat">
+        <div class="demo-stat-label">Peak memory</div><div
+          class="demo-stat-val"
+        >
+          {config.memory}<small>MB</small>
+        </div>
+      </div>
+    </div>
+    <div class="demo-legend">
+      <div class="demo-legend-item">
+        <div class="demo-legend-dot" style="background:#2D6AA0"></div>Core
+      </div>
+      <div class="demo-legend-item">
+        <div class="demo-legend-dot" style="background:#4E3D8F"></div>Plugins
+      </div>
+      <div class="demo-legend-item">
+        <div class="demo-legend-dot" style="background:#1A6E50"></div>Theme
+      </div>
+      <div class="demo-legend-item">
+        <div class="demo-legend-dot" style="background:#8F3D1E"></div>Database
+      </div>
+      <div class="demo-legend-item">
+        <div class="demo-legend-dot" style="background:#7A5010"></div>External
+        HTTP
+      </div>
+    </div>
+    <div class="flame-timeline" data-total={config.time}></div>
+    <div class="flame-rows" data-variant={variant}></div>
+
+    <div class="flame-tooltip" id="flame-tooltip"></div>
+    <div class="demo-detail-panel" id="demo-detail-panel" style="display:none;">
+      <button class="detail-close" id="detail-close">&times;</button>
+      <div class="detail-content">
+        <div class="detail-name" id="detail-name"></div>
+        <div class="detail-meta">
+          <span id="detail-duration"></span>
+          <span id="detail-percent"></span>
+          <span id="detail-type"></span>
+        </div>
+        <div class="detail-ai" id="detail-ai" style="display:none;"></div>
+      </div>
+    </div>
+
+    {
+      showAi && (
+        <div class="demo-ai">
+          <div class="demo-ai-header">
+            <span class="ai-badge">&#10024; AI insights</span>
+            <span>Recommendations for this trace</span>
+          </div>
+          <slot name="insights" />
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .demo-window {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: var(--carbon-800);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 40px 120px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+  .demo-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .demo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .demo-dot:nth-child(1) {
+    background: rgba(255, 99, 99, 0.5);
+  }
+  .demo-dot:nth-child(2) {
+    background: rgba(255, 200, 60, 0.5);
+  }
+  .demo-dot:nth-child(3) {
+    background: rgba(80, 200, 100, 0.5);
+  }
+  .demo-url {
+    margin-left: 12px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--carbon-400);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 5px 14px;
+    border-radius: 6px;
+    flex: 1;
+  }
+  .demo-body {
+    padding: 32px;
+  }
+  .demo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+  .demo-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+  }
+  .demo-req {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--carbon-400);
+  }
+  .demo-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .demo-stat {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .demo-stat-label {
+    font-size: 11px;
+    color: var(--carbon-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  .demo-stat-val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    margin-top: 2px;
+  }
+  .demo-stat-val small {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--carbon-400);
+  }
+  .demo-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 11px;
+    color: var(--carbon-400);
+    flex-wrap: wrap;
+  }
+  .demo-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .demo-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+  .flame-timeline {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    color: var(--carbon-500);
+    position: relative;
+    height: 16px;
+  }
+  .flame-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  :global(.flame-row) {
+    display: flex;
+    height: 22px;
+    position: relative;
+  }
+  .demo-ai {
+    margin-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 24px;
+  }
+  .demo-ai-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .demo-ai-header span {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  @media (max-width: 900px) {
+    .demo-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .demo-body {
+      padding: 20px;
+      overflow-x: auto;
+    }
+  }
+  @media (max-width: 640px) {
+    .flame-rows {
+      min-width: 600px;
+    }
+  }
+
+  .flame-tooltip {
+    position: fixed;
+    z-index: 1000;
+    background: var(--carbon-700);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: white;
+    pointer-events: none;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .demo-detail-panel {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    animation: fadeInUp 0.3s ease-out;
+  }
+  .detail-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--carbon-400);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .detail-close:hover { color: white; }
+  .detail-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .detail-meta {
+    display: flex;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--carbon-300);
+    margin-bottom: 12px;
+  }
+  .detail-ai {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 14px;
+    color: var(--ai-300);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .detail-ai::before {
+    content: '✦';
+    color: var(--ai-400);
+    flex-shrink: 0;
+  }
+</style>
+
+<script>
+  // Build flame graph from data
+  const spanData: Record<
+    string,
+    Array<{ d: number; n: string; t: string; s: number; w: number; ai?: string }>
+  > = {
+    default: [
+      { d: 0, n: "Full request", t: "php", s: 0, w: 847 },
+      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 180 },
+      { d: 1, n: "plugins_loaded", t: "core", s: 180, w: 220 },
+      { d: 1, n: "init → template_redirect", t: "core", s: 400, w: 80 },
+      { d: 1, n: "Template render", t: "theme", s: 480, w: 310 },
+      { d: 1, n: "shutdown", t: "core", s: 790, w: 57 },
+      { d: 2, n: "wp-settings.php", t: "core", s: 12, w: 68 },
+      { d: 2, n: "Load active plugins", t: "core", s: 95, w: 85 },
+      { d: 2, n: "WooCommerce init", t: "plugin", s: 180, w: 95 },
+      { d: 2, n: "Yoast SEO init", t: "plugin", s: 275, w: 45 },
+      { d: 2, n: "Elementor init", t: "plugin", s: 320, w: 55 },
+      { d: 2, n: "Other plugins", t: "plugin", s: 375, w: 25 },
+      { d: 2, n: "WP_Query", t: "core", s: 400, w: 48 },
+      { d: 2, n: "get_header()", t: "theme", s: 480, w: 85 },
+      { d: 2, n: "the_content()", t: "theme", s: 565, w: 155 },
+      { d: 2, n: "get_footer()", t: "theme", s: 750, w: 40 },
+      { d: 3, n: "DB: autoload", t: "db", s: 12, w: 18 },
+      { d: 3, n: "WC post types", t: "plugin", s: 180, w: 28 },
+      { d: 3, n: "WC transient check", t: "ext", s: 248, w: 27, ai: "This license check runs on every request — switch to wp-cron scheduling" },
+      { d: 3, n: "DB: main query", t: "db", s: 400, w: 38 },
+      { d: 3, n: "Elementor CSS", t: "plugin", s: 565, w: 68, ai: "Switch CSS Print Method to External File to avoid runtime parsing" },
+      { d: 3, n: "oEmbed HTTP", t: "ext", s: 675, w: 45, ai: "oEmbed cache is expired — ensure object caching is active" },
+    ],
+    woocommerce: [
+      { d: 0, n: "Full request", t: "php", s: 0, w: 1240 },
+      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 180 },
+      { d: 1, n: "plugins_loaded", t: "core", s: 180, w: 340 },
+      { d: 1, n: "init → query", t: "core", s: 520, w: 120 },
+      { d: 1, n: "Template render", t: "theme", s: 640, w: 520 },
+      { d: 1, n: "shutdown", t: "core", s: 1160, w: 80 },
+      { d: 2, n: "WooCommerce init", t: "plugin", s: 180, w: 160 },
+      { d: 2, n: "Yoast SEO", t: "plugin", s: 340, w: 45 },
+      { d: 2, n: "Other plugins", t: "plugin", s: 385, w: 135 },
+      { d: 2, n: "WC product query", t: "core", s: 520, w: 95 },
+      { d: 2, n: "WC price calc", t: "plugin", s: 640, w: 120 },
+      { d: 2, n: "WC cart fragments", t: "plugin", s: 760, w: 85 },
+      { d: 2, n: "Product images", t: "theme", s: 845, w: 180 },
+      { d: 2, n: "Related products", t: "plugin", s: 1025, w: 135 },
+      { d: 3, n: "WC REST API", t: "plugin", s: 200, w: 45 },
+      { d: 3, n: "WC session", t: "plugin", s: 245, w: 35 },
+      { d: 3, n: "License check", t: "ext", s: 280, w: 60, ai: "Blocking HTTP call on every request — use wp-cron scheduling instead" },
+      { d: 3, n: "DB: product meta", t: "db", s: 520, w: 55 },
+      { d: 3, n: "DB: variations", t: "db", s: 575, w: 40 },
+      { d: 3, n: "DB: cart session", t: "db", s: 760, w: 30 },
+      { d: 3, n: "DB: related query", t: "db", s: 1025, w: 65, ai: "Full table JOIN for 4 products — set related products manually or add caching" },
+      { d: 3, n: "Stripe API", t: "ext", s: 1090, w: 70, ai: "Payment gateway loading on product pages — restrict to checkout only" },
+    ],
+    elementor: [
+      { d: 0, n: "Full request", t: "php", s: 0, w: 962 },
+      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 160 },
+      { d: 1, n: "plugins_loaded", t: "core", s: 160, w: 200 },
+      { d: 1, n: "init → query", t: "core", s: 360, w: 80 },
+      { d: 1, n: "Template render", t: "theme", s: 440, w: 460 },
+      { d: 1, n: "shutdown", t: "core", s: 900, w: 62 },
+      { d: 2, n: "Elementor init", t: "plugin", s: 160, w: 110 },
+      { d: 2, n: "Other plugins", t: "plugin", s: 270, w: 90 },
+      { d: 2, n: "WP_Query", t: "core", s: 360, w: 40 },
+      { d: 2, n: "Elementor render", t: "plugin", s: 440, w: 340 },
+      { d: 2, n: "wp_footer()", t: "theme", s: 780, w: 120 },
+      { d: 3, n: "Widget registration", t: "plugin", s: 170, w: 50 },
+      { d: 3, n: "CSS compile check", t: "plugin", s: 220, w: 40 },
+      { d: 3, n: "DB: _elementor_data", t: "db", s: 440, w: 45, ai: "847KB JSON blob loaded on every request — switch to External File CSS method" },
+      { d: 3, n: "JSON deserialize", t: "php", s: 485, w: 55 },
+      { d: 3, n: "12 widget renders", t: "plugin", s: 540, w: 180, ai: "Replace dynamic content widgets with static text where possible" },
+      { d: 3, n: "Dynamic CSS gen", t: "plugin", s: 720, w: 60 },
+      { d: 3, n: "18 CSS enqueues", t: "plugin", s: 780, w: 50, ai: "Enable Improved Asset Loading to load only needed widget CSS" },
+      { d: 3, n: "12 JS enqueues", t: "plugin", s: 830, w: 40 },
+      { d: 3, n: "Font loading", t: "ext", s: 870, w: 30 },
+    ],
+    agency: [
+      { d: 0, n: "Full request", t: "php", s: 0, w: 1480 },
+      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 200 },
+      { d: 1, n: "plugins_loaded", t: "core", s: 200, w: 380 },
+      { d: 1, n: "init → query", t: "core", s: 580, w: 140 },
+      { d: 1, n: "Template render", t: "theme", s: 720, w: 640 },
+      { d: 1, n: "shutdown", t: "core", s: 1360, w: 120 },
+      { d: 2, n: "WooCommerce", t: "plugin", s: 200, w: 140 },
+      { d: 2, n: "Elementor", t: "plugin", s: 340, w: 100 },
+      { d: 2, n: "WPML", t: "plugin", s: 440, w: 60 },
+      { d: 2, n: "ACF", t: "plugin", s: 500, w: 40 },
+      { d: 2, n: "Other (×20)", t: "plugin", s: 540, w: 40 },
+      { d: 2, n: "Main query", t: "core", s: 580, w: 80 },
+      { d: 2, n: "WPML rewrite", t: "plugin", s: 660, w: 60 },
+      { d: 2, n: "Elementor render", t: "plugin", s: 720, w: 300 },
+      { d: 2, n: "WC cart widget", t: "plugin", s: 1020, w: 80 },
+      { d: 2, n: "ACF fields", t: "plugin", s: 1100, w: 120 },
+      { d: 2, n: "wp_footer()", t: "theme", s: 1220, w: 140 },
+      { d: 3, n: "License checks (×3)", t: "ext", s: 220, w: 90, ai: "3 plugins verifying licenses per-request — switch all to wp-cron" },
+      { d: 3, n: "DB: options", t: "db", s: 12, w: 35 },
+      { d: 3, n: "DB: translations", t: "db", s: 580, w: 45 },
+      { d: 3, n: "DB: elementor_data", t: "db", s: 720, w: 40 },
+      { d: 3, n: "DB: ACF meta", t: "db", s: 1100, w: 60, ai: "60 individual get_post_meta calls — use get_fields() to batch-load" },
+      { d: 3, n: "Analytics API", t: "ext", s: 1360, w: 80, ai: "Analytics beacon firing during shutdown — defer to wp-cron or client-side" },
+    ],
+  };
+
+  document.querySelectorAll(".flame-rows").forEach((container) => {
+    const variant = container.getAttribute("data-variant") || "default";
+    const spans = spanData[variant] || spanData.default;
+    const total = Math.max(...spans.map((s) => s.s + s.w));
+    const maxD = Math.max(...spans.map((s) => s.d));
+
+    // Timeline
+    const tl = container.previousElementSibling as HTMLElement;
+    if (tl?.classList.contains("flame-timeline")) {
+      const step = total <= 500 ? 100 : total <= 1000 ? 100 : 200;
+      for (let t = 0; t <= total; t += step) {
+        const p = (t / total) * 100;
+        tl.innerHTML +=
+          `<div style="position:absolute;top:0;left:${p}%;border-left:1px solid rgba(255,255,255,0.04);height:8px"></div>` +
+          `<div style="position:absolute;top:9px;left:${p}%;transform:translateX(-50%)">${t}ms</div>`;
+      }
+    }
+
+    for (let d = 0; d <= maxD; d++) {
+      const row = document.createElement("div");
+      row.className = "flame-row";
+      spans
+        .filter((s) => s.d === d)
+        .forEach((s) => {
+          const el = document.createElement("div");
+          el.className = `f-block f-${s.t}`;
+          const l = (s.s / total) * 100,
+            w = (s.w / total) * 100;
+          el.style.left = l + "%";
+          el.style.width = Math.max(w, 0.5) + "%";
+          if (w > 4) el.textContent = s.n;
+          el.title = `${s.n} — ${s.w}ms (${Math.round((s.w / total) * 100)}%)`;
+          el.dataset.name = s.n;
+          el.dataset.duration = `${s.w}ms`;
+          el.dataset.percent = `${Math.round((s.w / total) * 100)}%`;
+          el.dataset.type = s.t;
+          if (s.ai) el.dataset.ai = s.ai;
+          el.style.cursor = 'pointer';
+          row.appendChild(el);
+        });
+      container.appendChild(row);
+    }
+  });
+
+  // Tooltip behavior
+  const tooltip = document.getElementById('flame-tooltip');
+  document.querySelectorAll('.f-block').forEach(block => {
+    block.addEventListener('mouseenter', (e) => {
+      if (!tooltip) return;
+      const el = e.currentTarget as HTMLElement;
+      const name = el.dataset.name || '';
+      const duration = el.dataset.duration || '';
+      const percent = el.dataset.percent || '';
+      tooltip.textContent = `${name} — ${duration} (${percent})`;
+      tooltip.style.display = 'block';
+    });
+    block.addEventListener('mousemove', (e) => {
+      if (!tooltip) return;
+      const me = e as MouseEvent;
+      tooltip.style.left = me.clientX + 12 + 'px';
+      tooltip.style.top = me.clientY - 40 + 'px';
+    });
+    block.addEventListener('mouseleave', () => {
+      if (tooltip) tooltip.style.display = 'none';
+    });
+
+    // Click to expand detail panel
+    block.addEventListener('click', () => {
+      const el = block as HTMLElement;
+      const panel = document.getElementById('demo-detail-panel');
+      const nameEl = document.getElementById('detail-name');
+      const durationEl = document.getElementById('detail-duration');
+      const percentEl = document.getElementById('detail-percent');
+      const typeEl = document.getElementById('detail-type');
+      const aiEl = document.getElementById('detail-ai');
+      if (!panel || !nameEl || !durationEl || !percentEl || !typeEl || !aiEl) return;
+
+      const typeLabels: Record<string, string> = {
+        core: 'WordPress Core', plugin: 'Plugin', theme: 'Theme',
+        db: 'Database', ext: 'External HTTP', php: 'PHP'
+      };
+
+      nameEl.textContent = el.dataset.name || '';
+      durationEl.textContent = el.dataset.duration || '';
+      percentEl.textContent = el.dataset.percent || '';
+      typeEl.textContent = typeLabels[el.dataset.type || ''] || el.dataset.type || '';
+
+      if (el.dataset.ai) {
+        aiEl.textContent = el.dataset.ai;
+        aiEl.style.display = 'flex';
+      } else {
+        aiEl.style.display = 'none';
+      }
+
+      panel.style.display = 'block';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+
+  // Close detail panel
+  document.getElementById('detail-close')?.addEventListener('click', () => {
+    const panel = document.getElementById('demo-detail-panel');
+    if (panel) panel.style.display = 'none';
+  });
+</script>

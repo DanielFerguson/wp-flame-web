@@ -1,0 +1,143 @@
+/* ============================================================
+   WP Flame — Global Brand Styles
+   ============================================================ */
+
+/* ---- BRAND TOKENS ---- */
+:root {
+  --flame-50:#FFF8F0;--flame-100:#FFECD4;--flame-200:#FFD4A3;--flame-300:#FFB86B;
+  --flame-400:#FF9632;--flame-500:#F07A18;--flame-600:#D45E0A;--flame-700:#A8440B;
+  --flame-800:#7A3210;--flame-900:#4A1E0A;
+
+  --ember-50:#FFF5F3;--ember-100:#FFE0D9;--ember-200:#FFC2B3;--ember-300:#FF9980;
+  --ember-400:#FF6B4A;--ember-500:#E84D30;--ember-600:#C23520;--ember-700:#962818;
+  --ember-800:#6B1D12;--ember-900:#3D100A;
+
+  --carbon-50:#F5F5F4;--carbon-100:#E5E4E2;--carbon-200:#CCCBC8;--carbon-300:#9E9D99;
+  --carbon-400:#6E6D6A;--carbon-500:#48474A;--carbon-600:#313035;--carbon-700:#232228;
+  --carbon-800:#18171C;--carbon-900:#0E0D12;
+
+  --insight-50:#EFFBF6;--insight-100:#C8F4E1;--insight-200:#7CE8BD;--insight-300:#34D498;
+  --insight-400:#1AB87E;--insight-500:#0E9462;--insight-600:#0A7A50;
+
+  --ai-50:#F0ECFF;--ai-100:#D9D0FF;--ai-200:#B8A8FF;--ai-300:#9580FF;
+  --ai-400:#7B5CFF;--ai-500:#6344E0;--ai-600:#4C32B8;
+}
+
+/* ---- RESET ---- */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--carbon-900);
+  color:var(--carbon-200);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:rgba(240,122,24,0.3);color:white;}
+
+/* ---- TYPOGRAPHY UTILITIES ---- */
+.label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--flame-500);margin-bottom:16px;
+}
+h2.sec-title{
+  font-size:clamp(28px,3.5vw,40px);font-weight:700;color:white;
+  letter-spacing:-0.02em;margin-bottom:20px;line-height:1.15;
+}
+h2.sec-title em{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  color:var(--flame-400);font-weight:400;
+}
+.sec-desc{font-size:17px;color:var(--carbon-300);margin-bottom:20px;line-height:1.7;}
+
+/* ---- LAYOUT ---- */
+.container{max-width:1120px;margin:0 auto;padding:0 40px;}
+.section{padding:140px 0;}
+
+/* ---- BUTTONS ---- */
+.btn-primary{
+  background:var(--flame-500);color:white;padding:14px 32px;border-radius:10px;
+  font-weight:600;font-size:16px;text-decoration:none;transition:all 0.25s;
+  display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+}
+.btn-primary:hover{background:var(--flame-400);transform:translateY(-2px);box-shadow:0 8px 32px rgba(240,122,24,0.25);}
+
+.btn-secondary{
+  background:transparent;color:var(--carbon-200);padding:14px 32px;border-radius:10px;
+  font-weight:500;font-size:16px;text-decoration:none;transition:all 0.2s;
+  border:1px solid rgba(255,255,255,0.1);font-family:'DM Sans',sans-serif;
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.25);color:white;}
+
+.btn-ai{
+  background:linear-gradient(135deg,var(--ai-500),var(--ai-400));color:white;
+  padding:14px 32px;border-radius:10px;font-weight:600;font-size:16px;
+  text-decoration:none;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.btn-ai:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(123,92,255,0.3);filter:brightness(1.1);}
+
+.btn-large{padding:16px 40px;font-size:17px;}
+
+/* ---- BADGES ---- */
+.feature-badge{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;
+  letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;
+}
+.badge-free{background:rgba(26,184,126,0.1);color:var(--insight-400);}
+.badge-ai{background:rgba(123,92,255,0.15);color:var(--ai-300);}
+.ai-badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--ai-500),var(--ai-400));
+  color:white;padding:4px 10px;border-radius:5px;
+}
+
+/* ---- CARDS ---- */
+.card{
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);
+  border-radius:14px;padding:32px 28px;transition:border-color 0.3s,transform 0.2s,background 0.3s;
+}
+.card:hover{border-color:rgba(255,255,255,0.1);transform:translateY(-2px);background:rgba(255,255,255,0.035);}
+.card.ai-card{border-color:rgba(123,92,255,0.1);}
+.card.ai-card:hover{border-color:rgba(123,92,255,0.25);background:rgba(123,92,255,0.04);}
+
+/* ---- SECTION BACKGROUNDS ---- */
+.bg-raised{
+  background:var(--carbon-800);
+  border-top:1px solid rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+
+/* ---- FLAME GRAPH COLOURS ---- */
+.f-block{
+  position:absolute;height:20px;border-radius:3px;display:flex;align-items:center;
+  padding:0 6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  border:0.5px solid rgba(0,0,0,0.1);transition:filter 0.15s,transform 0.15s;cursor:default;
+}
+.f-block:hover{filter:brightness(1.15);transform:scaleY(1.15);z-index:2;}
+.f-core{background:#2D6AA0;color:#B5D4F4;}
+.f-plugin{background:#4E3D8F;color:#CECBF6;}
+.f-theme{background:#1A6E50;color:#9FE1CB;}
+.f-db{background:#8F3D1E;color:#F5C4B3;}
+.f-ext{background:#7A5010;color:#FAC775;}
+.f-php{background:#3A3A38;color:#CCCBC8;}
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease-out,transform 0.7s ease-out;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:900px){
+  .container{padding:0 20px;}
+  .section{padding:100px 0;}
+}
+@media(max-width:640px){
+  .container{padding:0 16px;}
+}

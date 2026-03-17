@@ -1,0 +1,106 @@
+---
+interface Props {
+  src?: string;
+  poster?: string;
+}
+const { src, poster } = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="video-header reveal">
+      <div class="label">See it in action</div>
+      <h2 class="sec-title">Watch WP Flame find the <em>problem</em></h2>
+    </div>
+
+    <div class="video-wrapper reveal">
+      {src ? (
+        <video
+          class="video-player"
+          controls
+          poster={poster}
+        >
+          <source src={src} />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <>
+          <div class="video-placeholder">
+            <svg class="play-btn" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="40" cy="40" r="39" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="rgba(255,255,255,0.08)" />
+              <polygon points="33,26 57,40 33,54" fill="rgba(255,255,255,0.7)" />
+            </svg>
+            <p class="placeholder-text">Product walkthrough coming soon</p>
+          </div>
+          <div class="video-below">
+            <p class="video-below-text">Install the free plugin to try it yourself</p>
+            <a href="#download" class="btn-primary">Install free ↓</a>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .video-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .video-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .video-player {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .video-placeholder {
+    aspect-ratio: 16 / 9;
+    background: rgba(255, 255, 255, 0.025);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .play-btn {
+    flex-shrink: 0;
+  }
+
+  .placeholder-text {
+    font-size: 16px;
+    color: var(--carbon-300);
+    font-weight: 500;
+  }
+
+  .video-below {
+    padding: 32px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.015);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .video-below-text {
+    font-size: 16px;
+    color: var(--carbon-300);
+  }
+
+  @media (max-width: 640px) {
+    .video-below {
+      padding: 24px 16px;
+    }
+  }
+</style>

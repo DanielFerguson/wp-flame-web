@@ -1,0 +1,171 @@
+---
+import Campaign from "../layouts/Campaign.astro";
+import FlameDemo from "../components/FlameDemo.astro";
+import AiInsight from "../components/AiInsight.astro";
+import Pricing from "../components/Pricing.astro";
+import PostDemoCta from "../components/PostDemoCta.astro";
+import TrustBar from "../components/TrustBar.astro";
+import Faq from "../components/Faq.astro";
+import CompareTable from "../components/CompareTable.astro";
+import { links } from "../config/links";
+---
+
+<Campaign
+  title="WordPress Performance Reporting for Agencies — WP Flame"
+  description="Show clients exactly where their WordPress site is slow with interactive flame graphs and AI-powered recommendations. Free APM, paid AI insights."
+  campaign="agency-google"
+  audience="agency"
+  source="google"
+  noindex={false}
+>
+  <section class="campaign-hero">
+    <div class="hero-pill"><span class="dot"></span> Free APM — Agency plan from $199/mo</div>
+    <h1>
+      WordPress performance reporting your clients will <em>understand</em>
+    </h1>
+    <p class="hero-sub">
+      Interactive flame graphs that show exactly which plugins, themes, and
+      queries are slow — with AI-generated recommendations you can put in a
+      client report.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary btn-large">Install free ↓</a>
+      <a href="#pricing" class="btn-ai btn-large">✨ See Agency plan</a>
+    </div>
+    <div class="hero-proof">
+      <span>Unlimited sites on Agency plan</span>
+      <span>Client-ready PDF reports</span>
+      <span>Multi-site dashboard</span>
+    </div>
+  </section>
+
+  <section style="padding:0 40px 60px;">
+    <TrustBar stats={[
+      { value: "4.9/5", label: "rating" },
+      { value: "<5ms", label: "overhead" },
+      { value: "30 sec", label: "to first graph" },
+    ]} />
+  </section>
+
+  <section style="padding:0 40px 100px;">
+    <FlameDemo variant="agency" showAi={true}>
+      <Fragment slot="insights">
+        <AiInsight
+          severity="high"
+          title="3 plugins are making blocking license checks during init (90ms total)"
+          body="WooCommerce, Elementor Pro, and WPML each run an HTTP license verification on every page load. Combined: 90ms of dead time before rendering begins."
+          action="Implement a scheduled license check via wp-cron instead of per-request verification"
+        />
+        <AiInsight
+          severity="high"
+          title="ACF is loading 60 custom fields via individual meta queries"
+          body="Advanced Custom Fields is running 60 separate <code>get_post_meta()</code> calls during template render, adding 120ms of cumulative DB time."
+          action="Use ACF's get_fields() to batch-load, or enable the ACF JSON sync to reduce DB reads"
+        />
+        <AiInsight
+          severity="medium"
+          title="WPML is adding 45ms of rewrite rule processing"
+          body="The translation layer is rebuilding rewrite rules on this request. This typically happens after a permalink structure change."
+          action="Flush rewrite rules manually via WPML → Support → clear caches"
+        />
+      </Fragment>
+    </FlameDemo>
+  </section>
+
+  <PostDemoCta headline="Get this insight across all your client sites." />
+
+  <!-- Agency-specific value props -->
+  <section class="section bg-raised">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:64px;" class="reveal">
+        <div class="label">Built for agencies</div>
+        <h2 class="sec-title">Stop guessing. Start <em>proving.</em></h2>
+      </div>
+      <div class="pain-grid reveal">
+        <div class="pain-card">
+          <h3>Client-ready reports</h3>
+          <p>
+            Export flame graphs and AI recommendations as shareable reports.
+            Show clients exactly what you optimised and the before/after impact.
+          </p>
+        </div>
+        <div class="pain-card">
+          <h3>Multi-site dashboard</h3>
+          <p>
+            See all your client sites in one view. Sort by slowest page, highest
+            query count, or biggest regression. Triage at a glance.
+          </p>
+        </div>
+        <div class="pain-card">
+          <h3>Regression alerts</h3>
+          <p>
+            AI monitors traces across deploys and plugin updates. Get alerted
+            when a client site gets slower — before the client notices.
+          </p>
+        </div>
+        <div class="pain-card">
+          <h3>Justify your retainer</h3>
+          <p>
+            "We reduced your homepage from 1,480ms to 620ms by fixing 3 plugin
+            conflicts." Data-backed performance work that clients can see and
+            value.
+          </p>
+        </div>
+        <div class="pain-card">
+          <h3>Scope new work accurately</h3>
+          <p>
+            Before quoting a performance project, run WP Flame. Know exactly
+            what needs fixing, how long it'll take, and what the impact will be.
+          </p>
+        </div>
+        <div class="pain-card">
+          <h3>Unlimited sites</h3>
+          <p>
+            The Agency plan covers your entire portfolio. One price, no per-site
+            fees, no usage caps on AI analyses.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mid-cta">
+    <p>Ready to try it on a client site?</p>
+    <div class="mid-cta-actions">
+      <a href="#download" class="btn-primary">Install free</a>
+      <a href="#pricing" class="btn-ai">See pricing</a>
+    </div>
+  </div>
+
+  <CompareTable />
+
+  <!-- Pricing -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:72px;" class="reveal">
+        <div class="label">Pricing</div>
+        <h2 class="sec-title">Free APM. Agency-grade <em>intelligence.</em></h2>
+      </div>
+      <Pricing highlight="agency" />
+    </div>
+  </section>
+
+  <section class="section">
+    <Faq audience="agency" />
+  </section>
+
+  <!-- Final CTA -->
+  <section class="campaign-cta" id="download">
+    <div class="container reveal">
+      <h2>Performance work that <em>proves</em> its value.</h2>
+      <p>
+        Install WP Flame on a client site. Run a trace. Show them exactly what's
+        slow and what you'd fix.
+      </p>
+      <div class="hero-actions">
+        <a href={links.wordpressOrg} class="btn-primary btn-large">Install free ↓</a>
+        <a href={links.agencyTrial} class="btn-ai btn-large">✨ Start Agency trial</a>
+      </div>
+    </div>
+  </section>
+</Campaign>

@@ -1,0 +1,221 @@
+---
+interface Props {
+  cta?: string;
+  ctaHref?: string;
+}
+const { cta = "Get started free", ctaHref = "#download" } = Astro.props;
+---
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 56 62" fill="none" width="28" height="28"
+      ><rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"
+      ></rect><rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"
+      ></rect><rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"
+      ></rect><rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"
+      ></rect></svg
+    >
+    <span>WP <em>Flame</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="/#features">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#compare">Compare</a>
+    <a href={ctaHref} class="nav-cta">{cta}</a>
+  </div>
+  <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-panel">
+  <a href="/#features">Features</a>
+  <a href="/#pricing">Pricing</a>
+  <a href="/#compare">Compare</a>
+  <a href={ctaHref} class="nav-mobile-cta">{cta}</a>
+</div>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(14, 13, 18, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.3s;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .nav-logo span {
+    font-weight: 700;
+    font-size: 17px;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span em {
+    font-style: normal;
+    color: var(--flame-400);
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--carbon-300);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover {
+    color: white;
+  }
+  .nav-cta {
+    background: var(--flame-500);
+    color: white !important;
+    padding: 9px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--flame-400);
+    transform: translateY(-1px);
+  }
+
+  /* Hamburger - hidden on desktop */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+  }
+  .hamburger-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 1px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  /* Hamburger → X animation */
+  .nav-hamburger.open .hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .nav-hamburger.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-hamburger.open .hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Mobile panel - hidden by default */
+  .nav-mobile-panel {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: rgba(14, 13, 18, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: none;
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav-mobile-panel.open {
+    max-height: 300px;
+  }
+  .nav-mobile-panel a {
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--carbon-300);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: color 0.2s;
+  }
+  .nav-mobile-panel a:hover {
+    color: white;
+  }
+  .nav-mobile-cta {
+    background: var(--flame-500) !important;
+    color: white !important;
+    margin: 12px 20px;
+    padding: 12px 20px !important;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600 !important;
+    border-bottom: none !important;
+  }
+
+  @media (max-width: 900px) {
+    .nav {
+      padding: 14px 20px;
+    }
+    .nav-links {
+      display: none;
+    }
+    .nav-hamburger {
+      display: flex;
+    }
+    .nav-mobile-panel {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  // Scroll effect
+  window.addEventListener("scroll", () => {
+    const nav = document.querySelector(".nav") as HTMLElement;
+    if (nav)
+      nav.style.background =
+        window.scrollY > 80 ? "rgba(14,13,18,0.95)" : "rgba(14,13,18,0.8)";
+  });
+
+  // Mobile menu toggle
+  const hamburger = document.querySelector(".nav-hamburger");
+  const panel = document.querySelector(".nav-mobile-panel");
+
+  if (hamburger && panel) {
+    hamburger.addEventListener("click", () => {
+      const isOpen = hamburger.classList.toggle("open");
+      panel.classList.toggle("open");
+      hamburger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    // Close panel when a link is clicked
+    panel.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("open");
+        panel.classList.remove("open");
+        hamburger.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+</script>

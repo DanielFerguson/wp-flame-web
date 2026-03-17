@@ -1,0 +1,159 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+interface Props {
+  audience?: "woocommerce" | "agency" | "pagebuilder";
+}
+const { audience } = Astro.props;
+
+const shared: FaqItem[] = [
+  {
+    question: "Will WP Flame slow down my site?",
+    answer: "No. WP Flame adds under 5ms of overhead when tracing is active, and zero when it's not. Tracing is on-demand — it only runs when you trigger it. Your visitors never see a difference.",
+  },
+  {
+    question: "How is this different from Query Monitor?",
+    answer: "Query Monitor gives you a flat list of queries and hooks. WP Flame gives you a visual flame graph — a timeline that shows exactly when each operation runs, how long it takes, and what triggered it. AI insights then tell you what to fix and how.",
+  },
+  {
+    question: "Do I need to configure anything?",
+    answer: "No. Install the plugin, activate it, and visit any page on your site. WP Flame automatically instruments the request and shows you the flame graph. No config files, no PHP extensions, no API keys for the free version.",
+  },
+  {
+    question: "What if I just want the free version?",
+    answer: "The free version is the full profiler — flame graphs, query tracking, plugin attribution, trace history, and JSON export. It's not a trial or a limited version. AI-powered insights are a separate subscription you can add when you're ready.",
+  },
+  {
+    question: "Can I uninstall it easily?",
+    answer: "Yes. Standard WordPress plugin uninstall — deactivate and delete. WP Flame cleans up all its data on uninstall. No leftover tables, no lock-in, no residual hooks.",
+  },
+];
+
+const audienceItems: Record<string, FaqItem[]> = {
+  woocommerce: [
+    {
+      question: "Will it conflict with my payment gateway?",
+      answer: "No. WP Flame is read-only — it observes your request lifecycle without modifying any data or intercepting any transactions. It's compatible with Stripe, PayPal, Square, and all major WooCommerce payment gateways.",
+    },
+    {
+      question: "Does it work with page caching?",
+      answer: "Yes. WP Flame traces the uncached request when you trigger it. Page caching (WP Super Cache, W3 Total Cache, LiteSpeed, etc.) continues to serve cached pages to your visitors normally. The two don't interfere.",
+    },
+  ],
+  agency: [
+    {
+      question: "Can I control client access to WP Flame?",
+      answer: "Yes. WP Flame respects WordPress roles and capabilities. You can restrict access to administrators only, or grant it to specific roles. On the Agency plan, you get team accounts with granular permissions.",
+    },
+    {
+      question: "Does it work on managed hosting?",
+      answer: "Yes. WP Flame is a standard WordPress plugin with no server-level requirements. It works on WP Engine, Flywheel, Kinsta, Cloudways, and all major managed hosts. No PHP extensions or shell access needed.",
+    },
+  ],
+  pagebuilder: [
+    {
+      question: "Does it work with Divi, Beaver Builder, and WPBakery?",
+      answer: "Yes. WP Flame profiles any WordPress request regardless of which page builder you use. It works with Elementor, Divi, Beaver Builder, WPBakery, Oxygen, Bricks, and any other builder that runs within the WordPress lifecycle.",
+    },
+  ],
+};
+
+const extraItems = audience ? (audienceItems[audience] || []) : [];
+const items = [...shared, ...extraItems];
+---
+
+<div class="faq-section reveal">
+  <div class="faq-header">
+    <div class="label">FAQ</div>
+    <h2 class="sec-title">Common questions</h2>
+  </div>
+  <div class="faq-list">
+    {items.map((item) => (
+      <details class="faq-item">
+        <summary class="faq-question">{item.question}</summary>
+        <p class="faq-answer">{item.answer}</p>
+      </details>
+    ))}
+  </div>
+</div>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": items.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer,
+    },
+  })),
+})} />
+
+<style>
+  .faq-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .faq-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .faq-item {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .faq-item:hover {
+    border-color: rgba(255,255,255,0.1);
+  }
+  .faq-item[open] {
+    border-color: rgba(240,122,24,0.15);
+  }
+  .faq-question {
+    padding: 20px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question::after {
+    content: '+';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--carbon-400);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .faq-item[open] .faq-question::after {
+    transform: rotate(45deg);
+    color: var(--flame-400);
+  }
+  .faq-answer {
+    padding: 0 24px 20px;
+    font-size: 14px;
+    color: var(--carbon-300);
+    line-height: 1.7;
+  }
+  @media (max-width: 640px) {
+    .faq-section { padding: 0 16px; }
+    .faq-question { padding: 16px 20px; font-size: 14px; }
+    .faq-answer { padding: 0 20px 16px; font-size: 13px; }
+  }
+</style>

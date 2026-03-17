@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WP Flame — Brand Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --flame-50: #FFF8F0;
+  --flame-100: #FFECD4;
+  --flame-200: #FFD4A3;
+  --flame-300: #FFB86B;
+  --flame-400: #FF9632;
+  --flame-500: #F07A18;
+  --flame-600: #D45E0A;
+  --flame-700: #A8440B;
+  --flame-800: #7A3210;
+  --flame-900: #4A1E0A;
+
+  --ember-50: #FFF5F3;
+  --ember-100: #FFE0D9;
+  --ember-200: #FFC2B3;
+  --ember-300: #FF9980;
+  --ember-400: #FF6B4A;
+  --ember-500: #E84D30;
+  --ember-600: #C23520;
+  --ember-700: #962818;
+  --ember-800: #6B1D12;
+  --ember-900: #3D100A;
+
+  --carbon-50: #F5F5F4;
+  --carbon-100: #E5E4E2;
+  --carbon-200: #CCCBC8;
+  --carbon-300: #9E9D99;
+  --carbon-400: #6E6D6A;
+  --carbon-500: #48474A;
+  --carbon-600: #313035;
+  --carbon-700: #232228;
+  --carbon-800: #18171C;
+  --carbon-900: #0E0D12;
+
+  --insight-50: #EFFBF6;
+  --insight-100: #C8F4E1;
+  --insight-200: #7CE8BD;
+  --insight-300: #34D498;
+  --insight-400: #1AB87E;
+  --insight-500: #0E9462;
+  --insight-600: #0A7A50;
+  --insight-700: #085E3E;
+  --insight-800: #05432C;
+  --insight-900: #032B1C;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--carbon-900);
+  color: var(--carbon-100);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 80px 40px;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(240,122,24,0.12) 0%, rgba(232,77,48,0.06) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(240,122,24,0.1);
+  border: 1px solid rgba(240,122,24,0.2);
+  border-radius: 100px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--flame-400);
+  letter-spacing: 0.02em;
+  margin-bottom: 48px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.hero-logo-display {
+  margin-bottom: 48px;
+  animation: fadeInUp 0.9s ease-out;
+}
+
+.hero-tagline {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 400;
+  color: var(--carbon-300);
+  max-width: 560px;
+  line-height: 1.5;
+  animation: fadeInUp 1s ease-out 0.15s both;
+}
+
+.hero-tagline em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--flame-400);
+}
+
+/* ---- SECTIONS ---- */
+.section {
+  padding: 120px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--flame-500);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.section-desc {
+  font-size: 17px;
+  color: var(--carbon-300);
+  max-width: 640px;
+  margin-bottom: 64px;
+  line-height: 1.7;
+}
+
+/* ---- LOGO SECTION ---- */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.logo-card {
+  border-radius: 16px;
+  padding: 48px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.logo-card:hover { transform: scale(1.01); }
+
+.logo-card.on-dark { background: var(--carbon-800); border: 1px solid rgba(255,255,255,0.06); }
+.logo-card.on-light { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); }
+.logo-card.on-flame { background: linear-gradient(135deg, var(--flame-500), var(--ember-500)); }
+
+.logo-card-label {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.logo-card.on-light .logo-card-label { color: var(--carbon-600); }
+
+/* ---- ICON SECTION ---- */
+.icon-row {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 64px;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-item .icon-frame {
+  background: var(--carbon-800);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.icon-item .icon-frame:hover { transform: translateY(-2px); }
+
+.icon-item .icon-size {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--carbon-400);
+}
+
+/* ---- COLOR PALETTE ---- */
+.palette-group {
+  margin-bottom: 48px;
+}
+
+.palette-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.palette-role {
+  font-size: 14px;
+  color: var(--carbon-400);
+  margin-bottom: 16px;
+}
+
+.palette-row {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 72px;
+}
+
+.palette-swatch {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: flex 0.3s ease;
+  position: relative;
+}
+
+.palette-swatch:hover { flex: 2; }
+
+.palette-swatch .swatch-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.palette-swatch:hover .swatch-label { opacity: 1; }
+
+.palette-swatch .swatch-hex {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.palette-swatch:hover .swatch-hex { opacity: 0.7; }
+
+/* ---- TYPOGRAPHY ---- */
+.type-specimen {
+  margin-bottom: 56px;
+  padding-bottom: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.type-specimen:last-child { border-bottom: none; }
+
+.type-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.type-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--carbon-400);
+  background: var(--carbon-800);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.type-display {
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.type-body-demo {
+  font-size: 17px;
+  color: var(--carbon-200);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.type-mono-demo {
+  font-size: 14px;
+  color: var(--insight-300);
+  background: var(--carbon-800);
+  padding: 20px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  line-height: 1.8;
+}
+
+/* ---- VOICE ---- */
+.voice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.voice-card {
+  background: var(--carbon-800);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.voice-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.voice-card p {
+  font-size: 14px;
+  color: var(--carbon-300);
+  line-height: 1.6;
+}
+
+.do-dont-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.do-col h4, .dont-col h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.do-col h4 { color: var(--insight-400); }
+.dont-col h4 { color: var(--ember-400); }
+
+.do-col li, .dont-col li {
+  font-size: 14px;
+  color: var(--carbon-200);
+  margin-bottom: 10px;
+  list-style: none;
+  padding-left: 20px;
+  position: relative;
+}
+
+.do-col li::before { content: '✓'; position: absolute; left: 0; color: var(--insight-400); font-weight: 600; }
+.dont-col li::before { content: '✗'; position: absolute; left: 0; color: var(--ember-400); font-weight: 600; }
+
+/* ---- USAGE RULES ---- */
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.rule-card {
+  background: var(--carbon-800);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.rule-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.rule-card p {
+  font-size: 14px;
+  color: var(--carbon-300);
+  line-height: 1.6;
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 640px) {
+  .page-grid { padding: 0 20px; }
+  .hero { padding: 60px 20px; }
+  .section { padding: 80px 0; }
+  .do-dont-grid { grid-template-columns: 1fr; }
+  .icon-row { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-badge">Brand Kit v1.0 — March 2026</div>
+  <div class="hero-logo-display">
+    <svg width="320" height="72" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Icon mark -->
+      <g>
+        <rect x="2" y="46" width="52" height="10" rx="3" fill="#FF9632"/>
+        <rect x="6" y="33" width="44" height="10" rx="3" fill="#F07A18"/>
+        <rect x="10" y="20" width="36" height="10" rx="3" fill="#E84D30"/>
+        <rect x="16" y="7" width="24" height="10" rx="3" fill="#C23520"/>
+        <rect x="22" y="-4" width="12" height="10" rx="3" fill="#962818" opacity="0.6"/>
+      </g>
+      <!-- Wordmark -->
+      <text x="72" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="white">WP</text>
+      <text x="142" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="#FF9632">Flame</text>
+      <text x="72" y="60" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="500" letter-spacing="1.5" fill="#6E6D6A">WORDPRESS PERFORMANCE</text>
+    </svg>
+  </div>
+  <p class="hero-tagline">See exactly where your WordPress request spends its <em>time</em></p>
+</section>
+
+<div class="page-grid">
+
+<!-- ===== LOGO VARIANTS ===== -->
+<section class="section" id="logos">
+  <div class="section-label">01 — Logo</div>
+  <h2 class="section-title">Logo system</h2>
+  <p class="section-desc">The WP Flame logo combines a flame-graph icon mark with a clean wordmark. The icon is built from stacked rounded bars — a direct visual reference to the flame graph, the product's signature interface.</p>
+
+  <div class="logo-grid">
+    <!-- Dark background -->
+    <div class="logo-card on-dark">
+      <span class="logo-card-label" style="color: var(--carbon-400);">On dark</span>
+      <svg width="220" height="52" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="46" width="52" height="10" rx="3" fill="#FF9632"/>
+        <rect x="6" y="33" width="44" height="10" rx="3" fill="#F07A18"/>
+        <rect x="10" y="20" width="36" height="10" rx="3" fill="#E84D30"/>
+        <rect x="16" y="7" width="24" height="10" rx="3" fill="#C23520"/>
+        <rect x="22" y="-4" width="12" height="10" rx="3" fill="#962818" opacity="0.6"/>
+        <text x="72" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="white">WP</text>
+        <text x="142" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="#FF9632">Flame</text>
+      </svg>
+    </div>
+    <!-- Light background -->
+    <div class="logo-card on-light">
+      <span class="logo-card-label">On light</span>
+      <svg width="220" height="52" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="46" width="52" height="10" rx="3" fill="#FF9632"/>
+        <rect x="6" y="33" width="44" height="10" rx="3" fill="#F07A18"/>
+        <rect x="10" y="20" width="36" height="10" rx="3" fill="#E84D30"/>
+        <rect x="16" y="7" width="24" height="10" rx="3" fill="#C23520"/>
+        <rect x="22" y="-4" width="12" height="10" rx="3" fill="#962818" opacity="0.6"/>
+        <text x="72" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="#18171C">WP</text>
+        <text x="142" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="#D45E0A">Flame</text>
+      </svg>
+    </div>
+    <!-- On brand gradient -->
+    <div class="logo-card on-flame">
+      <span class="logo-card-label" style="color: rgba(255,255,255,0.6);">On brand</span>
+      <svg width="220" height="52" viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="46" width="52" height="10" rx="3" fill="white" opacity="0.9"/>
+        <rect x="6" y="33" width="44" height="10" rx="3" fill="white" opacity="0.7"/>
+        <rect x="10" y="20" width="36" height="10" rx="3" fill="white" opacity="0.5"/>
+        <rect x="16" y="7" width="24" height="10" rx="3" fill="white" opacity="0.35"/>
+        <rect x="22" y="-4" width="12" height="10" rx="3" fill="white" opacity="0.2"/>
+        <text x="72" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="white">WP</text>
+        <text x="142" y="42" font-family="'DM Sans', sans-serif" font-size="42" font-weight="700" letter-spacing="-1.5" fill="white" opacity="0.85">Flame</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ICON MARK ===== -->
+<section class="section" id="icon">
+  <div class="section-label">02 — Icon</div>
+  <h2 class="section-title">Icon mark</h2>
+  <p class="section-desc">The icon works standalone for app icons, favicons, social avatars, and compact spaces. Five stacked bars taper upward like a flame — and directly reference the product's flame graph visualisation.</p>
+
+  <div class="icon-row">
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 128px; height: 128px; border-radius: 28px;">
+        <svg width="72" height="72" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">128px</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 80px; height: 80px; border-radius: 20px;">
+        <svg width="44" height="44" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">80px</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 48px; height: 48px; border-radius: 12px;">
+        <svg width="26" height="26" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">48px</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 32px; height: 32px; border-radius: 8px;">
+        <svg width="18" height="18" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">32px</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 20px; height: 20px; border-radius: 5px;">
+        <svg width="12" height="12" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="12" rx="4" fill="#FF9632"/>
+          <rect x="5" y="34" width="46" height="12" rx="4" fill="#F07A18"/>
+          <rect x="10" y="20" width="36" height="12" rx="4" fill="#E84D30"/>
+          <rect x="16" y="7" width="24" height="12" rx="4" fill="#C23520"/>
+        </svg>
+      </div>
+      <span class="icon-size">20px</span>
+    </div>
+  </div>
+
+  <!-- Filled icon variant -->
+  <p class="palette-role" style="margin-bottom: 20px;">Filled variant — for WordPress admin menu, plugin directory, dark social backgrounds</p>
+  <div class="icon-row">
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 128px; height: 128px; border-radius: 28px; background: linear-gradient(145deg, #F07A18, #C23520);">
+        <svg width="68" height="68" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="white" opacity="0.95"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="white" opacity="0.75"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="white" opacity="0.55"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="white" opacity="0.35"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="white" opacity="0.2"/>
+        </svg>
+      </div>
+      <span class="icon-size">Gradient fill</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 128px; height: 128px; border-radius: 28px; background: var(--carbon-900);">
+        <svg width="68" height="68" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">Dark fill</span>
+    </div>
+
+    <div class="icon-item">
+      <div class="icon-frame" style="width: 128px; height: 128px; border-radius: 28px; background: white; border-color: rgba(0,0,0,0.08);">
+        <svg width="68" height="68" viewBox="0 0 56 62" fill="none">
+          <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"/>
+          <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"/>
+          <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"/>
+          <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"/>
+          <rect x="22" y="-2" width="12" height="11" rx="3.5" fill="#962818" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="icon-size">Light fill</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COLOUR PALETTE ===== -->
+<section class="section" id="colour">
+  <div class="section-label">03 — Colour</div>
+  <h2 class="section-title">Colour palette</h2>
+  <p class="section-desc">Four purpose-driven ramps. Flame is the primary brand colour. Ember is for accents, alerts, and hover states. Carbon provides the neutral foundation. Insight is reserved for positive signals — successful optimisations, good performance.</p>
+
+  <div class="palette-group">
+    <div class="palette-name">Flame</div>
+    <div class="palette-role">Primary brand — headers, CTAs, links, icon gradient</div>
+    <div class="palette-row">
+      <div class="palette-swatch" style="background: var(--flame-50);"><span class="swatch-label" style="color: var(--flame-800);">50</span><span class="swatch-hex" style="color: var(--flame-700);">#FFF8F0</span></div>
+      <div class="palette-swatch" style="background: var(--flame-100);"><span class="swatch-label" style="color: var(--flame-800);">100</span><span class="swatch-hex" style="color: var(--flame-700);">#FFECD4</span></div>
+      <div class="palette-swatch" style="background: var(--flame-200);"><span class="swatch-label" style="color: var(--flame-800);">200</span><span class="swatch-hex" style="color: var(--flame-700);">#FFD4A3</span></div>
+      <div class="palette-swatch" style="background: var(--flame-300);"><span class="swatch-label" style="color: var(--flame-800);">300</span><span class="swatch-hex" style="color: var(--flame-800);">#FFB86B</span></div>
+      <div class="palette-swatch" style="background: var(--flame-400);"><span class="swatch-label" style="color: var(--flame-900);">400</span><span class="swatch-hex" style="color: var(--flame-900);">#FF9632</span></div>
+      <div class="palette-swatch" style="background: var(--flame-500);"><span class="swatch-label" style="color: white;">500</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#F07A18</span></div>
+      <div class="palette-swatch" style="background: var(--flame-600);"><span class="swatch-label" style="color: white;">600</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#D45E0A</span></div>
+      <div class="palette-swatch" style="background: var(--flame-700);"><span class="swatch-label" style="color: white;">700</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#A8440B</span></div>
+      <div class="palette-swatch" style="background: var(--flame-800);"><span class="swatch-label" style="color: white;">800</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#7A3210</span></div>
+      <div class="palette-swatch" style="background: var(--flame-900);"><span class="swatch-label" style="color: white;">900</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#4A1E0A</span></div>
+    </div>
+  </div>
+
+  <div class="palette-group">
+    <div class="palette-name">Ember</div>
+    <div class="palette-role">Accent — warnings, slow performance indicators, destructive actions</div>
+    <div class="palette-row">
+      <div class="palette-swatch" style="background: var(--ember-50);"><span class="swatch-label" style="color: var(--ember-800);">50</span><span class="swatch-hex" style="color: var(--ember-700);">#FFF5F3</span></div>
+      <div class="palette-swatch" style="background: var(--ember-100);"><span class="swatch-label" style="color: var(--ember-800);">100</span><span class="swatch-hex" style="color: var(--ember-700);">#FFE0D9</span></div>
+      <div class="palette-swatch" style="background: var(--ember-200);"><span class="swatch-label" style="color: var(--ember-800);">200</span><span class="swatch-hex" style="color: var(--ember-700);">#FFC2B3</span></div>
+      <div class="palette-swatch" style="background: var(--ember-300);"><span class="swatch-label" style="color: var(--ember-800);">300</span><span class="swatch-hex" style="color: var(--ember-800);">#FF9980</span></div>
+      <div class="palette-swatch" style="background: var(--ember-400);"><span class="swatch-label" style="color: var(--ember-900);">400</span><span class="swatch-hex" style="color: var(--ember-900);">#FF6B4A</span></div>
+      <div class="palette-swatch" style="background: var(--ember-500);"><span class="swatch-label" style="color: white;">500</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#E84D30</span></div>
+      <div class="palette-swatch" style="background: var(--ember-600);"><span class="swatch-label" style="color: white;">600</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#C23520</span></div>
+      <div class="palette-swatch" style="background: var(--ember-700);"><span class="swatch-label" style="color: white;">700</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#962818</span></div>
+      <div class="palette-swatch" style="background: var(--ember-800);"><span class="swatch-label" style="color: white;">800</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#6B1D12</span></div>
+      <div class="palette-swatch" style="background: var(--ember-900);"><span class="swatch-label" style="color: white;">900</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#3D100A</span></div>
+    </div>
+  </div>
+
+  <div class="palette-group">
+    <div class="palette-name">Carbon</div>
+    <div class="palette-role">Neutral foundation — backgrounds, text, borders, structural elements</div>
+    <div class="palette-row">
+      <div class="palette-swatch" style="background: var(--carbon-50);"><span class="swatch-label" style="color: var(--carbon-800);">50</span><span class="swatch-hex" style="color: var(--carbon-600);">#F5F5F4</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-100);"><span class="swatch-label" style="color: var(--carbon-800);">100</span><span class="swatch-hex" style="color: var(--carbon-600);">#E5E4E2</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-200);"><span class="swatch-label" style="color: var(--carbon-800);">200</span><span class="swatch-hex" style="color: var(--carbon-700);">#CCCBC8</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-300);"><span class="swatch-label" style="color: var(--carbon-800);">300</span><span class="swatch-hex" style="color: var(--carbon-800);">#9E9D99</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-400);"><span class="swatch-label" style="color: white;">400</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#6E6D6A</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-500);"><span class="swatch-label" style="color: white;">500</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#48474A</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-600);"><span class="swatch-label" style="color: white;">600</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#313035</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-700);"><span class="swatch-label" style="color: white;">700</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#232228</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-800);"><span class="swatch-label" style="color: white;">800</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#18171C</span></div>
+      <div class="palette-swatch" style="background: var(--carbon-900);"><span class="swatch-label" style="color: white;">900</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#0E0D12</span></div>
+    </div>
+  </div>
+
+  <div class="palette-group">
+    <div class="palette-name">Insight</div>
+    <div class="palette-role">Positive signal — fast performance, optimisation wins, success states</div>
+    <div class="palette-row">
+      <div class="palette-swatch" style="background: var(--insight-50);"><span class="swatch-label" style="color: var(--insight-800);">50</span><span class="swatch-hex" style="color: var(--insight-700);">#EFFBF6</span></div>
+      <div class="palette-swatch" style="background: var(--insight-100);"><span class="swatch-label" style="color: var(--insight-800);">100</span><span class="swatch-hex" style="color: var(--insight-700);">#C8F4E1</span></div>
+      <div class="palette-swatch" style="background: var(--insight-200);"><span class="swatch-label" style="color: var(--insight-800);">200</span><span class="swatch-hex" style="color: var(--insight-700);">#7CE8BD</span></div>
+      <div class="palette-swatch" style="background: var(--insight-300);"><span class="swatch-label" style="color: var(--insight-800);">300</span><span class="swatch-hex" style="color: var(--insight-800);">#34D498</span></div>
+      <div class="palette-swatch" style="background: var(--insight-400);"><span class="swatch-label" style="color: white;">400</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#1AB87E</span></div>
+      <div class="palette-swatch" style="background: var(--insight-500);"><span class="swatch-label" style="color: white;">500</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#0E9462</span></div>
+      <div class="palette-swatch" style="background: var(--insight-600);"><span class="swatch-label" style="color: white;">600</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#0A7A50</span></div>
+      <div class="palette-swatch" style="background: var(--insight-700);"><span class="swatch-label" style="color: white;">700</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#085E3E</span></div>
+      <div class="palette-swatch" style="background: var(--insight-800);"><span class="swatch-label" style="color: white;">800</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#05432C</span></div>
+      <div class="palette-swatch" style="background: var(--insight-900);"><span class="swatch-label" style="color: white;">900</span><span class="swatch-hex" style="color: rgba(255,255,255,0.7);">#032B1C</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TYPOGRAPHY ===== -->
+<section class="section" id="typography">
+  <div class="section-label">04 — Typography</div>
+  <h2 class="section-title">Type system</h2>
+  <p class="section-desc">Three fonts, three jobs. DM Sans for everything structural — headings, body, UI. Instrument Serif for editorial moments — taglines, pull quotes, the one phrase you want to land. JetBrains Mono for anything technical — code, stats, labels.</p>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-meta-item">DM Sans</span>
+      <span class="type-meta-item">Primary — headings & body</span>
+      <span class="type-meta-item">400 / 500 / 600 / 700</span>
+    </div>
+    <div class="type-display" style="font-family: 'DM Sans', sans-serif; font-weight: 700; color: white;">
+      See where your time goes.
+    </div>
+    <p class="type-body-demo" style="font-family: 'DM Sans', sans-serif;">WP Flame instruments every hook, query, and HTTP call in your WordPress request lifecycle. The result is an interactive flame graph that shows you exactly which plugin, theme, or core function is responsible for every millisecond of load time.</p>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-meta-item">Instrument Serif</span>
+      <span class="type-meta-item">Editorial — taglines & accents</span>
+      <span class="type-meta-item">400 italic</span>
+    </div>
+    <div class="type-display" style="font-family: 'Instrument Serif', serif; font-style: italic; color: var(--flame-400);">
+      Performance made visible.
+    </div>
+    <p class="type-body-demo">Used sparingly for emphasis. One phrase per section maximum. Never for body text, UI labels, or buttons. The contrast between DM Sans and Instrument Serif creates the brand's visual signature.</p>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-meta-item">JetBrains Mono</span>
+      <span class="type-meta-item">Technical — code, data, labels</span>
+      <span class="type-meta-item">400 / 500 / 600</span>
+    </div>
+    <div class="type-mono-demo">
+      <span style="color: var(--carbon-400);">GET</span> <span style="color: var(--flame-400);">/sample-page/</span> <span style="color: var(--carbon-400);">— 847ms total</span><br>
+      <span style="color: var(--carbon-400);">├─</span> plugins_loaded <span style="color: var(--ember-400);">220ms</span><br>
+      <span style="color: var(--carbon-400);">│  ├─</span> woocommerce <span style="color: var(--ember-400);">95ms</span><br>
+      <span style="color: var(--carbon-400);">│  ├─</span> elementor <span style="color: var(--flame-400);">55ms</span><br>
+      <span style="color: var(--carbon-400);">│  └─</span> yoast-seo <span style="color: var(--insight-400);">45ms</span><br>
+      <span style="color: var(--carbon-400);">├─</span> template_render <span style="color: var(--ember-400);">310ms</span><br>
+      <span style="color: var(--carbon-400);">└─</span> db_queries <span style="color: var(--flame-400);">112ms</span> <span style="color: var(--carbon-500);">(47 queries)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VOICE & TONE ===== -->
+<section class="section" id="voice">
+  <div class="section-label">05 — Voice & tone</div>
+  <h2 class="section-title">How WP Flame speaks</h2>
+  <p class="section-desc">Direct, technical, confident — but never condescending. We talk to developers and site owners who care about performance but don't want to wade through jargon to understand their site.</p>
+
+  <div class="voice-grid">
+    <div class="voice-card">
+      <h3>Show, don't tell</h3>
+      <p>Lead with the visual. A flame graph speaks louder than a paragraph about performance. Screenshots, data, and real examples over abstract claims.</p>
+    </div>
+    <div class="voice-card">
+      <h3>Specific over vague</h3>
+      <p>"WooCommerce added 95ms during init" beats "your plugins are slow." Always name names, always show the number.</p>
+    </div>
+    <div class="voice-card">
+      <h3>Developer-friendly, not developer-exclusive</h3>
+      <p>A site owner should understand the flame graph. A developer should find the data they need. Write for both without dumbing down.</p>
+    </div>
+    <div class="voice-card">
+      <h3>Calm authority</h3>
+      <p>No exclamation marks in marketing. No "supercharge" or "turbocharge." Performance is serious work — the tone should match.</p>
+    </div>
+  </div>
+
+  <div class="do-dont-grid">
+    <div class="do-col">
+      <h4>Do</h4>
+      <ul>
+        <li>"See exactly where your request spends its time"</li>
+        <li>"Elementor loaded 847KB of JSON on every page"</li>
+        <li>"Zero dependencies. No SaaS. No PHP extensions."</li>
+        <li>"Your homepage: 847ms. Here's why."</li>
+      </ul>
+    </div>
+    <div class="dont-col">
+      <h4>Don't</h4>
+      <ul>
+        <li>"Supercharge your WordPress performance!"</li>
+        <li>"Blazing fast insights for your website!"</li>
+        <li>"The ultimate all-in-one performance solution"</li>
+        <li>"Unlock the power of performance monitoring"</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== USAGE RULES ===== -->
+<section class="section" id="usage">
+  <div class="section-label">06 — Usage rules</div>
+  <h2 class="section-title">Brand guardrails</h2>
+  <p class="section-desc">Consistency matters more than creativity. These rules keep WP Flame looking sharp across every touchpoint.</p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <h3>Logo clear space</h3>
+      <p>Maintain clear space equal to the height of the icon mark on all sides. Never place the logo on busy backgrounds or over photographs.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Icon, not logo, at small sizes</h3>
+      <p>Below 120px wide, use the icon mark alone. The wordmark becomes illegible at small sizes. The icon works down to 16px (favicon).</p>
+    </div>
+    <div class="rule-card">
+      <h3>One serif phrase per section</h3>
+      <p>Instrument Serif is an accent, not a workhorse. Use it for a single tagline or emphasis phrase. If everything is emphasised, nothing is.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Flame graph as hero visual</h3>
+      <p>When possible, lead with an actual flame graph screenshot or mockup. The product is its own best marketing — show the interface, not stock imagery.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Dark-first design</h3>
+      <p>Default to dark backgrounds (Carbon 800–900) for marketing, landing pages, and social. Light mode exists for documentation and the WordPress admin context.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Never rotate or distort the icon</h3>
+      <p>The stacked bars must always be horizontal. Don't rotate, skew, add effects, or animate the icon mark beyond simple opacity/scale transitions.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div style="height: 120px;"></div>
+
+</body>
+</html>

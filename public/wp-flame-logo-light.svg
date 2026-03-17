@@ -1,0 +1,10 @@
+<svg width="640" height="120" viewBox="0 0 640 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="80" width="92" height="18" rx="5" fill="#FF9632"/>
+  <rect x="12" y="58" width="76" height="18" rx="5" fill="#F07A18"/>
+  <rect x="20" y="36" width="60" height="18" rx="5" fill="#E84D30"/>
+  <rect x="30" y="14" width="40" height="18" rx="5" fill="#C23520"/>
+  <rect x="38" y="-4" width="24" height="16" rx="5" fill="#962818" opacity="0.6"/>
+  <text x="124" y="76" font-family="'DM Sans', sans-serif" font-size="68" font-weight="700" letter-spacing="-2" fill="#18171C">WP</text>
+  <text x="250" y="76" font-family="'DM Sans', sans-serif" font-size="68" font-weight="700" letter-spacing="-2" fill="#D45E0A">Flame</text>
+  <text x="124" y="104" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="500" letter-spacing="2" fill="#9E9D99">WORDPRESS PERFORMANCE</text>
+</svg>

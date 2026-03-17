@@ -1,0 +1,189 @@
+---
+import Campaign from "../layouts/Campaign.astro";
+import FlameDemo from "../components/FlameDemo.astro";
+import AiInsight from "../components/AiInsight.astro";
+import PostDemoCta from "../components/PostDemoCta.astro";
+import TrustBar from "../components/TrustBar.astro";
+import Faq from "../components/Faq.astro";
+import Pricing from "../components/Pricing.astro";
+import { links } from "../config/links";
+---
+
+<Campaign
+  title="Your WooCommerce Store Is Losing Sales Every Second — WP Flame"
+  description="See exactly which plugins and queries are slowing your WooCommerce store. Free flame graph APM with AI-powered fix recommendations."
+  campaign="woo-facebook"
+  audience="woocommerce"
+  source="facebook"
+>
+  <section class="campaign-hero">
+    <div class="hero-pill"><span class="dot"></span> Free APM — AI insights from $29/mo</div>
+    <h1>
+      Your WooCommerce store loads in 1.2 seconds. Here's what's <em>eating</em> them.
+    </h1>
+    <p class="hero-sub">
+      One free plugin. One page load. A visual breakdown of every millisecond
+      your customers are waiting.
+    </p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn-primary btn-large">See a live flame graph ↓</a>
+      <a href="#download" class="btn-primary btn-large">Install free</a>
+    </div>
+    <div class="hero-proof">
+      <span>WooCommerce 7.0+</span>
+      <span>Under 5ms overhead</span>
+      <span>No signup required</span>
+    </div>
+  </section>
+
+  <section style="padding:0 40px 60px;">
+    <TrustBar />
+  </section>
+
+  <!-- The "aha" moment - stats that hit store owners -->
+  <section class="section">
+    <div class="container">
+      <div class="stat-strip reveal">
+        <div class="stat-block">
+          <div class="stat-big">1%</div>
+          <div class="stat-sub">of revenue lost per 100ms of delay</div>
+          <div class="stat-source">Google / Deloitte research</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-big">53%</div>
+          <div class="stat-sub">of mobile shoppers leave after 3 seconds</div>
+          <div class="stat-source">Think with Google</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-big">83</div>
+          <div class="stat-sub">
+            DB queries on a typical WooCommerce product page
+          </div>
+          <div class="stat-source">WP Flame average across 500+ traces</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section style="padding:0 40px 100px;" id="demo">
+    <FlameDemo variant="woocommerce" showAi={true}>
+      <Fragment slot="insights">
+        <AiInsight
+          severity="high"
+          title="Your payment gateway is loading on every page — not just checkout"
+          body="Stripe is making an API call during <code>shutdown</code> on product pages. This adds 70ms to every page your customers visit, not just checkout."
+          action="Disable 'preload payment methods' in Stripe settings — it only needs to load at checkout"
+        />
+        <AiInsight
+          severity="high"
+          title="Related products query is scanning your entire catalog"
+          body="WooCommerce is running a full JOIN across product tables to find 4 related items. On a 2,000-product store, this takes 135ms."
+          action="Set related products manually per product, or install a caching layer for this query"
+        />
+      </Fragment>
+    </FlameDemo>
+  </section>
+
+  <PostDemoCta headline="Your store could be this transparent. Free." />
+
+  <!-- Simple value prop -->
+  <section class="section bg-raised">
+    <div class="container">
+      <div
+        style="text-align:center;max-width:640px;margin:0 auto;"
+        class="reveal"
+      >
+        <div class="label">How it works</div>
+        <h2 class="sec-title">
+          Install. Load a page. <em>See</em> the problem.
+        </h2>
+        <p class="sec-desc" style="text-align:center;">
+          WP Flame is a free WordPress plugin that shows you an interactive
+          flame graph of every request. Every plugin, every query, every API
+          call — timed and attributed. No config. No signup. Just install and
+          browse.
+        </p>
+        <p class="sec-desc" style="text-align:center;">
+          Want more than the data? AI Insights reads your traces and tells you
+          exactly what to fix, in plain English, with specific steps for your
+          plugins and theme. From $29/month.
+        </p>
+        <div
+          style="display:flex;gap:16px;justify-content:center;margin-top:32px;"
+        >
+          <a href={links.wordpressOrg} class="btn-primary">Install free</a>
+          <a href={links.sparkTrial} class="btn-ai">✨ Try AI insights</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:72px;" class="reveal">
+        <div class="label">Pricing</div>
+        <h2 class="sec-title">Free APM. Paid <em>intelligence.</em></h2>
+      </div>
+      <Pricing highlight="spark" />
+    </div>
+  </section>
+
+  <section class="section">
+    <Faq audience="woocommerce" />
+  </section>
+
+  <!-- Final CTA -->
+  <section class="campaign-cta" id="download">
+    <div class="container reveal">
+      <h2>
+        Every second your store is slow,<br />you're losing <em>revenue.</em>
+      </h2>
+      <p>
+        Install WP Flame in 30 seconds. See exactly what's costing you sales.
+      </p>
+      <div class="hero-actions">
+        <a href={links.wordpressOrg} class="btn-primary btn-large">Install free ↓</a>
+        <a href={links.sparkTrial} class="btn-ai btn-large">✨ Try AI insights free</a>
+      </div>
+    </div>
+  </section>
+</Campaign>
+
+<style>
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    text-align: center;
+  }
+  .stat-block {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 40px 28px;
+  }
+  .stat-big {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--flame-400);
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .stat-sub {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .stat-source {
+    font-size: 12px;
+    color: var(--carbon-400);
+  }
+  @media (max-width: 900px) {
+    .stat-strip {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

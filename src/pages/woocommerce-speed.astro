@@ -1,0 +1,164 @@
+---
+import Campaign from "../layouts/Campaign.astro";
+import FlameDemo from "../components/FlameDemo.astro";
+import AiInsight from "../components/AiInsight.astro";
+import Pricing from "../components/Pricing.astro";
+import PostDemoCta from "../components/PostDemoCta.astro";
+import TrustBar from "../components/TrustBar.astro";
+import Faq from "../components/Faq.astro";
+import CompareTable from "../components/CompareTable.astro";
+import { links } from "../config/links";
+---
+
+<Campaign
+  title="Why Is My WooCommerce Store Slow? Find Out in 30 Seconds — WP Flame"
+  description="Free flame graph shows exactly which WooCommerce hooks, queries, and API calls are slowing your store. AI tells you what to fix."
+  campaign="woo-google"
+  audience="woocommerce"
+  source="google"
+  noindex={false}
+>
+  <section class="campaign-hero">
+    <div class="hero-pill"><span class="dot"></span> Free APM — AI insights from $29/mo</div>
+    <h1>Why is your WooCommerce store <em>slow?</em></h1>
+    <p class="hero-sub">
+      Install WP Flame, load any product page, and see exactly which queries,
+      hooks, and API calls are eating your load time. Free.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary btn-large"
+        >Install free — see your flame graph ↓</a
+      >
+      <a href="#pricing" class="btn-ai btn-large">✨ See AI insights</a>
+    </div>
+    <div class="hero-proof">
+      <span>Works with WooCommerce 7.0+</span>
+      <span>Zero config required</span>
+      <span>Under 5ms overhead</span>
+    </div>
+  </section>
+
+  <section style="padding:0 40px 60px;">
+    <TrustBar />
+  </section>
+
+  <section style="padding:0 40px 100px;">
+    <FlameDemo variant="woocommerce" showAi={true}>
+      <Fragment slot="insights">
+        <AiInsight
+          severity="high"
+          title="WooCommerce license check is blocking every page load for 60ms"
+          body="A remote HTTP call at <code>plugins_loaded → License check</code> runs on every request, even when the stored transient is still valid."
+          action="Filter woocommerce_helper_suppress to skip the check when transient exists"
+        />
+        <AiInsight
+          severity="high"
+          title="Related products query is scanning the entire catalog"
+          body="The <code>Related products</code> query at 1025ms runs a full-table JOIN across wp_posts and wp_postmeta, returning 135ms of DB time for 4 products."
+          action="Use a caching plugin or set related products manually to avoid the expensive query"
+        />
+        <AiInsight
+          severity="medium"
+          title="Stripe API call during page render adds 70ms"
+          body="The Stripe gateway is making a payment methods API call during <code>shutdown</code> — this should be deferred to checkout only."
+          action="Check Stripe plugin settings for 'preload payment methods' and disable it"
+        />
+      </Fragment>
+    </FlameDemo>
+  </section>
+
+  <PostDemoCta headline="See exactly what's slowing your store." />
+
+  <!-- WooCommerce-specific pain points -->
+  <section class="section bg-raised">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:64px;" class="reveal">
+        <div class="label">WooCommerce performance killers</div>
+        <h2 class="sec-title">
+          Every 100ms of delay costs you <em>1% of revenue</em>
+        </h2>
+        <p
+          style="font-size:17px;color:var(--carbon-300);max-width:560px;margin:0 auto;"
+        >
+          Google's data is clear: slow stores lose sales. Here's what WP Flame
+          typically finds on WooCommerce sites.
+        </p>
+      </div>
+      <div class="pain-grid reveal">
+        <div class="pain-card">
+          <div class="pain-number">60ms</div>
+          <h3>License check HTTP calls</h3>
+          <p>
+            WooCommerce and its extensions make blocking HTTP calls on every
+            page load to verify licenses. These run even when the cached result
+            is still valid.
+          </p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-number">83</div>
+          <h3>Queries per product page</h3>
+          <p>
+            Product meta, variations, pricing rules, stock status, related
+            products, cross-sells — each one adds queries. Many are duplicates
+            or uncached.
+          </p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-number">340ms</div>
+          <h3>Plugin init overhead</h3>
+          <p>
+            WooCommerce plus payment gateways, shipping calculators, and
+            extensions can consume 340ms just during plugins_loaded — before
+            rendering starts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mid-cta">
+    <p>Find your store's bottlenecks in 30 seconds.</p>
+    <div class="mid-cta-actions">
+      <a href="#download" class="btn-primary">Install free</a>
+      <a href="#pricing" class="btn-ai">✨ Try AI</a>
+    </div>
+  </div>
+
+  <CompareTable />
+
+  <!-- Pricing -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:72px;" class="reveal">
+        <div class="label">Pricing</div>
+        <h2 class="sec-title">Free APM. Paid <em>intelligence.</em></h2>
+        <p
+          style="font-size:17px;color:var(--carbon-300);max-width:580px;margin:0 auto;"
+        >
+          See the flame graph for free. Let AI tell you exactly what to fix for
+          $29/month.
+        </p>
+      </div>
+      <Pricing highlight="spark" />
+    </div>
+  </section>
+
+  <section class="section">
+    <Faq audience="woocommerce" />
+  </section>
+
+  <!-- Final CTA -->
+  <section class="campaign-cta" id="download">
+    <div class="container reveal">
+      <h2>Your store is losing sales <em>right now.</em></h2>
+      <p>
+        Install WP Flame, load your slowest product page, and see exactly where
+        the time goes. Takes 30 seconds.
+      </p>
+      <div class="hero-actions">
+        <a href={links.wordpressOrg} class="btn-primary btn-large">Install free ↓</a>
+        <a href={links.sparkTrial} class="btn-ai btn-large">✨ Try AI insights free</a>
+      </div>
+    </div>
+  </section>
+</Campaign>
