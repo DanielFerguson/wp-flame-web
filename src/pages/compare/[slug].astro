@@ -1,0 +1,100 @@
+---
+import Content from '../../layouts/Content.astro';
+import { comparisons, type Comparison } from '../../data/comparisons';
+
+export function getStaticPaths() {
+  return comparisons.map((comparison) => ({
+    params: { slug: comparison.slug },
+    props: { comparison },
+  }));
+}
+
+interface Props {
+  comparison: Comparison;
+}
+
+const { comparison } = Astro.props;
+---
+
+<Content
+  title={comparison.metaTitle}
+  description={comparison.description}
+  eyebrow={comparison.eyebrow}
+  heading={comparison.hero}
+  intro={comparison.framing}
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-callout">
+      <p><strong>Comparison principle:</strong> acknowledge what the alternative does well, explain the workflow difference, and avoid unsupported feature-checklist victories.</p>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="strengths-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card">
+        <p class="content-kicker">What it does well</p>
+        <h2 id="strengths-title">{comparison.alternativeName}</h2>
+        <ul>{comparison.alternativeStrengths.map((item) => <li>{item}</li>)}</ul>
+      </article>
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">Intended role</p>
+        <h2>WP Flame</h2>
+        <ul>{comparison.wpFlameRole.map((item) => <li>{item}</li>)}</ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="decision-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Decision guide</p>
+      <h2 id="decision-title">Choose for the job in front of you.</h2>
+    </div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card">
+        <h3>Choose {comparison.alternativeName} when…</h3>
+        <ul>{comparison.chooseAlternativeWhen.map((item) => <li>{item}</li>)}</ul>
+      </article>
+      <article class="content-card">
+        <h3>Consider WP Flame when…</h3>
+        <ul>{comparison.chooseWpFlameWhen.map((item) => <li>{item}</li>)}</ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="matrix-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Workflow comparison</p>
+      <h2 id="matrix-title">Different scope, different evidence.</h2>
+    </div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>{comparison.alternativeName} and WP Flame workflow comparison</caption>
+        <thead><tr><th scope="col">Dimension</th><th scope="col">{comparison.alternativeName}</th><th scope="col">WP Flame</th></tr></thead>
+        <tbody>
+          {comparison.rows.map((row) => <tr><th scope="row">{row.dimension}</th><td>{row.alternative}</td><td>{row.wpFlame}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="together-title">
+    <div class="content-card content-card--purple">
+      <p class="content-kicker">Often the best answer</p>
+      <h2 id="together-title">Use them together</h2>
+      <p>{comparison.together}</p>
+    </div>
+    <div class="content-status-panel" style="margin-top:20px;">
+      <span class="content-status-dot" aria-hidden="true"></span>
+      <div><strong>Keep the comparison current</strong><p>{comparison.caveat}</p></div>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="more-comparisons-title">
+    <div class="content-section-header"><h2 id="more-comparisons-title">More comparisons</h2></div>
+    <div class="content-link-list">
+      {comparisons.filter((item) => item.slug !== comparison.slug).map((item) => <a href={`/compare/${item.slug}/`}>{item.title}</a>)}
+      <a href="/product/">Read the product boundaries</a>
+      <a href="/compatibility/">Review compatibility status</a>
+    </div>
+  </section>
+</Content>

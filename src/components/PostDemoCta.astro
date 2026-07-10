@@ -7,44 +7,26 @@ interface Props {
   secondaryHref?: string;
 }
 const {
-  headline = "See this on your own site in 30 seconds.",
-  primary = "Install free",
-  primaryHref = "#download",
-  secondary = "See pricing",
-  secondaryHref = "#pricing",
+  headline = 'Have a dynamic WordPress workflow worth investigating?',
+  primary = 'Apply with a real incident',
+  primaryHref = '/design-partner/',
+  secondary = 'Read the measurement limits',
+  secondaryHref = '/compatibility/',
 } = Astro.props;
 ---
 
 <div class="post-demo-cta reveal">
-  <p class="post-demo-headline">{headline}</p>
-  <div class="post-demo-actions">
+  <p>{headline}</p>
+  <div>
     <a href={primaryHref} class="btn-primary">{primary}</a>
-    <a href={secondaryHref} class="btn-ai">{secondary}</a>
+    <a href={secondaryHref} class="btn-secondary">{secondary}</a>
   </div>
 </div>
 
 <style>
-  .post-demo-cta {
-    text-align: center;
-    padding: 48px 40px;
-    max-width: 640px;
-    margin: 0 auto;
-  }
-  .post-demo-headline {
-    font-size: clamp(18px, 2.2vw, 22px);
-    font-weight: 600;
-    color: white;
-    margin-bottom: 24px;
-    letter-spacing: -0.01em;
-  }
-  .post-demo-actions {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  @media (max-width: 640px) {
-    .post-demo-cta { padding: 32px 20px; }
-  }
+  .post-demo-cta { max-width: 900px; margin: 34px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 26px; padding: 24px 28px; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.025); }
+  .post-demo-cta p { color: white; font-size: 16px; font-weight: 600; }
+  .post-demo-cta > div { display: flex; flex-wrap: wrap; gap: 10px; }
+  .post-demo-cta :global(.btn-primary), .post-demo-cta :global(.btn-secondary) { padding: 10px 17px; font-size: 13px; }
+  @media (max-width: 760px) { .post-demo-cta { align-items: flex-start; flex-direction: column; } }
 </style>

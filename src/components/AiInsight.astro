@@ -4,75 +4,147 @@ interface Props {
   title: string;
   body: string;
   action: string;
+  confidence?: "high" | "medium" | "low";
 }
-const { severity, title, body, action } = Astro.props;
+const { severity, title, body, action, confidence = "medium" } = Astro.props;
+
+const impactLabels = {
+  high: "Higher measured impact",
+  medium: "Moderate measured impact",
+  low: "Lower measured impact",
+};
+
+const confidenceLabels = {
+  high: "High confidence",
+  medium: "Directional confidence",
+  low: "Low confidence",
+};
 ---
 
-<div class="ai-insight">
-  <div class={`ai-severity ${severity}`}></div>
-  <div class="ai-insight-body">
+<article class="measured-opportunity">
+  <div class={`impact-marker ${severity}`} aria-hidden="true"></div>
+  <div class="opportunity-body">
+    <div class="opportunity-meta">
+      <span>{impactLabels[severity]}</span>
+      <span aria-hidden="true">&middot;</span>
+      <span>{confidenceLabels[confidence]}</span>
+    </div>
     <h4>{title}</h4>
-    <p set:html={body} />
-    <span class="ai-action">→ {action}</span>
+    <div class="evidence-block">
+      <span class="field-label">Evidence in this illustrative trace</span>
+      <p set:html={body} />
+    </div>
+    <div class="next-action">
+      <span class="field-label">Likely next action</span>
+      <p>{action}</p>
+    </div>
+    <p class="verification-note">
+      Validate on the affected workflow, change one thing, then compare compatible
+      before/after cohorts.
+    </p>
   </div>
-</div>
+</article>
 
 <style>
-  .ai-insight {
-    background: rgba(123, 92, 255, 0.04);
-    border: 1px solid rgba(123, 92, 255, 0.12);
+  .measured-opportunity {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 10px;
-    padding: 16px 20px;
+    padding: 18px 20px;
     margin-bottom: 10px;
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    transition: border-color 0.3s;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
   }
-  .ai-insight:hover {
-    border-color: rgba(123, 92, 255, 0.25);
+  .measured-opportunity:hover {
+    border-color: rgba(255, 150, 50, 0.28);
+    background: rgba(255, 150, 50, 0.025);
   }
-  .ai-severity {
+  .impact-marker {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    margin-top: 6px;
+    margin-top: 7px;
     flex-shrink: 0;
   }
-  .ai-severity.high {
+  .impact-marker.high {
     background: var(--ember-400);
   }
-  .ai-severity.medium {
+  .impact-marker.medium {
     background: var(--flame-400);
   }
-  .ai-severity.low {
+  .impact-marker.low {
     background: var(--insight-400);
   }
-  .ai-insight-body h4 {
-    font-size: 13px;
+  .opportunity-body {
+    min-width: 0;
+    flex: 1;
+  }
+  .opportunity-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 5px;
+    color: var(--carbon-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+  .opportunity-body h4 {
+    font-size: 14px;
     font-weight: 600;
     color: white;
-    margin-bottom: 3px;
+    margin: 0 0 10px;
+    line-height: 1.45;
   }
-  .ai-insight-body p {
+  .evidence-block p,
+  .next-action p {
     font-size: 12px;
     color: var(--carbon-300);
     line-height: 1.5;
-    margin: 0;
+    margin: 3px 0 0;
   }
-  .ai-insight-body :global(code) {
+  .opportunity-body :global(code) {
     font-family: "JetBrains Mono", monospace;
     font-size: 11px;
-    color: var(--ai-300);
-    background: rgba(123, 92, 255, 0.08);
+    color: var(--flame-300);
+    background: rgba(255, 150, 50, 0.08);
     padding: 2px 5px;
     border-radius: 3px;
   }
-  .ai-action {
+  .field-label {
+    color: var(--carbon-400);
     font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+  }
+  .next-action {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-left: 2px solid var(--flame-500);
+    background: rgba(255, 150, 50, 0.045);
+    border-radius: 0 6px 6px 0;
+  }
+  .next-action p {
+    color: var(--carbon-200);
+  }
+  .verification-note {
+    margin: 10px 0 0;
+    color: var(--carbon-400);
     font-size: 11px;
-    color: var(--ai-300);
-    margin-top: 6px;
-    display: inline-block;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .measured-opportunity {
+      padding: 15px;
+      gap: 11px;
+    }
   }
 </style>

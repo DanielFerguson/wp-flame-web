@@ -1,0 +1,19 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="Page Not Found — WP Flame"
+  description="The requested WP Flame page could not be found. Continue to the product overview, use-case guides, documentation, or design-partner programme."
+  eyebrow="404 · Page not found"
+  heading="This request reached a route we do not observe."
+  intro="The page may have moved, the address may be incomplete, or an older campaign link may no longer exist. Choose a current destination below."
+  noindex={true}
+  showActions={false}
+  showClosing={false}
+>
+  <section class="content-section content-section--narrow" aria-labelledby="continue-title">
+    <div class="content-section-header"><h2 id="continue-title">Continue from a known route</h2></div>
+    <div class="content-link-list"><a href="/">Homepage</a><a href="/product/">Product overview</a><a href="/sample-trace/">Sample trace</a><a href="/use-cases/">Use-case guides</a><a href="/docs/quickstart/">Quickstart</a><a href="/design-partner/">Design-partner programme</a></div>
+  </section>
+</Content>

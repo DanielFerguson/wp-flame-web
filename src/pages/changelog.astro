@@ -1,0 +1,50 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Changelog and Release Status"
+  description="Follow documented WP Flame pre-release product, commercial, evidence, and release-status changes without implying a public general-availability release."
+  eyebrow="Changelog"
+  heading="A release history that distinguishes plans, evidence, and shipped artifacts."
+  intro="WP Flame has not reached public v1. This log records documented project-level changes and the release discipline intended for future immutable builds. It is not a substitute for versioned plugin release notes."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>No general-availability release</strong><p>The current source metadata and historical tag do not yet form a synchronized, immutable public release. Public artifacts must come from a clean tagged commit with complete gates and a published checksum.</p></div></div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="updates-title">
+    <div class="content-section-header"><p class="content-eyebrow">Documented project updates</p><h2 id="updates-title">Pre-release record</h2></div>
+    <article class="content-card content-card--accent" style="margin-bottom:20px;">
+      <p class="content-kicker">10 July 2026 · Product and commercial handoff</p>
+      <h3>Public-v1 roadmap and commercial strategy aligned</h3>
+      <ul><li>Positioned WP Flame as a WordPress-native performance monitoring and diagnosis product.</li><li>Established the measurement contract, capability-aware trace direction, and M0–M8 release sequence.</li><li>Selected paid design partners as the current route to market.</li><li>Made Community/Pro boundaries and pricing explicit hypotheses rather than public commitments.</li><li>Required benchmark, compatibility, privacy, limitations, support, refund, and case-study evidence before public v1.</li></ul>
+    </article>
+    <article class="content-card" style="margin-bottom:20px;">
+      <p class="content-kicker">Pre-release baseline · 10 July 2026</p>
+      <h3>Existing architecture documented; release gaps preserved</h3>
+      <p>The roadmap records existing collector, span, trace, instrumentor, storage, scoring, insight, admin, settings, privacy, CLI, and release-build patterns. It also records unresolved integration, audit, compatibility, versioning, and dirty-worktree conditions. Existing code is not treated as validated public capability.</p>
+    </article>
+    <article class="content-card">
+      <p class="content-kicker">Earlier prototype phase · March 2026</p>
+      <h3>Marketing-site prototype assembled</h3>
+      <p>The initial Astro site established the visual brand, campaign landing pages, sample flame-graph presentation, comparison and pricing prototypes, and placeholder launch infrastructure. The July product strategy supersedes unsupported feature, price, proof, and compatibility claims from that prototype.</p>
+    </article>
+  </section>
+
+  <section class="content-section" aria-labelledby="future-title">
+    <div class="content-section-header"><p class="content-eyebrow">Future release-note contract</p><h2 id="future-title">Every public version should be auditable.</h2></div>
+    <div class="content-grid content-grid--3">
+      <article class="content-card"><h3>Version identity</h3><p>Synchronize plugin header, constants, mu-plugin version, schema version, stable tag, changelog, and archive name.</p></article>
+      <article class="content-card"><h3>Evidence and limitations</h3><p>Link benchmark, compatibility, privacy, known-limitations, support, and migration behavior relevant to the release.</p></article>
+      <article class="content-card"><h3>Immutable artifact</h3><p>Build from a clean tag, validate exact package contents, publish a SHA-256 checksum, and retain provenance.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="template-title">
+    <div class="content-section-header"><p class="content-eyebrow">Release entry template</p><h2 id="template-title">What a real release note must contain</h2></div>
+    <div class="content-table-wrap"><table class="content-table"><caption>Required release-note fields</caption><thead><tr><th scope="col">Field</th><th scope="col">Purpose</th></tr></thead><tbody><tr><th scope="row">Version and date</th><td>Identify the immutable artifact and when it became available.</td></tr><tr><th scope="row">Status</th><td>Alpha, design-partner RC, Community, Pro, or another explicit channel.</td></tr><tr><th scope="row">Added / changed / fixed</th><td>Describe observable behavior without translating roadmap work into unsupported claims.</td></tr><tr><th scope="row">Migration and rollback</th><td>Explain schema, upgrade, downgrade-compatible reads, deactivation, and uninstall impact.</td></tr><tr><th scope="row">Known limitations</th><td>State degraded environments, capability gaps, and unresolved accepted risks.</td></tr><tr><th scope="row">Evidence</th><td>Link tests, benchmarks, compatibility rows, security review, checksum, and provenance.</td></tr></tbody></table></div>
+  </section>
+
+  <section class="content-section content-section--narrow"><div class="content-link-list"><a href="/product/">Current product contract</a><a href="/benchmarks/">Benchmark evidence status</a><a href="/compatibility/">Compatibility evidence status</a><a href="/support/">Support and disclosure</a></div></section>
+</Content>

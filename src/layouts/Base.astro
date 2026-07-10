@@ -1,75 +1,142 @@
 ---
+import '../styles/global.css';
+import CommercialAnalytics from '../components/CommercialAnalytics.astro';
+
+type JsonLd = Record<string, unknown> | Record<string, unknown>[];
+
 interface Props {
   title: string;
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
   noindex?: boolean;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: JsonLd;
 }
 
 const {
   title,
-  description = "Free WordPress APM with interactive flame graphs. AI-powered insights tell you exactly what to fix. Zero dependencies. Self-hosted.",
+  description = 'Capture a bounded WordPress workflow, find its largest supported measured contributors, and verify whether the next change improved it.',
   canonical,
-  ogImage = "/og-default.png",
+  ogImage = '/og-default.png',
+  ogImageAlt = 'WP Flame — measured evidence for slow WordPress workflows',
+  ogType = 'website',
   noindex = false,
   jsonLd,
 } = Astro.props;
 
-const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = Astro.site ?? new URL('https://wpflame.com');
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, siteUrl).href;
+const ogImageUrl = new URL(ogImage, siteUrl).href;
+const robots = noindex
+  ? 'noindex, follow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
 const orgSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "WP Flame",
-  "url": "https://wpflame.com",
-  "logo": "https://wpflame.com/wp-flame-icon-color.svg",
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'WP Flame',
+  url: new URL('/', siteUrl).href,
+  logo: new URL('/wp-flame-icon-color.svg', siteUrl).href,
 };
+
+const serialiseJsonLd = (value: JsonLd | Record<string, unknown>) =>
+  JSON.stringify(value).replace(/</g, '\\u003c');
 ---
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0E0D12">
-  <title>{title}</title>
-  <meta name="description" content={description}>
-  {noindex && <meta name="robots" content="noindex, follow">}
-  <link rel="canonical" href={canonicalUrl}>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0E0D12">
+    <meta name="color-scheme" content="dark">
+    <meta name="robots" content={robots}>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={title}>
-  <meta property="og:description" content={description}>
-  <meta property="og:image" content={ogImage}>
-  <meta property="og:type" content="website">
-  <meta property="og:url" content={canonicalUrl}>
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@wpflame">
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <link rel="canonical" href={canonicalUrl}>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <!-- Social previews -->
+    <meta property="og:site_name" content="WP Flame">
+    <meta property="og:type" content={ogType}>
+    <meta property="og:locale" content="en_AU">
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={canonicalUrl}>
+    <meta property="og:image" content={ogImageUrl}>
+    <meta property="og:image:alt" content={ogImageAlt}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={ogImageUrl}>
+    <meta name="twitter:image:alt" content={ogImageAlt}>
 
-  <!-- Structured Data -->
-  <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-</head>
-<body>
-  <slot />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    >
 
-  <script>
-    // Scroll reveal
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-  </script>
-</body>
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Structured data -->
+    <script type="application/ld+json" set:html={serialiseJsonLd(orgSchema)} />
+    {jsonLd && <script type="application/ld+json" set:html={serialiseJsonLd(jsonLd)} />}
+  </head>
+  <body>
+    <slot />
+    <CommercialAnalytics />
+
+    <script>
+      const revealElements = Array.from(
+        document.querySelectorAll<HTMLElement>('.reveal'),
+      );
+      const reduceMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+
+      if (
+        reduceMotion ||
+        revealElements.length === 0 ||
+        !('IntersectionObserver' in window)
+      ) {
+        revealElements.forEach((element) => element.classList.add('visible'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            });
+          },
+          { threshold: 0.08, rootMargin: '0px 0px -32px 0px' },
+        );
+
+        revealElements.forEach((element) => {
+          const bounds = element.getBoundingClientRect();
+
+          // Keep immediately visible content visible; progressively enhance only
+          // content that has not entered the viewport yet.
+          if (bounds.top <= window.innerHeight * 0.96) {
+            element.classList.add('visible');
+            return;
+          }
+
+          element.classList.add('reveal-ready');
+          observer.observe(element);
+        });
+      }
+    </script>
+  </body>
 </html>

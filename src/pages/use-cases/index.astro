@@ -1,0 +1,39 @@
+---
+import Content from '../../layouts/Content.astro';
+import { useCases } from '../../data/useCases';
+---
+
+<Content
+  title="WordPress Performance Diagnosis Use Cases — WP Flame"
+  description="Explore bounded, capability-aware workflows for diagnosing dynamic WordPress requests during the WP Flame design-partner programme."
+  eyebrow="Use cases"
+  heading="Begin with the slow workflow, not a generic score."
+  intro="WP Flame is being built for dynamic WordPress work: checkout, wp-admin, APIs, background jobs, regressions, and evidence that can be handed to a developer or client."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-callout">
+      <p>
+        <strong>Current status:</strong> these are design-partner investigation guides. They describe
+        the intended public-v1 workflow and do not imply that every capture capability or report is
+        release-ready.
+      </p>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="use-case-list-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Choose a workflow</p>
+      <h2 id="use-case-list-title">One request population at a time.</h2>
+      <p>Each guide includes a controlled capture plan, useful evidence, explicit limitations, and a handoff checklist.</p>
+    </div>
+    <div class="content-grid content-grid--2">
+      {useCases.map((useCase) => (
+        <article class="content-card">
+          <p class="content-kicker">{useCase.eyebrow.replace('Use case · ', '')}</p>
+          <h3><a href={`/use-cases/${useCase.slug}/`}>{useCase.title}</a></h3>
+          <p>{useCase.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</Content>

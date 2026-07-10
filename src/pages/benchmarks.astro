@@ -1,0 +1,94 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Benchmark Methodology and Evidence Status"
+  description="See the planned accuracy and overhead methodology, publication criteria, and current evidence status for WP Flame public v1."
+  eyebrow="Benchmarks"
+  heading="No performance claim without reproducible evidence."
+  intro="WP Flame has not yet published mode-specific public benchmark results. This page defines the evidence that must exist before overhead, accuracy, scale, or compatibility numbers appear in marketing."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>Current evidence status: methodology defined; public results pending</strong><p>Until representative runs, environment details, sample sizes, results, and limitations are published, the website should not state a fixed overhead number or describe WP Flame as production-safe.</p></div></div>
+  </section>
+
+  <section class="content-section" aria-labelledby="questions-title">
+    <div class="content-section-header"><p class="content-eyebrow">Evidence questions</p><h2 id="questions-title">The benchmark must test measurement and interference.</h2></div>
+    <div class="content-grid content-grid--3">
+      <article class="content-card"><h3>Accuracy</h3><p>Does the trace report known delays and the best-supported WordPress owner within each documented capability boundary?</p></article>
+      <article class="content-card"><h3>Overhead</h3><p>How do sampled-out, Safe, Standard, Deep, persistence, and dashboard paths change wall time, memory, trace size, and response behavior?</p></article>
+      <article class="content-card"><h3>Operational safety</h3><p>Do status, output, storage, retention, dropped spans, and failure behavior remain bounded across representative environments?</p></article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="scenarios-title">
+    <div class="content-section-header"><p class="content-eyebrow">Representative scenarios</p><h2 id="scenarios-title">Test the workflows the product intends to serve.</h2></div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Minimum public-v1 benchmark scenario set</caption>
+        <thead><tr><th scope="col">Scenario</th><th scope="col">Why it matters</th><th scope="col">Evidence required</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Vanilla WordPress</th><td>Establishes a small, controlled baseline.</td><td>Disabled, sampled-out, Safe, Standard, Deep, and persistence deltas.</td></tr>
+          <tr><th scope="row">WooCommerce</th><td>Exercises frontend, checkout, admin, sessions, queries, and supported HTTP paths.</td><td>Separate workflow results; no general store-wide conclusion.</td></tr>
+          <tr><th scope="row">Elementor</th><td>Exercises a complex page-builder environment used in the intended market.</td><td>Capability report and known ownership fixtures.</td></tr>
+          <tr><th scope="row">REST and AJAX</th><td>Validates normalized dynamic operations beyond normal frontend pages.</td><td>Route/action identity and response equivalence.</td></tr>
+          <tr><th scope="row">Cron or Action Scheduler</th><td>Exercises bounded background work and long-running paths.</td><td>Job identity, capture expiry, storage and truncation behavior.</td></tr>
+          <tr><th scope="row">100 queries</th><td>Tests compatible query capture and aggregation.</td><td>Known query count, measured overhead, trace bytes, and attribution limits.</td></tr>
+          <tr><th scope="row">2,000 spans / maximum trace</th><td>Tests graph navigation, limits, dropped data, storage, and rendering.</td><td>Bounded behavior, disclosure, and browser rendering results.</td></tr>
+          <tr><th scope="row">WPGraphQL</th><td>Only relevant if public operation/resolver support is claimed.</td><td>Current end-to-end fixtures or explicit removal from advertised scope.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="method-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">Run method</p>
+        <h2 id="method-title">How results should be produced</h2>
+        <ul>
+          <li>Document environment, WordPress, PHP, database, plugin, theme, and WP Flame versions.</li>
+          <li>Warm the environment using a published, repeatable procedure.</li>
+          <li>Use at least 100 measured runs per representative scenario unless methodology justifies more.</li>
+          <li>Randomize or alternate conditions to reduce time-order bias where practical.</li>
+          <li>Record failures, outliers, dropped/truncated spans, and output/status differences.</li>
+          <li>Publish fixtures and scripts needed to reproduce the claim where licensing permits.</li>
+        </ul>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">Reported metrics</p>
+        <h2>What each result must show</h2>
+        <ul>
+          <li>p50 and p95 wall-time delta, not a single best run.</li>
+          <li>CPU only where the environment actually measures CPU.</li>
+          <li>Peak-memory delta, trace bytes, and database growth.</li>
+          <li>Sample size, time window, warm-up, and comparison basis.</li>
+          <li>Response body/status equivalence and observed interference.</li>
+          <li>Limitations and the exact claim the evidence supports.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="register-title">
+    <div class="content-section-header"><p class="content-eyebrow">Public evidence register</p><h2 id="register-title">No gate is implied complete.</h2></div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Current publication status</caption>
+        <thead><tr><th scope="col">Evidence</th><th scope="col">Current public status</th><th scope="col">Required before claim</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Mode-specific overhead</th><td>Not published</td><td>Dated methodology, representative environments, samples, results, and limitations.</td></tr>
+          <tr><th scope="row">Accuracy comparison</th><td>Not published</td><td>Known fixtures and careful comparison with independent tools.</td></tr>
+          <tr><th scope="row">Compatibility matrix</th><td>Not published</td><td>Expected, degraded, and unavailable capabilities per tested row.</td></tr>
+          <tr><th scope="row">Scale limits</th><td>Not published</td><td>Maximum trace, storage, retention, pruning, and rendering evidence.</td></tr>
+          <tr><th scope="row">Case studies</th><td>Not published</td><td>Separate permission and compatible before/after evidence for each case.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow">
+    <div class="content-link-list"><a href="/compatibility/">Compatibility methodology</a><a href="/product/">Product measurement boundaries</a><a href="/changelog/">Release evidence history</a><a href="/design-partner/">Join the evidence programme</a></div>
+  </section>
+</Content>

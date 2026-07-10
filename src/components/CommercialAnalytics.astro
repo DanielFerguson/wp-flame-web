@@ -1,0 +1,132 @@
+---
+const endpoint = import.meta.env.PUBLIC_COMMERCIAL_EVENTS_ENDPOINT?.trim() ?? '';
+---
+
+{endpoint && (
+  <div class="analytics-consent" data-commercial-analytics data-endpoint={endpoint} hidden>
+    <div>
+      <strong>Help improve the WP Flame launch journey?</strong>
+      <p>
+        With your permission, this site can send anonymous page and CTA events to
+        WP Flame. It does not send form answers or trace data.
+      </p>
+      <a href="/privacy/#website-analytics">Read the analytics details</a>
+    </div>
+    <div class="analytics-actions">
+      <button type="button" class="analytics-allow">Allow anonymous analytics</button>
+      <button type="button" class="analytics-decline">No thanks</button>
+    </div>
+  </div>
+)}
+
+<script define:vars={{ endpoint }}>
+  if (endpoint) {
+    const consentKey = 'wpflame-commercial-analytics-consent';
+    const panel = document.querySelector('[data-commercial-analytics]');
+    const allowButton = panel?.querySelector('.analytics-allow');
+    const declineButton = panel?.querySelector('.analytics-decline');
+    const dnt = navigator.doNotTrack === '1' || window.doNotTrack === '1';
+
+    const campaign = Object.fromEntries(
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+        .map((key) => [key, new URLSearchParams(location.search).get(key)])
+        .filter(([, value]) => Boolean(value)),
+    );
+
+    const sendEvent = (eventName, properties = {}) => {
+      if (dnt || localStorage.getItem(consentKey) !== 'granted') return;
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({
+          event: eventName,
+          path: location.pathname,
+          campaign,
+          occurred_at: new Date().toISOString(),
+          ...properties,
+        }),
+      }).catch(() => {
+        // Analytics must never interrupt the product-site experience.
+      });
+    };
+
+    const hidePanel = () => {
+      if (panel) panel.hidden = true;
+    };
+
+    const showPanel = () => {
+      if (panel && !dnt) panel.hidden = false;
+    };
+
+    if (!dnt && !localStorage.getItem(consentKey)) showPanel();
+
+    allowButton?.addEventListener('click', () => {
+      localStorage.setItem(consentKey, 'granted');
+      hidePanel();
+      sendEvent('page_view', { consented_on_event: true });
+    });
+
+    declineButton?.addEventListener('click', () => {
+      localStorage.setItem(consentKey, 'declined');
+      hidePanel();
+    });
+
+    document.querySelectorAll('[data-analytics-choices]').forEach((button) => {
+      button.addEventListener('click', showPanel);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element
+        ? event.target.closest('[data-analytics-event]')
+        : null;
+      if (!(target instanceof HTMLElement)) return;
+
+      sendEvent(target.dataset.analyticsEvent || 'cta_clicked', {
+        destination: target instanceof HTMLAnchorElement ? target.pathname : undefined,
+        placement: target.dataset.analyticsPlacement,
+      });
+    });
+
+    window.addEventListener('wpflame:commercial-event', (event) => {
+      const detail = event instanceof CustomEvent ? event.detail : null;
+      if (!detail?.event) return;
+      sendEvent(detail.event, detail.properties ?? {});
+    });
+
+    if (!dnt && localStorage.getItem(consentKey) === 'granted') {
+      sendEvent('page_view');
+    }
+  }
+</script>
+
+<style>
+  .analytics-consent {
+    position: fixed;
+    z-index: 500;
+    inset: auto 18px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+    width: min(900px, calc(100% - 36px));
+    margin-inline: auto;
+    padding: 20px 22px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 14px;
+    background: rgba(24,23,28,.98);
+    box-shadow: 0 24px 70px rgba(0,0,0,.5);
+  }
+  .analytics-consent strong { color: white; font-size: 14px; }
+  .analytics-consent p { color: var(--carbon-200); font-size: 12px; line-height: 1.5; margin-top: 3px; }
+  .analytics-consent a { color: var(--flame-300); font-size: 11px; }
+  .analytics-actions { display: flex; gap: 9px; flex: 0 0 auto; }
+  .analytics-actions button { min-height: 42px; border-radius: 8px; padding: 9px 13px; cursor: pointer; font-weight: 700; font-size: 12px; }
+  .analytics-allow { border: 1px solid var(--flame-300); background: var(--flame-400); color: var(--carbon-900); }
+  .analytics-decline { border: 1px solid rgba(255,255,255,.14); background: transparent; color: white; }
+  @media (max-width: 720px) {
+    .analytics-consent { align-items: stretch; flex-direction: column; gap: 16px; }
+    .analytics-actions { flex-direction: column; }
+  }
+</style>

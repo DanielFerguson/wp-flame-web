@@ -3,219 +3,383 @@ interface Props {
   cta?: string;
   ctaHref?: string;
 }
-const { cta = "Get started free", ctaHref = "#download" } = Astro.props;
+
+const { cta = 'Design partner', ctaHref = '/design-partner/' } = Astro.props;
+const pathname = Astro.url.pathname;
+
+const navigation = [
+  { label: 'Product', href: '/product/' },
+  { label: 'Sample trace', href: '/sample-trace/' },
+  { label: 'Use cases', href: '/use-cases/' },
+  { label: 'Docs', href: '/docs/quickstart/' },
+  { label: 'Compatibility', href: '/compatibility/' },
+];
+
+const isCurrent = (href: string) => {
+  if (href === '/') return pathname === href;
+
+  const section = href.split('/').filter(Boolean)[0];
+  return pathname === href || pathname.startsWith(`/${section}/`);
+};
 ---
 
-<nav class="nav">
-  <a href="/" class="nav-logo">
-    <svg viewBox="0 0 56 62" fill="none" width="28" height="28"
-      ><rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"
-      ></rect><rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"
-      ></rect><rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"
-      ></rect><rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"
-      ></rect></svg
-    >
+<a class="skip-link" href="#site-content-start">Skip to main content</a>
+
+<nav class="nav" aria-label="Primary navigation">
+  <a href="/" class="nav-logo" aria-label="WP Flame home">
+    <svg viewBox="0 0 56 62" fill="none" width="28" height="31" aria-hidden="true">
+      <rect x="0" y="48" width="56" height="11" rx="3.5" fill="#FF9632"></rect>
+      <rect x="5" y="35" width="46" height="11" rx="3.5" fill="#F07A18"></rect>
+      <rect x="10" y="22" width="36" height="11" rx="3.5" fill="#E84D30"></rect>
+      <rect x="16" y="9" width="24" height="11" rx="3.5" fill="#C23520"></rect>
+    </svg>
     <span>WP <em>Flame</em></span>
   </a>
+
   <div class="nav-links">
-    <a href="/#features">Features</a>
-    <a href="/#pricing">Pricing</a>
-    <a href="/#compare">Compare</a>
-    <a href={ctaHref} class="nav-cta">{cta}</a>
+    {navigation.map((item) => (
+      <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))}
+    <a
+      href={ctaHref}
+      class="nav-cta"
+      aria-current={isCurrent(ctaHref) ? 'page' : undefined}
+    >
+      {cta}
+    </a>
   </div>
-  <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+
+  <button
+    class="nav-hamburger"
+    id="site-nav-toggle"
+    type="button"
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="site-nav-menu"
+  >
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
 </nav>
 
-<div class="nav-mobile-panel">
-  <a href="/#features">Features</a>
-  <a href="/#pricing">Pricing</a>
-  <a href="/#compare">Compare</a>
-  <a href={ctaHref} class="nav-mobile-cta">{cta}</a>
+<div class="nav-mobile-panel" id="site-nav-menu" hidden>
+  <div class="nav-mobile-inner">
+    {navigation.map((item) => (
+      <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))}
+    <a
+      href={ctaHref}
+      class="nav-mobile-cta"
+      aria-current={isCurrent(ctaHref) ? 'page' : undefined}
+    >
+      {cta}
+    </a>
+  </div>
 </div>
+
+<!-- A static target keeps skip navigation useful even when JavaScript fails. -->
+<span id="site-content-start" class="skip-target" tabindex="-1"></span>
 
 <style>
   .nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    inset: 0 0 auto;
     z-index: 100;
-    padding: 16px 40px;
+    min-height: 68px;
+    padding: 14px clamp(20px, 3vw, 40px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(14, 13, 18, 0.8);
+    gap: 28px;
+    background: rgba(14, 13, 18, 0.82);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    transition: background 0.3s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
   }
+
+  .nav.scrolled,
+  .nav.menu-open {
+    background: rgba(14, 13, 18, 0.97);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    flex: 0 0 auto;
+    gap: 11px;
+    min-height: 44px;
+    color: white;
     text-decoration: none;
   }
+
   .nav-logo span {
-    font-weight: 700;
     font-size: 17px;
-    color: white;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
-  .nav-logo span em {
-    font-style: normal;
+
+  .nav-logo em {
     color: var(--flame-400);
+    font-style: normal;
   }
+
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 32px;
+    justify-content: flex-end;
+    gap: clamp(16px, 2vw, 28px);
   }
+
   .nav-links a {
+    position: relative;
+    padding: 9px 0;
+    color: var(--carbon-300);
     font-size: 14px;
     font-weight: 500;
-    color: var(--carbon-300);
+    line-height: 1.2;
     text-decoration: none;
-    transition: color 0.2s;
+    white-space: nowrap;
+    transition: color 0.2s ease;
   }
-  .nav-links a:hover {
+
+  .nav-links a:not(.nav-cta)::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 2px;
+    height: 1px;
+    background: var(--flame-400);
+    opacity: 0;
+    transform: scaleX(0.7);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current='page'] {
     color: white;
   }
-  .nav-cta {
-    background: var(--flame-500);
-    color: white !important;
-    padding: 9px 22px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
+
+  .nav-links a[aria-current='page']::after,
+  .nav-links a:not(.nav-cta):hover::after {
+    opacity: 1;
+    transform: scaleX(1);
   }
-  .nav-cta:hover {
+
+  .nav-links .nav-cta {
+    min-height: 42px;
+    padding: 11px 18px;
+    border: 1px solid var(--flame-300);
+    border-radius: 9px;
     background: var(--flame-400);
+    color: var(--carbon-900);
+    font-weight: 700;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .nav-links .nav-cta:hover,
+  .nav-links .nav-cta[aria-current='page'] {
+    border-color: var(--flame-200);
+    background: var(--flame-300);
+    color: var(--carbon-900);
     transform: translateY(-1px);
   }
 
-  /* Hamburger - hidden on desktop */
   .nav-hamburger {
     display: none;
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    flex: 0 0 auto;
     flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
     cursor: pointer;
-    padding: 8px;
-    z-index: 101;
   }
+
   .hamburger-line {
     display: block;
     width: 20px;
     height: 2px;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 1px;
-    transition: transform 0.3s, opacity 0.3s;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
-  /* Hamburger → X animation */
   .nav-hamburger.open .hamburger-line:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+    transform: translateY(7px) rotate(45deg);
   }
+
   .nav-hamburger.open .hamburger-line:nth-child(2) {
     opacity: 0;
   }
+
   .nav-hamburger.open .hamburger-line:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
+    transform: translateY(-7px) rotate(-45deg);
   }
 
-  /* Mobile panel - hidden by default */
   .nav-mobile-panel {
     position: fixed;
-    top: 57px;
-    left: 0;
-    right: 0;
+    inset: 68px 0 auto;
     z-index: 99;
-    background: rgba(14, 13, 18, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    display: none;
-    flex-direction: column;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  .nav-mobile-panel.open {
-    max-height: 300px;
-  }
-  .nav-mobile-panel a {
-    padding: 16px 20px;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--carbon-300);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    transition: color 0.2s;
-  }
-  .nav-mobile-panel a:hover {
-    color: white;
-  }
-  .nav-mobile-cta {
-    background: var(--flame-500) !important;
-    color: white !important;
-    margin: 12px 20px;
-    padding: 12px 20px !important;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 600 !important;
-    border-bottom: none !important;
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(14, 13, 18, 0.985);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
   }
 
-  @media (max-width: 900px) {
-    .nav {
-      padding: 14px 20px;
-    }
+  .nav-mobile-inner {
+    display: flex;
+    flex-direction: column;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 10px 16px 22px;
+  }
+
+  .nav-mobile-panel a {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+    padding: 13px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--carbon-200);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .nav-mobile-panel a:hover,
+  .nav-mobile-panel a[aria-current='page'] {
+    color: white;
+  }
+
+  .nav-mobile-panel a[aria-current='page']::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: var(--flame-400);
+  }
+
+  .nav-mobile-panel .nav-mobile-cta {
+    justify-content: center;
+    min-height: 48px;
+    margin-top: 14px;
+    padding: 12px 20px;
+    border: 1px solid var(--flame-300);
+    border-radius: 9px;
+    background: var(--flame-400);
+    color: var(--carbon-900);
+    font-weight: 700;
+  }
+
+  .nav-mobile-panel .nav-mobile-cta:hover,
+  .nav-mobile-panel .nav-mobile-cta[aria-current='page'] {
+    background: var(--flame-300);
+    color: var(--carbon-900);
+  }
+
+  @media (max-width: 1080px) {
     .nav-links {
       display: none;
     }
+
     .nav-hamburger {
       display: flex;
     }
-    .nav-mobile-panel {
-      display: flex;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav,
+    .nav-links a,
+    .nav-links a::after,
+    .nav-cta,
+    .hamburger-line {
+      transition: none;
     }
   }
 </style>
 
 <script>
-  // Scroll effect
-  window.addEventListener("scroll", () => {
-    const nav = document.querySelector(".nav") as HTMLElement;
-    if (nav)
-      nav.style.background =
-        window.scrollY > 80 ? "rgba(14,13,18,0.95)" : "rgba(14,13,18,0.8)";
-  });
+  const navigation = document.querySelector<HTMLElement>('.nav');
+  const toggle = document.querySelector<HTMLButtonElement>('#site-nav-toggle');
+  const panel = document.querySelector<HTMLElement>('#site-nav-menu');
 
-  // Mobile menu toggle
-  const hamburger = document.querySelector(".nav-hamburger");
-  const panel = document.querySelector(".nav-mobile-panel");
+  if (navigation && toggle && panel) {
+    const setScrolledState = () => {
+      navigation.classList.toggle('scrolled', window.scrollY > 48);
+    };
 
-  if (hamburger && panel) {
-    hamburger.addEventListener("click", () => {
-      const isOpen = hamburger.classList.toggle("open");
-      panel.classList.toggle("open");
-      hamburger.setAttribute("aria-expanded", String(isOpen));
+    const closeMenu = (restoreFocus = false) => {
+      if (panel.hidden) return;
+
+      panel.hidden = true;
+      toggle.classList.remove('open');
+      navigation.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open navigation menu');
+      document.documentElement.classList.remove('nav-open');
+
+      if (restoreFocus) toggle.focus();
+    };
+
+    const openMenu = () => {
+      panel.hidden = false;
+      toggle.classList.add('open');
+      navigation.classList.add('menu-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close navigation menu');
+      document.documentElement.classList.add('nav-open');
+
+      window.requestAnimationFrame(() => {
+        panel.querySelector<HTMLAnchorElement>('a')?.focus();
+      });
+    };
+
+    setScrolledState();
+    window.addEventListener('scroll', setScrolledState, { passive: true });
+
+    toggle.addEventListener('click', () => {
+      if (panel.hidden) openMenu();
+      else closeMenu(true);
     });
 
-    // Close panel when a link is clicked
-    panel.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        hamburger.classList.remove("open");
-        panel.classList.remove("open");
-        hamburger.setAttribute("aria-expanded", "false");
-      });
+    panel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => closeMenu(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) closeMenu(true);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (
+        panel.hidden ||
+        !(event.target instanceof Node) ||
+        navigation.contains(event.target) ||
+        panel.contains(event.target)
+      ) {
+        return;
+      }
+
+      closeMenu(false);
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1080) closeMenu(false);
     });
   }
 </script>

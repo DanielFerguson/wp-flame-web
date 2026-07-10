@@ -1,149 +1,607 @@
 ---
 interface Props {
   variant?: "default" | "woocommerce" | "elementor" | "agency";
+  /** Kept for backwards compatibility. This now controls only a supplied legacy insights slot. */
   showAi?: boolean;
 }
-const { variant = "default", showAi = true } = Astro.props;
 
-// Configure demo data per variant
-const configs = {
+type Variant = NonNullable<Props["variant"]>;
+type SpanType = "php" | "core" | "plugin" | "theme" | "db" | "ext";
+
+interface TraceSpan {
+  id: string;
+  name: string;
+  type: SpanType;
+  depth: number;
+  start: number;
+  duration: number;
+  owner: string;
+  capability: string;
+  evidence: string;
+  nextAction: string;
+}
+
+interface TraceConfig {
+  route: string;
+  requestType: string;
+  method: string;
+  status: number;
+  observedDuration: number;
+  dbTime: number;
+  dbSpans: number;
+  httpTime: number;
+  httpSpans: number;
+  opportunityId: string;
+  verification: {
+    baseline: number;
+    after: number;
+    baselineSamples: number;
+    afterSamples: number;
+  };
+  spans: TraceSpan[];
+}
+
+const span = (
+  id: string,
+  name: string,
+  type: SpanType,
+  depth: number,
+  start: number,
+  duration: number,
+  owner: string,
+  capability: string,
+  evidence: string,
+  nextAction: string,
+): TraceSpan => ({
+  id,
+  name,
+  type,
+  depth,
+  start,
+  duration,
+  owner,
+  capability,
+  evidence,
+  nextAction,
+});
+
+const configs: Record<Variant, TraceConfig> = {
   default: {
-    url: "/sample-page/",
-    time: 847,
-    queries: 47,
-    plugins: 18,
-    memory: 42,
+    route: "/sample-page/",
+    requestType: "Frontend",
+    method: "GET",
+    status: 200,
+    observedDuration: 847,
+    dbTime: 56,
+    dbSpans: 2,
+    httpTime: 72,
+    httpSpans: 2,
+    opportunityId: "content-render",
+    verification: {
+      baseline: 847,
+      after: 668,
+      baselineSamples: 24,
+      afterSamples: 24,
+    },
+    spans: [
+      span("request", "Observed request", "php", 0, 0, 847, "WordPress runtime", "Early lifecycle", "847ms observed from the earliest WP Flame bootstrap available in this fixture.", "Inspect supported child spans; do not treat unobserved server time as zero."),
+      span("bootstrap", "WordPress bootstrap", "core", 1, 0, 180, "WordPress core", "Early lifecycle", "180ms is attributed to supported bootstrap lifecycle spans.", "Compare a compatible capture after checking autoloaded options and bootstrap ownership."),
+      span("plugin-lifecycle", "Plugin lifecycle", "core", 1, 180, 220, "WordPress lifecycle", "Early lifecycle", "220ms falls within the supported plugin-loading lifecycle window.", "Open attributed child spans before deciding which component to investigate."),
+      span("query-phase", "Main query phase", "core", 1, 400, 80, "WordPress core", "Database", "The supported request phase contributes 80ms of observed time.", "Inspect the recorded query fingerprints and callers where available."),
+      span("template", "Template rendering", "theme", 1, 480, 310, "Active theme", "Early lifecycle", "310ms is measured inside the supported template-rendering lifecycle span.", "Use a one-shot Deep trace if supported callback detail is needed."),
+      span("shutdown", "Shutdown", "core", 1, 790, 57, "WordPress core", "Early lifecycle", "57ms is observed before WP Flame persistence begins.", "Inspect child HTTP or callback evidence before changing shutdown behavior."),
+      span("plugin-load", "Load active plugins", "core", 2, 95, 85, "WordPress core", "Early lifecycle", "85ms is measured while WordPress loads the active plugin set.", "Use source attribution to narrow the measured owner before disabling anything."),
+      span("commerce-init", "Commerce plugin init", "plugin", 2, 180, 95, "Commerce plugin", "Early lifecycle", "95ms is attributed to a supported plugin lifecycle span in this fixture.", "Reproduce the same route with a one-shot Deep trace for supported callback detail."),
+      span("seo-init", "SEO plugin init", "plugin", 2, 275, 45, "SEO plugin", "Early lifecycle", "45ms is attributed to a supported plugin lifecycle span.", "Compare against the same route and capability set after any configuration change."),
+      span("builder-init", "Page builder init", "plugin", 2, 320, 55, "Page builder", "Early lifecycle", "55ms is attributed to the page-builder lifecycle span.", "Check whether the component is required on this route before testing a scoped change."),
+      span("main-query", "Recorded main query", "db", 2, 400, 38, "WordPress core", "Database", "A supported database span contributes 38ms; its normalized fingerprint is available in a real trace.", "Inspect the fingerprint and caller, then test an index or query change in staging."),
+      span("header", "Header template", "theme", 2, 480, 85, "Active theme", "Early lifecycle", "85ms is observed within the supported header template span.", "Inspect child evidence before attributing the whole span to one function."),
+      span("content-render", "Content rendering", "theme", 2, 565, 155, "Active theme / page builder", "Early lifecycle", "155ms, or 18% of observed request time, falls inside this supported span in one illustrative observation.", "Run a one-shot Deep capture to resolve supported callbacks, make one scoped change, then compare compatible cohorts."),
+      span("footer", "Footer template", "theme", 2, 750, 40, "Active theme", "Early lifecycle", "40ms is observed within the supported footer template span.", "Inspect child spans only if this remains material across repeated captures."),
+      span("license-http", "WordPress HTTP request", "ext", 3, 248, 27, "Plugin-owned HTTP call", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 27ms in this fixture.", "Confirm the host, response status and call frequency before changing scheduling or caching."),
+      span("embed-http", "oEmbed HTTP request", "ext", 3, 675, 45, "WordPress oEmbed", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 45ms during content rendering.", "Check cache state and repeat the same workflow before concluding the call is persistent."),
+      span("options-query", "Recorded options query", "db", 3, 12, 18, "WordPress core", "Database", "A supported database span contributes 18ms after DB capture registration.", "Inspect its fingerprint and repetition count across compatible observations."),
+    ],
   },
   woocommerce: {
-    url: "/shop/winter-jacket/",
-    time: 1240,
-    queries: 83,
-    plugins: 22,
-    memory: 68,
+    route: "/shop/winter-jacket/",
+    requestType: "WooCommerce product",
+    method: "GET",
+    status: 200,
+    observedDuration: 1240,
+    dbTime: 190,
+    dbSpans: 4,
+    httpTime: 130,
+    httpSpans: 2,
+    opportunityId: "related-query",
+    verification: {
+      baseline: 1240,
+      after: 982,
+      baselineSamples: 25,
+      afterSamples: 25,
+    },
+    spans: [
+      span("request", "Observed product request", "php", 0, 0, 1240, "WordPress runtime", "Early lifecycle", "1,240ms observed from the earliest WP Flame bootstrap available in this fixture.", "Use child spans to form a testable hypothesis; this is not absolute server request time."),
+      span("bootstrap", "WordPress bootstrap", "core", 1, 0, 180, "WordPress core", "Early lifecycle", "180ms is attributed to supported bootstrap lifecycle spans.", "Review measured child ownership before changing the environment."),
+      span("plugin-lifecycle", "Plugin lifecycle", "core", 1, 180, 340, "WordPress lifecycle", "Early lifecycle", "340ms falls within the supported plugin-loading lifecycle window.", "Use a one-shot Deep capture for supported callback detail."),
+      span("product-query-phase", "Product query phase", "core", 1, 520, 120, "WordPress and WooCommerce", "Database", "120ms is observed around the supported product query phase.", "Inspect recorded query fingerprints and callers where available."),
+      span("product-template", "Product template", "theme", 1, 640, 520, "Storefront theme and plugins", "Early lifecycle", "520ms is measured inside the supported product template lifecycle span.", "Separate child evidence before attributing the whole parent span."),
+      span("shutdown", "Shutdown", "core", 1, 1160, 80, "WordPress core", "Early lifecycle", "80ms is observed before WP Flame persistence begins.", "Inspect supported child HTTP evidence before testing a change."),
+      span("commerce-init", "WooCommerce init", "plugin", 2, 180, 160, "WooCommerce", "Early lifecycle", "160ms is attributed to a supported WooCommerce lifecycle span.", "Capture the same route in one-shot Deep mode if callback detail is required."),
+      span("other-plugins", "Other plugin lifecycle", "plugin", 2, 385, 135, "Attributed plugins", "Early lifecycle", "135ms is spread across supported attributed plugin spans.", "Rank the measured owners before testing one plugin at a time."),
+      span("product-query", "Product data query", "db", 2, 520, 95, "WooCommerce", "Database", "95ms is recorded across supported product-data database spans.", "Inspect normalized fingerprints, repetition and callers before changing indexes."),
+      span("price-calc", "Price calculation", "plugin", 2, 640, 120, "WooCommerce", "Early lifecycle", "120ms is observed within a supported price-calculation span.", "Repeat with equivalent product and customer context before treating it as representative."),
+      span("cart-fragments", "Cart state", "plugin", 2, 760, 85, "WooCommerce", "Early lifecycle", "85ms is observed within the cart-state portion of this request.", "Confirm route necessity and user-state conditions before testing a scoped change."),
+      span("product-images", "Product image template", "theme", 2, 845, 180, "Active theme", "Early lifecycle", "180ms is observed in a supported template span; it does not measure browser image download time.", "Use frontend tooling separately for transfer, rendering and Core Web Vitals."),
+      span("related-products", "Related products", "plugin", 2, 1025, 135, "WooCommerce", "Database", "135ms is observed in the supported related-products operation.", "Open its child database evidence before choosing caching or query changes."),
+      span("license-http", "Extension HTTP request", "ext", 3, 280, 60, "Commerce extension", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 60ms in this fixture.", "Confirm the host, status and frequency across repeated observations before rescheduling it."),
+      span("product-meta", "Product metadata query", "db", 3, 520, 55, "WooCommerce", "Database", "A supported database span contributes 55ms after capture registration.", "Inspect the fingerprint and caller to distinguish a unique slow query from repetition."),
+      span("variations-query", "Variations query", "db", 3, 575, 40, "WooCommerce", "Database", "A supported database span contributes 40ms for this illustrative product.", "Compare equivalent variable products before generalising."),
+      span("related-query", "Related-products query", "db", 3, 1025, 65, "WooCommerce", "Database", "A supported database span contributes 65ms, or 5% of observed request time, in one illustrative observation.", "Inspect the normalized fingerprint and caller, test one staging change, then compare compatible product-route cohorts."),
+      span("gateway-http", "Gateway HTTP request", "ext", 3, 1090, 70, "Payment extension", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 70ms during this product request.", "Confirm whether it repeats and whether product-page execution is intended before changing gateway settings."),
+    ],
   },
   elementor: {
-    url: "/landing-page/",
-    time: 962,
-    queries: 38,
-    plugins: 16,
-    memory: 54,
+    route: "/landing-page/",
+    requestType: "Frontend page builder",
+    method: "GET",
+    status: 200,
+    observedDuration: 962,
+    dbTime: 45,
+    dbSpans: 1,
+    httpTime: 30,
+    httpSpans: 1,
+    opportunityId: "builder-render",
+    verification: {
+      baseline: 962,
+      after: 771,
+      baselineSamples: 24,
+      afterSamples: 24,
+    },
+    spans: [
+      span("request", "Observed landing-page request", "php", 0, 0, 962, "WordPress runtime", "Early lifecycle", "962ms observed from the earliest WP Flame bootstrap available in this fixture.", "Use supported child spans to form a hypothesis rather than treating this as complete PHP profiling."),
+      span("bootstrap", "WordPress bootstrap", "core", 1, 0, 160, "WordPress core", "Early lifecycle", "160ms is attributed to supported bootstrap lifecycle spans.", "Review child ownership only where WP Flame provides supported attribution."),
+      span("plugin-lifecycle", "Plugin lifecycle", "core", 1, 160, 200, "WordPress lifecycle", "Early lifecycle", "200ms falls within the supported plugin lifecycle window.", "Use a one-shot Deep capture for supported callback detail."),
+      span("query-phase", "Main query phase", "core", 1, 360, 80, "WordPress core", "Database", "80ms is observed around the supported main query phase.", "Inspect recorded database evidence rather than assuming all 80ms is SQL."),
+      span("template", "Template rendering", "theme", 1, 440, 460, "Theme and page builder", "Early lifecycle", "460ms is measured inside the supported template-rendering span.", "Separate attributed child evidence before choosing a change."),
+      span("shutdown", "Shutdown", "core", 1, 900, 62, "WordPress core", "Early lifecycle", "62ms is observed before WP Flame persistence begins.", "Investigate only if repeated compatible observations keep it material."),
+      span("builder-init", "Page builder init", "plugin", 2, 160, 110, "Page builder", "Early lifecycle", "110ms is attributed to a supported page-builder lifecycle span.", "Repeat in one-shot Deep mode if supported callback detail is needed."),
+      span("other-plugins", "Other plugin lifecycle", "plugin", 2, 270, 90, "Attributed plugins", "Early lifecycle", "90ms is spread across other supported attributed plugin spans.", "Rank measured owners and test one scoped change at a time."),
+      span("main-query", "Recorded main query", "db", 2, 360, 40, "WordPress core", "Database", "A supported database span contributes 40ms after capture registration.", "Inspect its normalized fingerprint and caller before changing it."),
+      span("builder-render", "Page builder render", "plugin", 2, 440, 340, "Page builder", "Early lifecycle", "340ms, or 35% of observed request time, falls inside this supported span in one illustrative observation.", "Run a one-shot Deep capture to resolve supported callbacks, simplify one component in staging, then compare compatible cohorts."),
+      span("footer", "Footer template", "theme", 2, 780, 120, "Active theme", "Early lifecycle", "120ms is observed within the supported footer template span.", "Inspect measured child ownership before changing theme code."),
+      span("content-data", "Content metadata query", "db", 3, 440, 45, "Page builder", "Database", "A supported database span contributes 45ms; payload size alone is not proof of the cause.", "Inspect fingerprint, caller and repetition before changing storage strategy."),
+      span("content-operation", "Content transform", "php", 3, 485, 55, "Page builder", "Early lifecycle", "55ms is observed in an attributed content operation, not arbitrary function-level PHP profiling.", "Use Deep mode if a supported callback boundary can provide more detail."),
+      span("widget-render", "Widget rendering", "plugin", 3, 540, 180, "Page builder widgets", "Early lifecycle", "180ms is measured across supported attributed widget-rendering spans.", "Identify the largest supported owner before replacing or simplifying a widget."),
+      span("style-generation", "Style generation", "plugin", 3, 720, 60, "Page builder", "Early lifecycle", "60ms is observed in a supported style-generation span.", "Test a documented output-mode change and verify the same route cohort."),
+      span("font-http", "Font metadata HTTP request", "ext", 3, 870, 30, "Theme or page builder", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 30ms in this fixture.", "Confirm the host, status and cache behavior across repeated observations."),
+    ],
   },
   agency: {
-    url: "/client-homepage/",
-    time: 1480,
-    queries: 96,
-    plugins: 24,
-    memory: 78,
+    route: "/client-homepage/",
+    requestType: "Client frontend",
+    method: "GET",
+    status: 200,
+    observedDuration: 1480,
+    dbTime: 180,
+    dbSpans: 4,
+    httpTime: 170,
+    httpSpans: 2,
+    opportunityId: "acf-fields",
+    verification: {
+      baseline: 1480,
+      after: 1112,
+      baselineSamples: 26,
+      afterSamples: 26,
+    },
+    spans: [
+      span("request", "Observed client request", "php", 0, 0, 1480, "WordPress runtime", "Early lifecycle", "1,480ms observed from the earliest WP Flame bootstrap available in this fixture.", "Use this bounded evidence to agree a test, not to promise a cause from one request."),
+      span("bootstrap", "WordPress bootstrap", "core", 1, 0, 200, "WordPress core", "Early lifecycle", "200ms is attributed to supported bootstrap lifecycle spans.", "Review supported child ownership before changing hosting or core configuration."),
+      span("plugin-lifecycle", "Plugin lifecycle", "core", 1, 200, 380, "WordPress lifecycle", "Early lifecycle", "380ms falls within the supported plugin-loading lifecycle window.", "Use one-shot Deep mode to resolve supported callbacks when needed."),
+      span("query-phase", "Main query phase", "core", 1, 580, 140, "WordPress core", "Database", "140ms is observed around the supported main query phase.", "Inspect database child evidence before attributing the whole phase to SQL."),
+      span("template", "Template rendering", "theme", 1, 720, 640, "Theme and plugins", "Early lifecycle", "640ms is measured inside the supported template-rendering lifecycle span.", "Separate child owners and rank measured impact before preparing a client handoff."),
+      span("shutdown", "Shutdown", "core", 1, 1360, 120, "WordPress core", "Early lifecycle", "120ms is observed before WP Flame persistence begins.", "Inspect supported HTTP evidence and confirm repetition across a route cohort."),
+      span("commerce", "Commerce plugin", "plugin", 2, 200, 140, "WooCommerce", "Early lifecycle", "140ms is attributed to a supported commerce-plugin lifecycle span.", "Capture the same workflow in Deep mode if supported callback detail is needed."),
+      span("builder", "Page builder", "plugin", 2, 340, 100, "Page builder", "Early lifecycle", "100ms is attributed to a supported page-builder lifecycle span.", "Compare against the same route after one scoped configuration test."),
+      span("translation", "Translation plugin", "plugin", 2, 440, 60, "Translation plugin", "Early lifecycle", "60ms is attributed to a supported translation-plugin lifecycle span.", "Repeat with equivalent language and cache context before generalising."),
+      span("other-plugins", "Other attributed plugins", "plugin", 2, 500, 80, "Attributed plugins", "Early lifecycle", "80ms is distributed across other supported plugin spans.", "Use owner ranking to avoid a broad disable-and-guess exercise."),
+      span("main-query", "Recorded main query", "db", 2, 580, 80, "WordPress core", "Database", "A supported database span contributes 80ms after capture registration.", "Inspect its fingerprint and caller before changing the database."),
+      span("rewrite", "Translation rewrite", "plugin", 2, 660, 60, "Translation plugin", "Early lifecycle", "60ms is observed in an attributed rewrite span.", "Verify equivalent locale and route context after any change."),
+      span("builder-render", "Page builder render", "plugin", 2, 720, 300, "Page builder", "Early lifecycle", "300ms is observed inside a supported page-builder render span.", "Use Deep mode to narrow supported callbacks, then test one component."),
+      span("cart-widget", "Cart widget", "plugin", 2, 1020, 80, "WooCommerce", "Early lifecycle", "80ms is observed in a supported cart-widget span.", "Confirm whether the widget is required on this route before testing removal."),
+      span("acf-fields", "Custom-field loading", "plugin", 2, 1100, 120, "Custom fields plugin", "Database", "120ms, or 8% of observed request time, is measured across supported custom-field spans in one illustrative observation.", "Inspect query fingerprints and repetition, test a scoped batching or cache change, then compare compatible cohorts."),
+      span("footer", "Footer template", "theme", 2, 1220, 140, "Active theme", "Early lifecycle", "140ms is observed within the supported footer template span.", "Inspect child ownership before assigning work to the theme developer."),
+      span("license-http", "Plugin HTTP requests", "ext", 3, 220, 90, "Attributed plugins", "WordPress HTTP API", "Supported WordPress HTTP API spans contribute 90ms in this fixture.", "Check hosts, statuses and repetition before changing schedules or caches."),
+      span("field-query", "Custom-field queries", "db", 3, 1100, 60, "Custom fields plugin", "Database", "Supported database spans contribute 60ms after capture registration.", "Inspect fingerprints and repetition before recommending batching."),
+      span("analytics-http", "Analytics HTTP request", "ext", 3, 1360, 80, "Analytics plugin", "WordPress HTTP API", "A supported WordPress HTTP API span contributes 80ms during shutdown.", "Confirm whether the call repeats and whether asynchronous handling is supported."),
+    ],
   },
 };
+
+const { variant = "default", showAi = true } = Astro.props;
 const config = configs[variant];
+const selectedSpan = config.spans.find((item) => item.id === config.opportunityId) ?? config.spans[0];
+const maxDepth = Math.max(...config.spans.map((item) => item.depth));
+const rows = Array.from({ length: maxDepth + 1 }, (_, index) => index);
+const timelinePoints = [0, 0.25, 0.5, 0.75, 1];
+const demoId = `flame-demo-${variant}-${Math.random().toString(36).slice(2, 8)}`;
+const detailId = `${demoId}-detail`;
+const pickerId = `${demoId}-picker`;
+const titleId = `${demoId}-title`;
+const opportunityTitleId = `${demoId}-opportunity-title`;
+const hasInsights = Astro.slots.has("insights");
+const verificationReduction = Math.round(
+  ((config.verification.baseline - config.verification.after) / config.verification.baseline) * 100,
+);
+
+const typeLabels: Record<SpanType, string> = {
+  php: "Observed runtime",
+  core: "WordPress lifecycle",
+  plugin: "Plugin",
+  theme: "Theme",
+  db: "Database",
+  ext: "WordPress HTTP API",
+};
+
+const capabilities = [
+  {
+    label: "Early lifecycle",
+    status: "Captured",
+    statusClass: "captured",
+    detail: "Observed from the earliest WP Flame bootstrap represented by this fixture.",
+  },
+  {
+    label: "Database",
+    status: "Captured",
+    statusClass: "captured",
+    detail: "Supported spans after database capture registration; earlier queries are not implied.",
+  },
+  {
+    label: "WordPress HTTP API",
+    status: "Captured",
+    statusClass: "captured",
+    detail: "Supported WordPress HTTP API activity only.",
+  },
+  {
+    label: "Hook callbacks",
+    status: "Not requested",
+    statusClass: "not-requested",
+    detail: "Standard mode does not provide callback-level detail. Use a one-shot Deep capture.",
+  },
+  {
+    label: "Cache counters",
+    status: "Unavailable",
+    statusClass: "unavailable",
+    detail: "Unknown in this fixture; unavailable never means zero.",
+  },
+];
 ---
 
-<div class="demo-window reveal">
-  <div class="demo-toolbar">
-    <div class="demo-dot"></div><div class="demo-dot"></div><div
-      class="demo-dot"
-    >
-    </div>
+<section
+  class="demo-window reveal"
+  data-flame-demo
+  data-variant={variant}
+  aria-labelledby={titleId}
+>
+  <div class="demo-toolbar" aria-hidden="true">
+    <div class="demo-dot"></div>
+    <div class="demo-dot"></div>
+    <div class="demo-dot"></div>
     <div class="demo-url">yoursite.com/wp-admin/tools.php?page=wp-flame</div>
   </div>
-  <div class="demo-body">
-    <div class="demo-header">
-      <div class="demo-title">Request flame graph</div>
-      <div class="demo-req">GET {config.url} &mdash; {config.time}ms</div>
-    </div>
-    <div class="demo-stats">
-      <div class="demo-stat">
-        <div class="demo-stat-label">Total time</div><div class="demo-stat-val">
-          {config.time}<small>ms</small>
-        </div>
-      </div>
-      <div class="demo-stat">
-        <div class="demo-stat-label">DB queries</div><div class="demo-stat-val">
-          {config.queries}
-          <small>(112ms)</small>
-        </div>
-      </div>
-      <div class="demo-stat">
-        <div class="demo-stat-label">Plugins</div><div class="demo-stat-val">
-          {config.plugins}
-          <small>active</small>
-        </div>
-      </div>
-      <div class="demo-stat">
-        <div class="demo-stat-label">Peak memory</div><div
-          class="demo-stat-val"
-        >
-          {config.memory}<small>MB</small>
-        </div>
-      </div>
-    </div>
-    <div class="demo-legend">
-      <div class="demo-legend-item">
-        <div class="demo-legend-dot" style="background:#2D6AA0"></div>Core
-      </div>
-      <div class="demo-legend-item">
-        <div class="demo-legend-dot" style="background:#4E3D8F"></div>Plugins
-      </div>
-      <div class="demo-legend-item">
-        <div class="demo-legend-dot" style="background:#1A6E50"></div>Theme
-      </div>
-      <div class="demo-legend-item">
-        <div class="demo-legend-dot" style="background:#8F3D1E"></div>Database
-      </div>
-      <div class="demo-legend-item">
-        <div class="demo-legend-dot" style="background:#7A5010"></div>External
-        HTTP
-      </div>
-    </div>
-    <div class="flame-timeline" data-total={config.time}></div>
-    <div class="flame-rows" data-variant={variant}></div>
 
-    <div class="flame-tooltip" id="flame-tooltip"></div>
-    <div class="demo-detail-panel" id="demo-detail-panel" style="display:none;">
-      <button class="detail-close" id="detail-close">&times;</button>
-      <div class="detail-content">
-        <div class="detail-name" id="detail-name"></div>
-        <div class="detail-meta">
-          <span id="detail-duration"></span>
-          <span id="detail-percent"></span>
-          <span id="detail-type"></span>
-        </div>
-        <div class="detail-ai" id="detail-ai" style="display:none;"></div>
-      </div>
-    </div>
-
-    {
-      showAi && (
-        <div class="demo-ai">
-          <div class="demo-ai-header">
-            <span class="ai-badge">&#10024; AI insights</span>
-            <span>Recommendations for this trace</span>
-          </div>
-          <slot name="insights" />
-        </div>
-      )
-    }
+  <div class="sample-notice" role="note">
+    <span>Illustrative product preview</span>
+    Bundled example data only — not a live customer trace, benchmark, or promise of
+    identical telemetry on every host.
   </div>
-</div>
+
+  <div class="demo-body">
+    <header class="demo-header">
+      <div>
+        <p class="demo-eyebrow">Bounded request capture</p>
+        <h3 class="demo-title" id={titleId}>Supported measured spans</h3>
+      </div>
+      <div class="demo-req">
+        <span>{config.requestType}</span>
+        <strong>{config.method} {config.route}</strong>
+        <span>HTTP {config.status}</span>
+      </div>
+    </header>
+
+    <div class="capture-context" aria-label="Illustrative capture context">
+      <div class="context-item">
+        <span>Capture mode</span>
+        <strong>Standard</strong>
+        <small>Manual · bounded to 1 request</small>
+      </div>
+      <div class="context-item">
+        <span>Completeness</span>
+        <strong class="partial">Partial</strong>
+        <small>Cache counters unavailable</small>
+      </div>
+      <div class="context-item">
+        <span>Capture start</span>
+        <strong>Early WP bootstrap</strong>
+        <small>Not absolute server start</small>
+      </div>
+      <div class="context-item">
+        <span>Observation</span>
+        <strong>1 sample</strong>
+        <small>Directional, not verified</small>
+      </div>
+    </div>
+
+    <div class="demo-stats" aria-label="Illustrative measured summary">
+      <div class="demo-stat">
+        <span>Observed duration</span>
+        <strong>{config.observedDuration}<small>ms</small></strong>
+      </div>
+      <div class="demo-stat">
+        <span>Recorded DB spans</span>
+        <strong>{config.dbSpans}<small>{config.dbTime}ms</small></strong>
+      </div>
+      <div class="demo-stat">
+        <span>Recorded HTTP spans</span>
+        <strong>{config.httpSpans}<small>{config.httpTime}ms</small></strong>
+      </div>
+      <div class="demo-stat">
+        <span>Dropped spans</span>
+        <strong>0<small>in this fixture</small></strong>
+      </div>
+    </div>
+
+    <details class="capability-panel" open>
+      <summary>Capture capability and completeness</summary>
+      <p class="capability-explainer">
+        Partial means the recorded spans remain useful, while unavailable telemetry stays
+        explicitly unknown. Standard mode is not arbitrary function-level PHP profiling.
+      </p>
+      <div class="capability-grid">
+        {
+          capabilities.map((capability) => (
+            <div class="capability-item">
+              <div>
+                <strong>{capability.label}</strong>
+                <span class={`capability-status ${capability.statusClass}`}>
+                  {capability.status}
+                </span>
+              </div>
+              <p>{capability.detail}</p>
+            </div>
+          ))
+        }
+      </div>
+    </details>
+
+    <section class="graph-section" aria-labelledby={`${demoId}-graph-title`}>
+      <div class="graph-header">
+        <div>
+          <h4 id={`${demoId}-graph-title`}>Observed request timeline</h4>
+          <p>Select any measured span to inspect its evidence and a cautious next action.</p>
+        </div>
+        <div class="span-picker">
+          <label for={pickerId}>Explore a span</label>
+          <select id={pickerId} data-span-picker>
+            {
+              config.spans.map((item) => (
+                <option value={item.id} selected={item.id === selectedSpan.id}>
+                  {item.name} — {item.duration}ms
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="demo-legend" aria-label="Span categories">
+        <span><i class="legend-core"></i>Lifecycle</span>
+        <span><i class="legend-plugin"></i>Plugin</span>
+        <span><i class="legend-theme"></i>Theme</span>
+        <span><i class="legend-db"></i>Database</span>
+        <span><i class="legend-ext"></i>HTTP API</span>
+      </div>
+
+      <p class="scroll-hint">
+        On smaller screens, use the span selector above or swipe the timeline horizontally.
+      </p>
+
+      <div
+        class="graph-scroller"
+        tabindex="0"
+        role="group"
+        aria-label="Scrollable illustrative flame graph. Use the span buttons or the span selector."
+      >
+        <div class="flame-canvas">
+          <div class="flame-timeline" aria-hidden="true">
+            {
+              timelinePoints.map((point) => (
+                <span style={`left:${point * 100}%`}>
+                  {Math.round(config.observedDuration * point)}ms
+                </span>
+              ))
+            }
+          </div>
+
+          <div class="flame-rows">
+            {
+              rows.map((depth) => (
+                <div class="flame-row" aria-label={`Span depth ${depth + 1}`}>
+                  {config.spans
+                    .filter((item) => item.depth === depth)
+                    .map((item) => {
+                      const left = (item.start / config.observedDuration) * 100;
+                      const width = (item.duration / config.observedDuration) * 100;
+                      const percent = Math.round(width);
+                      return (
+                        <button
+                          type="button"
+                          class={`f-block f-${item.type}`}
+                          style={`left:${left}%;width:${width}%`}
+                          data-span-id={item.id}
+                          data-name={item.name}
+                          data-duration={`${item.duration}ms`}
+                          data-percent={`${percent}%`}
+                          data-type={typeLabels[item.type]}
+                          data-owner={item.owner}
+                          data-capability={item.capability}
+                          data-evidence={item.evidence}
+                          data-next-action={item.nextAction}
+                          aria-controls={detailId}
+                          aria-pressed={item.id === selectedSpan.id ? "true" : "false"}
+                          aria-label={`${item.name}, ${item.duration} milliseconds, ${percent} percent of observed request, ${typeLabels[item.type]}. Show evidence.`}
+                          title={`${item.name} — ${item.duration}ms (${percent}% of observed request)`}
+                        >
+                          <span>{item.name}</span>
+                        </button>
+                      );
+                    })}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <aside class="detail-panel" id={detailId} aria-labelledby={`${detailId}-name`}>
+        <div class="detail-heading">
+          <div>
+            <span class="detail-kicker">Selected measured span</span>
+            <h4 id={`${detailId}-name`} data-detail-name>{selectedSpan.name}</h4>
+          </div>
+          <div class="detail-metrics">
+            <span data-detail-duration>{selectedSpan.duration}ms</span>
+            <span data-detail-percent>
+              {Math.round((selectedSpan.duration / config.observedDuration) * 100)}%
+            </span>
+          </div>
+        </div>
+        <dl class="detail-facts">
+          <div>
+            <dt>Measured owner</dt>
+            <dd data-detail-owner>{selectedSpan.owner}</dd>
+          </div>
+          <div>
+            <dt>Span category</dt>
+            <dd data-detail-type>{typeLabels[selectedSpan.type]}</dd>
+          </div>
+          <div>
+            <dt>Required capability</dt>
+            <dd data-detail-capability>{selectedSpan.capability}</dd>
+          </div>
+        </dl>
+        <div class="detail-guidance">
+          <div>
+            <span>Evidence</span>
+            <p data-detail-evidence>{selectedSpan.evidence}</p>
+          </div>
+          <div>
+            <span>Likely next action</span>
+            <p data-detail-action>{selectedSpan.nextAction}</p>
+          </div>
+        </div>
+        <p class="detail-caution">
+          Source attribution identifies the best supported WordPress owner. It is not
+          proof that every internal operation was measured.
+        </p>
+      </aside>
+      <p class="visually-hidden" data-live-status aria-live="polite" aria-atomic="true"></p>
+    </section>
+
+    <section class="opportunities" aria-labelledby={opportunityTitleId}>
+      <header class="opportunities-header">
+        <div>
+          <p class="demo-eyebrow">Evidence before diagnosis</p>
+          <h3 id={opportunityTitleId}>Top measured opportunities</h3>
+        </div>
+        <span>1 illustrative observation · directional</span>
+      </header>
+
+      <article class="primary-opportunity">
+        <div class="opportunity-rank">01</div>
+        <div>
+          <span class="opportunity-owner">{selectedSpan.owner}</span>
+          <h4>{selectedSpan.name}</h4>
+          <p>
+            <strong>{selectedSpan.duration}ms measured</strong> in this supported span,
+            based on one bundled observation. Treat it as a place to investigate, not
+            a confirmed root cause.
+          </p>
+          <div class="opportunity-next">
+            <span>Likely next action</span>
+            <p>{selectedSpan.nextAction}</p>
+          </div>
+        </div>
+      </article>
+
+      {showAi && hasInsights && <div class="provided-insights"><slot name="insights" /></div>}
+    </section>
+
+    <section class="verification" aria-labelledby={`${demoId}-verification-title`}>
+      <header class="verification-header">
+        <div>
+          <p class="demo-eyebrow">Illustrative compatible-cohort example</p>
+          <h3 id={`${demoId}-verification-title`}>Before / after verification</h3>
+        </div>
+        <span>Not a customer result or benchmark</span>
+      </header>
+      <p class="verification-intro">
+        A credible result compares the same normalized route, request type, capture mode,
+        capability set and score version — not one before request against one after request.
+      </p>
+      <div class="verification-bars" aria-label="Illustrative p50 comparison">
+        <div class="verification-row">
+          <div class="verification-label">
+            <span>Baseline p50</span>
+            <strong>{config.verification.baseline}ms</strong>
+            <small>{config.verification.baselineSamples} compatible observations</small>
+          </div>
+          <div class="verification-track" aria-hidden="true">
+            <span class="baseline-bar" style="width:100%"></span>
+          </div>
+        </div>
+        <div class="verification-row">
+          <div class="verification-label">
+            <span>After p50</span>
+            <strong>{config.verification.after}ms</strong>
+            <small>{config.verification.afterSamples} compatible observations</small>
+          </div>
+          <div class="verification-track" aria-hidden="true">
+            <span
+              class="after-bar"
+              style={`width:${(config.verification.after / config.verification.baseline) * 100}%`}
+            ></span>
+          </div>
+        </div>
+      </div>
+      <div class="verification-result">
+        <strong>{verificationReduction}% lower illustrative p50</strong>
+        <span>
+          Example signal only. A real result must disclose distribution, environment
+          changes, capability coverage and uncertainty.
+        </span>
+      </div>
+    </section>
+  </div>
+</section>
 
 <style>
   .demo-window {
     max-width: 1080px;
     margin: 0 auto;
-    background: var(--carbon-800);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    background: var(--carbon-800);
     box-shadow:
       0 40px 120px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.03);
+      0 0 0 1px rgba(255, 255, 255, 0.025);
   }
   .demo-toolbar {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 14px 20px;
+    padding: 13px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.02);
   }
@@ -153,417 +611,775 @@ const config = configs[variant];
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
   }
-  .demo-dot:nth-child(1) {
-    background: rgba(255, 99, 99, 0.5);
-  }
-  .demo-dot:nth-child(2) {
-    background: rgba(255, 200, 60, 0.5);
-  }
-  .demo-dot:nth-child(3) {
-    background: rgba(80, 200, 100, 0.5);
-  }
+  .demo-dot:nth-child(1) { background: rgba(255, 99, 99, 0.5); }
+  .demo-dot:nth-child(2) { background: rgba(255, 200, 60, 0.5); }
+  .demo-dot:nth-child(3) { background: rgba(80, 200, 100, 0.5); }
   .demo-url {
+    min-width: 0;
+    flex: 1;
     margin-left: 12px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    color: var(--carbon-400);
+    overflow: hidden;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.04);
     padding: 5px 14px;
-    border-radius: 6px;
-    flex: 1;
+    color: var(--carbon-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .demo-body {
-    padding: 32px;
+  .sample-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 150, 50, 0.14);
+    background: rgba(255, 150, 50, 0.055);
+    padding: 11px 32px;
+    color: var(--carbon-300);
+    font-size: 12px;
+    line-height: 1.45;
   }
+  .sample-notice span {
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 150, 50, 0.26);
+    border-radius: 999px;
+    padding: 3px 8px;
+    color: var(--flame-300);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+  }
+  .demo-body { padding: 32px; }
   .demo-header {
     display: flex;
+    align-items: flex-end;
     justify-content: space-between;
-    align-items: baseline;
+    gap: 28px;
     margin-bottom: 20px;
   }
-  .demo-title {
-    font-size: 18px;
+  .demo-eyebrow {
+    margin: 0 0 5px;
+    color: var(--flame-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+  }
+  .demo-title,
+  .opportunities-header h3,
+  .verification-header h3 {
+    margin: 0;
     color: white;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
   }
   .demo-req {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 2px;
     color: var(--carbon-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    text-align: right;
+  }
+  .demo-req strong {
+    color: var(--carbon-200);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .capture-context {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.018);
+  }
+  .context-item {
+    min-width: 0;
+    padding: 13px 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .context-item:last-child { border-right: 0; }
+  .context-item > span,
+  .demo-stat > span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--carbon-400);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .context-item strong {
+    display: block;
+    overflow: hidden;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .context-item strong.partial { color: var(--flame-300); }
+  .context-item small {
+    display: block;
+    margin-top: 3px;
+    color: var(--carbon-500);
+    font-size: 10px;
+    line-height: 1.35;
   }
   .demo-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
-    margin-bottom: 28px;
+    margin-bottom: 16px;
   }
   .demo-stat {
-    background: rgba(255, 255, 255, 0.03);
+    min-width: 0;
     border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
     padding: 12px 14px;
   }
-  .demo-stat-label {
-    font-size: 11px;
-    color: var(--carbon-400);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 500;
-  }
-  .demo-stat-val {
+  .demo-stat strong {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: white;
     font-family: "JetBrains Mono", monospace;
     font-size: 20px;
     font-weight: 600;
-    color: white;
-    margin-top: 2px;
   }
-  .demo-stat-val small {
-    font-size: 12px;
-    font-weight: 400;
+  .demo-stat strong small {
     color: var(--carbon-400);
+    font-size: 10px;
+    font-weight: 400;
+  }
+  .capability-panel {
+    margin-bottom: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+  .capability-panel summary {
+    padding: 13px 15px;
+    color: var(--carbon-200);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .capability-panel summary::marker { color: var(--flame-400); }
+  .capability-panel summary:focus-visible {
+    border-radius: 8px;
+    outline: 2px solid var(--flame-300);
+    outline-offset: 2px;
+  }
+  .capability-explainer {
+    margin: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px 15px 0;
+    color: var(--carbon-400);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .capability-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px 15px 15px;
+  }
+  .capability-item {
+    min-width: 0;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.025);
+    padding: 10px 11px;
+  }
+  .capability-item > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .capability-item strong {
+    color: var(--carbon-200);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .capability-status {
+    flex-shrink: 0;
+    border-radius: 999px;
+    padding: 2px 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .capability-status.captured {
+    background: rgba(52, 212, 152, 0.1);
+    color: var(--insight-300);
+  }
+  .capability-status.not-requested {
+    background: rgba(255, 255, 255, 0.055);
+    color: var(--carbon-300);
+  }
+  .capability-status.unavailable {
+    background: rgba(255, 150, 50, 0.1);
+    color: var(--flame-300);
+  }
+  .capability-item p {
+    margin: 5px 0 0;
+    color: var(--carbon-500);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+  .graph-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.065);
+    padding-top: 24px;
+  }
+  .graph-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+  .graph-header h4 {
+    margin: 0 0 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .graph-header p {
+    margin: 0;
+    color: var(--carbon-400);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .span-picker {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 4px;
+    min-width: min(280px, 100%);
+  }
+  .span-picker label {
+    color: var(--carbon-400);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .span-picker select {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 7px;
+    background: var(--carbon-700);
+    padding: 8px 30px 8px 10px;
+    color: var(--carbon-200);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+  }
+  .span-picker select:focus-visible {
+    border-color: var(--flame-300);
+    outline: 2px solid var(--flame-300);
+    outline-offset: 2px;
   }
   .demo-legend {
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-    font-size: 11px;
-    color: var(--carbon-400);
     flex-wrap: wrap;
+    gap: 13px;
+    margin-bottom: 10px;
+    color: var(--carbon-400);
+    font-size: 10px;
   }
-  .demo-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .demo-legend-dot {
+  .demo-legend span { display: flex; align-items: center; gap: 5px; }
+  .demo-legend i {
     width: 8px;
     height: 8px;
     border-radius: 2px;
   }
-  .flame-timeline {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 9px;
+  .legend-core { background: #2d6aa0; }
+  .legend-plugin { background: #4e3d8f; }
+  .legend-theme { background: #1a6e50; }
+  .legend-db { background: #8f3d1e; }
+  .legend-ext { background: #7a5010; }
+  .scroll-hint {
+    display: none;
+    margin: 0 0 8px;
     color: var(--carbon-500);
-    position: relative;
-    height: 16px;
+    font-size: 10px;
+    line-height: 1.4;
   }
+  .graph-scroller {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.08);
+    padding: 10px 12px 12px;
+    scrollbar-color: rgba(255, 150, 50, 0.35) rgba(255, 255, 255, 0.035);
+    scrollbar-width: thin;
+  }
+  .graph-scroller:focus-visible {
+    border-color: var(--flame-300);
+    outline: 2px solid var(--flame-300);
+    outline-offset: 2px;
+  }
+  .flame-canvas { min-width: 680px; }
+  .flame-timeline {
+    position: relative;
+    height: 24px;
+    margin-bottom: 6px;
+    color: var(--carbon-500);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+  }
+  .flame-timeline::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.055);
+    content: "";
+  }
+  .flame-timeline span {
+    position: absolute;
+    bottom: 5px;
+    transform: translateX(-50%);
+  }
+  .flame-timeline span:first-child { transform: none; }
+  .flame-timeline span:last-child { transform: translateX(-100%); }
   .flame-rows {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
-  :global(.flame-row) {
-    display: flex;
-    height: 22px;
+  .flame-row {
     position: relative;
+    height: 26px;
   }
-  .demo-ai {
+  .demo-window :global(.f-block) {
+    position: absolute;
+    min-width: 16px;
+    height: 24px;
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 0 6px;
+    cursor: pointer;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1;
+    text-align: left;
+    transition:
+      filter 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .demo-window :global(.f-block span) {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .demo-window :global(.f-block:hover) {
+    z-index: 2;
+    filter: brightness(1.14);
+    transform: scaleY(1.08);
+  }
+  .demo-window :global(.f-block:focus-visible) {
+    z-index: 4;
+    outline: 2px solid white;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px rgba(255, 150, 50, 0.5);
+  }
+  .demo-window :global(.f-block[aria-pressed="true"]) {
+    z-index: 3;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+      0 0 0 2px rgba(255, 150, 50, 0.5);
+    filter: brightness(1.15);
+  }
+  .detail-panel {
+    margin-top: 13px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+    padding: 18px;
+  }
+  .detail-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 13px;
+  }
+  .detail-kicker,
+  .detail-guidance span,
+  .opportunity-next span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--carbon-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .detail-heading h4 {
+    margin: 0;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .detail-metrics {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+  .detail-metrics span {
+    border-radius: 5px;
+    background: rgba(255, 150, 50, 0.1);
+    padding: 4px 7px;
+    color: var(--flame-300);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+  }
+  .detail-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 12px;
+  }
+  .detail-facts div {
+    min-width: 0;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.11);
+    padding: 9px 10px;
+  }
+  .detail-facts dt {
+    margin-bottom: 3px;
+    color: var(--carbon-500);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .detail-facts dd {
+    margin: 0;
+    color: var(--carbon-200);
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  .detail-guidance {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .detail-guidance > div {
+    border-left: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0 6px 6px 0;
+    background: rgba(0, 0, 0, 0.09);
+    padding: 10px 11px;
+  }
+  .detail-guidance > div:last-child { border-left-color: var(--flame-500); }
+  .detail-guidance p {
+    margin: 0;
+    color: var(--carbon-300);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .detail-caution {
+    margin: 10px 0 0;
+    color: var(--carbon-500);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+  .opportunities,
+  .verification {
     margin-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     padding-top: 24px;
   }
-  .demo-ai-header {
+  .opportunities-header,
+  .verification-header {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
   }
-  .demo-ai-header span {
+  .opportunities-header > span,
+  .verification-header > span {
+    color: var(--carbon-500);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    text-align: right;
+    text-transform: uppercase;
+  }
+  .primary-opportunity {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 15px;
+    border: 1px solid rgba(255, 150, 50, 0.16);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255, 150, 50, 0.065), rgba(255, 255, 255, 0.015));
+    padding: 17px;
+  }
+  .opportunity-rank {
+    color: var(--flame-400);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .opportunity-owner {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--carbon-400);
+    font-size: 10px;
+  }
+  .primary-opportunity h4 {
+    margin: 0 0 5px;
+    color: white;
     font-size: 14px;
     font-weight: 600;
+  }
+  .primary-opportunity > div > p,
+  .opportunity-next p {
+    margin: 0;
+    color: var(--carbon-300);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .primary-opportunity > div > p strong { color: var(--carbon-100); }
+  .opportunity-next {
+    margin-top: 11px;
+    border-left: 2px solid var(--flame-500);
+    border-radius: 0 6px 6px 0;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 9px 11px;
+  }
+  .provided-insights { margin-top: 10px; }
+  .verification-intro {
+    max-width: 760px;
+    margin: 0 0 16px;
+    color: var(--carbon-400);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .verification-bars {
+    display: grid;
+    gap: 10px;
+  }
+  .verification-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.45fr) minmax(220px, 1fr);
+    align-items: center;
+    gap: 16px;
+  }
+  .verification-label {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 3px 10px;
+  }
+  .verification-label span {
+    color: var(--carbon-300);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .verification-label strong {
     color: white;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+  }
+  .verification-label small {
+    grid-column: 1 / -1;
+    color: var(--carbon-500);
+    font-size: 9px;
+  }
+  .verification-track {
+    overflow: hidden;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .verification-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+  }
+  .baseline-bar { background: var(--carbon-400); }
+  .after-bar { background: linear-gradient(90deg, var(--flame-600), var(--flame-300)); }
+  .verification-result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 13px;
+    border-radius: 8px;
+    background: rgba(52, 212, 152, 0.055);
+    padding: 11px 13px;
+  }
+  .verification-result strong {
+    flex-shrink: 0;
+    color: var(--insight-300);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+  }
+  .verification-result span {
+    color: var(--carbon-400);
+    font-size: 10px;
+    line-height: 1.45;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   @media (max-width: 900px) {
-    .demo-stats {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .demo-body {
-      padding: 20px;
-      overflow-x: auto;
-    }
+    .capture-context,
+    .demo-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .context-item:nth-child(2) { border-right: 0; }
+    .context-item:nth-child(-n + 2) { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .graph-header { align-items: stretch; flex-direction: column; gap: 12px; }
+    .span-picker { align-items: stretch; width: 100%; }
   }
+
   @media (max-width: 640px) {
-    .flame-rows {
-      min-width: 600px;
-    }
+    .demo-window { border-radius: 12px; }
+    .demo-toolbar { padding: 11px 14px; }
+    .demo-url { margin-left: 4px; padding-inline: 9px; }
+    .sample-notice { align-items: flex-start; flex-direction: column; gap: 7px; padding: 11px 16px; }
+    .demo-body { padding: 20px 16px; }
+    .demo-header { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .demo-req { align-items: flex-start; text-align: left; }
+    .capture-context,
+    .demo-stats { grid-template-columns: 1fr 1fr; }
+    .context-item,
+    .demo-stat { padding: 11px; }
+    .capability-grid { grid-template-columns: 1fr; }
+    .scroll-hint { display: block; }
+    .flame-canvas { min-width: 620px; }
+    .detail-heading { align-items: flex-start; flex-direction: column; gap: 9px; }
+    .detail-facts,
+    .detail-guidance { grid-template-columns: 1fr; }
+    .opportunities-header,
+    .verification-header { align-items: flex-start; flex-direction: column; gap: 7px; }
+    .opportunities-header > span,
+    .verification-header > span { text-align: left; }
+    .verification-row { grid-template-columns: 1fr; gap: 7px; }
+    .verification-result { align-items: flex-start; flex-direction: column; gap: 5px; }
   }
 
-  .flame-tooltip {
-    position: fixed;
-    z-index: 1000;
-    background: var(--carbon-700);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: white;
-    pointer-events: none;
-    display: none;
-    white-space: nowrap;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  }
-
-  .demo-detail-panel {
-    margin-top: 16px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 20px 24px;
-    position: relative;
-    animation: fadeInUp 0.3s ease-out;
-  }
-  .detail-close {
-    position: absolute;
-    top: 12px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: var(--carbon-400);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .detail-close:hover { color: white; }
-  .detail-name {
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 8px;
-  }
-  .detail-meta {
-    display: flex;
-    gap: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--carbon-300);
-    margin-bottom: 12px;
-  }
-  .detail-ai {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 14px;
-    color: var(--ai-300);
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .detail-ai::before {
-    content: '✦';
-    color: var(--ai-400);
-    flex-shrink: 0;
+  @media (prefers-reduced-motion: reduce) {
+    .demo-window :global(.f-block) { transition: none; }
+    .demo-window :global(.f-block:hover) { transform: none; }
   }
 </style>
 
 <script>
-  // Build flame graph from data
-  const spanData: Record<
-    string,
-    Array<{ d: number; n: string; t: string; s: number; w: number; ai?: string }>
-  > = {
-    default: [
-      { d: 0, n: "Full request", t: "php", s: 0, w: 847 },
-      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 180 },
-      { d: 1, n: "plugins_loaded", t: "core", s: 180, w: 220 },
-      { d: 1, n: "init → template_redirect", t: "core", s: 400, w: 80 },
-      { d: 1, n: "Template render", t: "theme", s: 480, w: 310 },
-      { d: 1, n: "shutdown", t: "core", s: 790, w: 57 },
-      { d: 2, n: "wp-settings.php", t: "core", s: 12, w: 68 },
-      { d: 2, n: "Load active plugins", t: "core", s: 95, w: 85 },
-      { d: 2, n: "WooCommerce init", t: "plugin", s: 180, w: 95 },
-      { d: 2, n: "Yoast SEO init", t: "plugin", s: 275, w: 45 },
-      { d: 2, n: "Elementor init", t: "plugin", s: 320, w: 55 },
-      { d: 2, n: "Other plugins", t: "plugin", s: 375, w: 25 },
-      { d: 2, n: "WP_Query", t: "core", s: 400, w: 48 },
-      { d: 2, n: "get_header()", t: "theme", s: 480, w: 85 },
-      { d: 2, n: "the_content()", t: "theme", s: 565, w: 155 },
-      { d: 2, n: "get_footer()", t: "theme", s: 750, w: 40 },
-      { d: 3, n: "DB: autoload", t: "db", s: 12, w: 18 },
-      { d: 3, n: "WC post types", t: "plugin", s: 180, w: 28 },
-      { d: 3, n: "WC transient check", t: "ext", s: 248, w: 27, ai: "This license check runs on every request — switch to wp-cron scheduling" },
-      { d: 3, n: "DB: main query", t: "db", s: 400, w: 38 },
-      { d: 3, n: "Elementor CSS", t: "plugin", s: 565, w: 68, ai: "Switch CSS Print Method to External File to avoid runtime parsing" },
-      { d: 3, n: "oEmbed HTTP", t: "ext", s: 675, w: 45, ai: "oEmbed cache is expired — ensure object caching is active" },
-    ],
-    woocommerce: [
-      { d: 0, n: "Full request", t: "php", s: 0, w: 1240 },
-      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 180 },
-      { d: 1, n: "plugins_loaded", t: "core", s: 180, w: 340 },
-      { d: 1, n: "init → query", t: "core", s: 520, w: 120 },
-      { d: 1, n: "Template render", t: "theme", s: 640, w: 520 },
-      { d: 1, n: "shutdown", t: "core", s: 1160, w: 80 },
-      { d: 2, n: "WooCommerce init", t: "plugin", s: 180, w: 160 },
-      { d: 2, n: "Yoast SEO", t: "plugin", s: 340, w: 45 },
-      { d: 2, n: "Other plugins", t: "plugin", s: 385, w: 135 },
-      { d: 2, n: "WC product query", t: "core", s: 520, w: 95 },
-      { d: 2, n: "WC price calc", t: "plugin", s: 640, w: 120 },
-      { d: 2, n: "WC cart fragments", t: "plugin", s: 760, w: 85 },
-      { d: 2, n: "Product images", t: "theme", s: 845, w: 180 },
-      { d: 2, n: "Related products", t: "plugin", s: 1025, w: 135 },
-      { d: 3, n: "WC REST API", t: "plugin", s: 200, w: 45 },
-      { d: 3, n: "WC session", t: "plugin", s: 245, w: 35 },
-      { d: 3, n: "License check", t: "ext", s: 280, w: 60, ai: "Blocking HTTP call on every request — use wp-cron scheduling instead" },
-      { d: 3, n: "DB: product meta", t: "db", s: 520, w: 55 },
-      { d: 3, n: "DB: variations", t: "db", s: 575, w: 40 },
-      { d: 3, n: "DB: cart session", t: "db", s: 760, w: 30 },
-      { d: 3, n: "DB: related query", t: "db", s: 1025, w: 65, ai: "Full table JOIN for 4 products — set related products manually or add caching" },
-      { d: 3, n: "Stripe API", t: "ext", s: 1090, w: 70, ai: "Payment gateway loading on product pages — restrict to checkout only" },
-    ],
-    elementor: [
-      { d: 0, n: "Full request", t: "php", s: 0, w: 962 },
-      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 160 },
-      { d: 1, n: "plugins_loaded", t: "core", s: 160, w: 200 },
-      { d: 1, n: "init → query", t: "core", s: 360, w: 80 },
-      { d: 1, n: "Template render", t: "theme", s: 440, w: 460 },
-      { d: 1, n: "shutdown", t: "core", s: 900, w: 62 },
-      { d: 2, n: "Elementor init", t: "plugin", s: 160, w: 110 },
-      { d: 2, n: "Other plugins", t: "plugin", s: 270, w: 90 },
-      { d: 2, n: "WP_Query", t: "core", s: 360, w: 40 },
-      { d: 2, n: "Elementor render", t: "plugin", s: 440, w: 340 },
-      { d: 2, n: "wp_footer()", t: "theme", s: 780, w: 120 },
-      { d: 3, n: "Widget registration", t: "plugin", s: 170, w: 50 },
-      { d: 3, n: "CSS compile check", t: "plugin", s: 220, w: 40 },
-      { d: 3, n: "DB: _elementor_data", t: "db", s: 440, w: 45, ai: "847KB JSON blob loaded on every request — switch to External File CSS method" },
-      { d: 3, n: "JSON deserialize", t: "php", s: 485, w: 55 },
-      { d: 3, n: "12 widget renders", t: "plugin", s: 540, w: 180, ai: "Replace dynamic content widgets with static text where possible" },
-      { d: 3, n: "Dynamic CSS gen", t: "plugin", s: 720, w: 60 },
-      { d: 3, n: "18 CSS enqueues", t: "plugin", s: 780, w: 50, ai: "Enable Improved Asset Loading to load only needed widget CSS" },
-      { d: 3, n: "12 JS enqueues", t: "plugin", s: 830, w: 40 },
-      { d: 3, n: "Font loading", t: "ext", s: 870, w: 30 },
-    ],
-    agency: [
-      { d: 0, n: "Full request", t: "php", s: 0, w: 1480 },
-      { d: 1, n: "wp-load.php", t: "core", s: 0, w: 200 },
-      { d: 1, n: "plugins_loaded", t: "core", s: 200, w: 380 },
-      { d: 1, n: "init → query", t: "core", s: 580, w: 140 },
-      { d: 1, n: "Template render", t: "theme", s: 720, w: 640 },
-      { d: 1, n: "shutdown", t: "core", s: 1360, w: 120 },
-      { d: 2, n: "WooCommerce", t: "plugin", s: 200, w: 140 },
-      { d: 2, n: "Elementor", t: "plugin", s: 340, w: 100 },
-      { d: 2, n: "WPML", t: "plugin", s: 440, w: 60 },
-      { d: 2, n: "ACF", t: "plugin", s: 500, w: 40 },
-      { d: 2, n: "Other (×20)", t: "plugin", s: 540, w: 40 },
-      { d: 2, n: "Main query", t: "core", s: 580, w: 80 },
-      { d: 2, n: "WPML rewrite", t: "plugin", s: 660, w: 60 },
-      { d: 2, n: "Elementor render", t: "plugin", s: 720, w: 300 },
-      { d: 2, n: "WC cart widget", t: "plugin", s: 1020, w: 80 },
-      { d: 2, n: "ACF fields", t: "plugin", s: 1100, w: 120 },
-      { d: 2, n: "wp_footer()", t: "theme", s: 1220, w: 140 },
-      { d: 3, n: "License checks (×3)", t: "ext", s: 220, w: 90, ai: "3 plugins verifying licenses per-request — switch all to wp-cron" },
-      { d: 3, n: "DB: options", t: "db", s: 12, w: 35 },
-      { d: 3, n: "DB: translations", t: "db", s: 580, w: 45 },
-      { d: 3, n: "DB: elementor_data", t: "db", s: 720, w: 40 },
-      { d: 3, n: "DB: ACF meta", t: "db", s: 1100, w: 60, ai: "60 individual get_post_meta calls — use get_fields() to batch-load" },
-      { d: 3, n: "Analytics API", t: "ext", s: 1360, w: 80, ai: "Analytics beacon firing during shutdown — defer to wp-cron or client-side" },
-    ],
-  };
+  const initialiseFlameDemos = () => {
+    document.querySelectorAll<HTMLElement>("[data-flame-demo]:not([data-initialized])").forEach((root) => {
+      root.dataset.initialized = "true";
 
-  document.querySelectorAll(".flame-rows").forEach((container) => {
-    const variant = container.getAttribute("data-variant") || "default";
-    const spans = spanData[variant] || spanData.default;
-    const total = Math.max(...spans.map((s) => s.s + s.w));
-    const maxD = Math.max(...spans.map((s) => s.d));
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("button[data-span-id]"));
+      const picker = root.querySelector<HTMLSelectElement>("[data-span-picker]");
+      const detail = root.querySelector<HTMLElement>(".detail-panel");
+      const liveStatus = root.querySelector<HTMLElement>("[data-live-status]");
 
-    // Timeline
-    const tl = container.previousElementSibling as HTMLElement;
-    if (tl?.classList.contains("flame-timeline")) {
-      const step = total <= 500 ? 100 : total <= 1000 ? 100 : 200;
-      for (let t = 0; t <= total; t += step) {
-        const p = (t / total) * 100;
-        tl.innerHTML +=
-          `<div style="position:absolute;top:0;left:${p}%;border-left:1px solid rgba(255,255,255,0.04);height:8px"></div>` +
-          `<div style="position:absolute;top:9px;left:${p}%;transform:translateX(-50%)">${t}ms</div>`;
-      }
-    }
-
-    for (let d = 0; d <= maxD; d++) {
-      const row = document.createElement("div");
-      row.className = "flame-row";
-      spans
-        .filter((s) => s.d === d)
-        .forEach((s) => {
-          const el = document.createElement("div");
-          el.className = `f-block f-${s.t}`;
-          const l = (s.s / total) * 100,
-            w = (s.w / total) * 100;
-          el.style.left = l + "%";
-          el.style.width = Math.max(w, 0.5) + "%";
-          if (w > 4) el.textContent = s.n;
-          el.title = `${s.n} — ${s.w}ms (${Math.round((s.w / total) * 100)}%)`;
-          el.dataset.name = s.n;
-          el.dataset.duration = `${s.w}ms`;
-          el.dataset.percent = `${Math.round((s.w / total) * 100)}%`;
-          el.dataset.type = s.t;
-          if (s.ai) el.dataset.ai = s.ai;
-          el.style.cursor = 'pointer';
-          row.appendChild(el);
-        });
-      container.appendChild(row);
-    }
-  });
-
-  // Tooltip behavior
-  const tooltip = document.getElementById('flame-tooltip');
-  document.querySelectorAll('.f-block').forEach(block => {
-    block.addEventListener('mouseenter', (e) => {
-      if (!tooltip) return;
-      const el = e.currentTarget as HTMLElement;
-      const name = el.dataset.name || '';
-      const duration = el.dataset.duration || '';
-      const percent = el.dataset.percent || '';
-      tooltip.textContent = `${name} — ${duration} (${percent})`;
-      tooltip.style.display = 'block';
-    });
-    block.addEventListener('mousemove', (e) => {
-      if (!tooltip) return;
-      const me = e as MouseEvent;
-      tooltip.style.left = me.clientX + 12 + 'px';
-      tooltip.style.top = me.clientY - 40 + 'px';
-    });
-    block.addEventListener('mouseleave', () => {
-      if (tooltip) tooltip.style.display = 'none';
-    });
-
-    // Click to expand detail panel
-    block.addEventListener('click', () => {
-      const el = block as HTMLElement;
-      const panel = document.getElementById('demo-detail-panel');
-      const nameEl = document.getElementById('detail-name');
-      const durationEl = document.getElementById('detail-duration');
-      const percentEl = document.getElementById('detail-percent');
-      const typeEl = document.getElementById('detail-type');
-      const aiEl = document.getElementById('detail-ai');
-      if (!panel || !nameEl || !durationEl || !percentEl || !typeEl || !aiEl) return;
-
-      const typeLabels: Record<string, string> = {
-        core: 'WordPress Core', plugin: 'Plugin', theme: 'Theme',
-        db: 'Database', ext: 'External HTTP', php: 'PHP'
+      const detailFields = {
+        name: root.querySelector<HTMLElement>("[data-detail-name]"),
+        duration: root.querySelector<HTMLElement>("[data-detail-duration]"),
+        percent: root.querySelector<HTMLElement>("[data-detail-percent]"),
+        type: root.querySelector<HTMLElement>("[data-detail-type]"),
+        owner: root.querySelector<HTMLElement>("[data-detail-owner]"),
+        capability: root.querySelector<HTMLElement>("[data-detail-capability]"),
+        evidence: root.querySelector<HTMLElement>("[data-detail-evidence]"),
+        action: root.querySelector<HTMLElement>("[data-detail-action]"),
       };
 
-      nameEl.textContent = el.dataset.name || '';
-      durationEl.textContent = el.dataset.duration || '';
-      percentEl.textContent = el.dataset.percent || '';
-      typeEl.textContent = typeLabels[el.dataset.type || ''] || el.dataset.type || '';
+      const setText = (element: HTMLElement | null, value: string | undefined) => {
+        if (element) element.textContent = value ?? "";
+      };
 
-      if (el.dataset.ai) {
-        aiEl.textContent = el.dataset.ai;
-        aiEl.style.display = 'flex';
-      } else {
-        aiEl.style.display = 'none';
-      }
+      const selectSpan = (button: HTMLButtonElement, shouldScroll = false) => {
+        buttons.forEach((candidate) => {
+          candidate.setAttribute("aria-pressed", candidate === button ? "true" : "false");
+        });
 
-      panel.style.display = 'block';
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setText(detailFields.name, button.dataset.name);
+        setText(detailFields.duration, button.dataset.duration);
+        setText(detailFields.percent, button.dataset.percent);
+        setText(detailFields.type, button.dataset.type);
+        setText(detailFields.owner, button.dataset.owner);
+        setText(detailFields.capability, button.dataset.capability);
+        setText(detailFields.evidence, button.dataset.evidence);
+        setText(detailFields.action, button.dataset.nextAction);
+
+        if (picker && button.dataset.spanId) picker.value = button.dataset.spanId;
+        if (liveStatus) {
+          liveStatus.textContent = `${button.dataset.name ?? "Span"} selected. ${button.dataset.duration ?? ""}, ${button.dataset.percent ?? ""} of observed request. Evidence and likely next action updated.`;
+        }
+
+        window.dispatchEvent(new CustomEvent("wpflame:commercial-event", {
+          detail: {
+            event: "sample_trace_span_opened",
+            properties: {
+              variant: root.dataset.variant,
+              span_id: button.dataset.spanId,
+            },
+          },
+        }));
+
+        if (shouldScroll && detail && window.matchMedia("(max-width: 640px)").matches) {
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          detail.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
+        }
+      };
+
+      buttons.forEach((button, index) => {
+        button.addEventListener("click", () => selectSpan(button, true));
+        button.addEventListener("keydown", (event) => {
+          let targetIndex: number | null = null;
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+            targetIndex = (index + 1) % buttons.length;
+          } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            targetIndex = (index - 1 + buttons.length) % buttons.length;
+          } else if (event.key === "Home") {
+            targetIndex = 0;
+          } else if (event.key === "End") {
+            targetIndex = buttons.length - 1;
+          }
+
+          if (targetIndex !== null) {
+            event.preventDefault();
+            const target = buttons[targetIndex];
+            target.focus();
+            selectSpan(target);
+          }
+        });
+      });
+
+      picker?.addEventListener("change", () => {
+        const target = buttons.find((button) => button.dataset.spanId === picker.value);
+        if (target) selectSpan(target, true);
+      });
     });
-  });
+  };
 
-  // Close detail panel
-  document.getElementById('detail-close')?.addEventListener('click', () => {
-    const panel = document.getElementById('demo-detail-panel');
-    if (panel) panel.style.display = 'none';
-  });
+  initialiseFlameDemos();
+  document.addEventListener("astro:page-load", initialiseFlameDemos);
 </script>

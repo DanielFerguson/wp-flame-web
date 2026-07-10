@@ -9,7 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:claims": "node scripts/check-commercial-claims.mjs",
+    "check:links": "node scripts/check-built-links.mjs",
+    "check:site": "npm run check:claims && npm run build && npm run check:links"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.1",

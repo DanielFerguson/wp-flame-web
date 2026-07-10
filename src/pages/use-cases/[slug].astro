@@ -1,0 +1,121 @@
+---
+import Content from '../../layouts/Content.astro';
+import { useCases, useCaseBySlug, type UseCase } from '../../data/useCases';
+
+export function getStaticPaths() {
+  return useCases.map((useCase) => ({
+    params: { slug: useCase.slug },
+    props: { useCase },
+  }));
+}
+
+interface Props {
+  useCase: UseCase;
+}
+
+const { useCase } = Astro.props;
+const related = useCase.related
+  .map((slug) => useCaseBySlug.get(slug))
+  .filter((item): item is UseCase => Boolean(item));
+---
+
+<Content
+  title={useCase.metaTitle}
+  description={useCase.description}
+  eyebrow={useCase.eyebrow}
+  heading={useCase.hero}
+  intro={useCase.problem}
+>
+  <section class="content-section content-section--narrow" aria-labelledby="status-title">
+    <div class="content-status-panel">
+      <span class="content-status-dot" aria-hidden="true"></span>
+      <div>
+        <strong id="status-title">Design-partner workflow, not a public capability promise</strong>
+        <p>
+          This guide describes the intended public-v1 workflow. During pre-release, captures are
+          founder-guided and every conclusion remains limited by the trace’s reported capabilities,
+          completeness, and supporting evidence.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="fit-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Where WP Flame fits</p>
+      <h2 id="fit-title">Start with the request that still executes WordPress.</h2>
+    </div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">The investigation</p>
+        <h3>{useCase.title}</h3>
+        <p>{useCase.problem}</p>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">Tool boundary</p>
+        <h3>Use the right evidence source</h3>
+        <p>{useCase.whyTypicalToolsMissIt}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="capture-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Controlled capture plan</p>
+      <h2 id="capture-title">Make the workflow reproducible before reading the graph.</h2>
+    </div>
+    <ol class="content-steps">
+      {useCase.capturePlan.map((step) => <li><span>{step}</span></li>)}
+    </ol>
+  </section>
+
+  <section class="content-section" aria-labelledby="evidence-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Useful output</p>
+      <h2 id="evidence-title">Evidence should change the next action.</h2>
+      <p>
+        A graph is supporting detail. The useful outcome is a measured opportunity, the evidence
+        behind it, a safe action, and a way to verify the result.
+      </p>
+    </div>
+    <div class="content-grid content-grid--3">
+      {useCase.evidence.map((item) => (
+        <article class="content-card">
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="limits-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--purple">
+        <p class="content-kicker">Measurement boundaries</p>
+        <h2 id="limits-title">What this investigation cannot claim</h2>
+        <ul>
+          {useCase.limitations.map((limitation) => <li>{limitation}</li>)}
+        </ul>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">Developer or client handoff</p>
+        <h2>What to include</h2>
+        <ul>
+          {useCase.handoff.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="related-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Continue the investigation</p>
+      <h2 id="related-title">Related workflows</h2>
+    </div>
+    <div class="content-link-list">
+      {related.map((item) => <a href={`/use-cases/${item.slug}/`}>{item.title}</a>)}
+      <a href="/compatibility/">Review capability and compatibility status</a>
+      <a href="/docs/quickstart/">Read the design-partner quickstart</a>
+    </div>
+  </section>
+</Content>

@@ -1,12 +1,22 @@
 export const links = {
-  wordpressOrg: '#',    // LAUNCH: WordPress.org plugin URL when listed
-  sparkTrial: '#',      // LAUNCH: Lemon Squeezy checkout URL — Spark tier ($29/mo)
-  proTrial: '#',        // LAUNCH: Lemon Squeezy checkout URL — Pro tier ($79/mo)
-  agencyTrial: '#',     // LAUNCH: Lemon Squeezy checkout URL — Agency tier ($199/mo)
-  github: 'https://github.com/flavor/flavor',
-};
+  designPartner: '/design-partner/',
+  sampleTrace: '/sample-trace/',
+  product: '/product/',
+  quickstart: '/docs/quickstart/',
+  communityVsPro: '/community-vs-pro/',
+  compatibility: '/compatibility/',
+  benchmarks: '/benchmarks/',
+  support: '/support/',
+  privacy: '/privacy/',
+  terms: '/terms/',
+  changelog: '/changelog/',
+  contact: 'mailto:hello@wpflame.com',
 
-export const lemonSqueezy = {
-  audienceEndpoint: '',  // LAUNCH: https://api.lemonsqueezy.com/v1/subscribers
-  apiKey: '',            // LAUNCH: Lemon Squeezy API key
+  // Backwards-compatible aliases for older campaign components. These routes
+  // deliberately lead to the current programme, not an unavailable checkout.
+  wordpressOrg: '/design-partner/',
+  sparkTrial: '/design-partner/',
+  proTrial: '/design-partner/',
+  agencyTrial: '/design-partner/',
+  github: '/changelog/',
 };

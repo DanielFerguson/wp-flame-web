@@ -1,21 +1,115 @@
 ---
-import Base from '../layouts/Base.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
+import Content from '../layouts/Content.astro';
 ---
-<Base title="Privacy Policy — WP Flame" noindex={true}>
-  <Nav />
-  <section class="section" style="min-height:60vh;">
-    <div class="container">
-      <h1 style="font-size:clamp(28px,3.5vw,40px);font-weight:700;color:white;letter-spacing:-0.02em;margin-bottom:20px;">Privacy Policy</h1>
-      <p style="font-size:17px;color:var(--carbon-300);line-height:1.7;max-width:640px;">
-        Our privacy policy is being prepared and will be published here before launch. WP Flame is self-hosted — your performance data stays on your own server and is never sent to us unless you opt into AI Insights.
-      </p>
-      <p style="font-size:15px;color:var(--carbon-400);margin-top:24px;">
-        Questions? Contact us at <a href="mailto:hello@wpflame.com" style="color:var(--flame-400);">hello@wpflame.com</a>
-      </p>
+
+<Content
+  title="Privacy and Data Handling — WP Flame"
+  description="Understand how the WP Flame website, design-partner programme, local-first trace data, optional sensitive capture, and future connected services are handled."
+  eyebrow="Privacy and data handling"
+  heading="Local-first is the default, not permission to ignore sensitive data."
+  intro="This notice describes the current website and paid design-partner programme as of 10 July 2026. It separates website contact data from trace data stored on a participant’s WordPress installation."
+  showActions={false}
+  showClosing={false}
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>Pre-release operational notice</strong><p>WP Flame has no public Community or Pro checkout and no required hosted trace service. This notice must be reviewed alongside the final providers, analytics, licensing, support, and checkout terms before public v1.</p></div></div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="summary-title">
+    <div class="content-section-header"><p class="content-eyebrow">Summary</p><h2 id="summary-title">The short version</h2></div>
+    <ul class="content-checklist">
+      <li>Trace data is intended to remain in the participant’s WordPress database by default.</li>
+      <li>No trace should be sent to WP Flame for review without separate, explicit permission and an agreed secure path.</li>
+      <li>Identity, raw SQL, full URLs, user agents, IP addresses, and GraphQL query data are sensitive opt-ins—not default capture assumptions.</li>
+      <li>Design-partner participation does not grant permission to use a client site, testimonial, research note, or case study.</li>
+      <li>Any future licensing, analytics, AI, hosted report, or fleet service must be separately disclosed and consented to before data leaves the site.</li>
+    </ul>
+  </section>
+
+  <section class="content-section" aria-labelledby="website-data-title">
+    <div class="content-section-header"><p class="content-eyebrow">Website and contact data</p><h2 id="website-data-title">Information handled by this website</h2></div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card"><h3>Information you provide</h3><p>Email, name, organisation, role, portfolio size, workflow description, and other information included in an application or support message. Do not submit credentials, payment data, raw traces, or unnecessary personal data through a general form.</p></article>
+      <article class="content-card"><h3>Basic technical records</h3><p>The hosting provider may process request logs such as IP address, timestamp, requested path, user agent, and error information for security and operation. Retention depends on the selected provider and must be confirmed before public launch.</p></article>
+      <article class="content-card"><h3>Typography resources</h3><p>This site currently requests stylesheet and font resources from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>. Those requests expose ordinary network information such as IP address and user agent to the provider. This dependency must be reviewed or self-hosted before a broader public launch.</p></article>
+      <article class="content-card"><h3>Essential browser state</h3><p>The site may use local browser storage for interface preferences and, when an analytics endpoint is configured, your explicit anonymous-analytics choice. A local value is never treated as proof that an application was received.</p></article>
+      <article class="content-card"><h3>Applications</h3><p>Without a configured form endpoint, the application is prepared locally and opens your email client; it is not submitted until you send it. If a public form endpoint is configured, the site reports success only after that server returns a successful response. No private API key is placed in browser code.</p></article>
     </div>
   </section>
-  <Footer />
-</Base>
+
+  <section class="content-section content-section--narrow" id="website-analytics" aria-labelledby="analytics-title">
+    <div class="content-section-header"><p class="content-eyebrow">Optional website analytics</p><h2 id="analytics-title">Off unless a visitor explicitly agrees.</h2></div>
+    <p>The site contains support for a first-party commercial-events endpoint, but it sends nothing unless that endpoint is configured and you select “Allow anonymous analytics.” A Do Not Track browser signal also prevents collection.</p>
+    <p>When enabled with consent, an event may contain the event name, current page path, campaign parameters from the landing URL, destination path, placement label, and timestamp. It does not include application answers, email addresses, raw traces, credentials, or form field values. The receiving host may still process ordinary network records such as an IP address, so its provider, location, retention, and access controls must be documented before activation.</p>
+    <p>You can change the stored choice using “Analytics choices” in the footer whenever an analytics endpoint is active. Behavioural advertising, cross-site tracking, and sale of visitor data are not part of this implementation.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="trace-title">
+    <div class="content-section-header"><p class="content-eyebrow">Product trace data</p><h2 id="trace-title">Stored locally by default</h2><p>The WordPress site operator remains responsible for deciding whether a workflow may be captured and who may access or export its trace data.</p></div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Trace-data categories and default treatment</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Default direction</th><th scope="col">Risk and control</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Timing and span structure</th><td>Stored locally with bounded retention.</td><td>Can expose internal architecture and plugin/theme ownership; restrict administrative access.</td></tr>
+          <tr><th scope="row">Routes and request context</th><td>Normalize and redact by default.</td><td>Full URLs can contain identity, search, order, or secret values.</td></tr>
+          <tr><th scope="row">Database evidence</th><td>Prefer fingerprints/hashes and bounded metadata.</td><td>Raw SQL values may contain personal or confidential content and require explicit acknowledgement.</td></tr>
+          <tr><th scope="row">HTTP evidence</th><td>Prefer bounded host, method, status, error, and timing.</td><td>Headers, tokens, query strings, and bodies must not be captured by default.</td></tr>
+          <tr><th scope="row">Identity and client metadata</th><td>Off by default.</td><td>User identity, IP address, and user agent require a specific purpose, explicit acknowledgement, and bounded retention.</td></tr>
+          <tr><th scope="row">Exports and support bundles</th><td>Redacted by default and created locally.</td><td>The operator must review the export before sharing it outside the site.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="programme-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">Design-partner programme</p>
+        <h2 id="programme-title">Separate permissions</h2>
+        <ul>
+          <li>Participation and billing.</li>
+          <li>Authorization for each participant or client production site.</li>
+          <li>Review of a specific redacted trace or support bundle.</li>
+          <li>Anonymized research notes.</li>
+          <li>Attributable testimonial or logo use.</li>
+          <li>Publication of a case study or benchmark example.</li>
+        </ul>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">Purposes</p>
+        <h2>Why information is used</h2>
+        <ul>
+          <li>Respond to applications, enquiries, and support requests.</li>
+          <li>Onboard and administer an agreed design-partner engagement.</li>
+          <li>Investigate product safety, compatibility, and correctness with permission.</li>
+          <li>Maintain website security and reliability.</li>
+          <li>Meet accounting, legal, and dispute-resolution obligations where applicable.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="sharing-title">
+    <div class="content-section-header"><p class="content-eyebrow">Sharing and service providers</p><h2 id="sharing-title">Minimize every disclosure.</h2></div>
+    <p>Website, email, optional form, optional analytics, hosting, billing, support, and file-transfer providers may process only the information needed to deliver their service. Final provider names, locations, retention, and data terms must be added before those services are activated publicly.</p>
+    <p>WP Flame does not sell personal information. Data may be disclosed where required by law, to protect the service and participants, or during a business transaction subject to appropriate safeguards and notice.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="retention-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card"><h2 id="retention-title">Retention and deletion</h2><p>Contact and programme records should be kept only while needed for the enquiry, engagement, legal obligations, or a documented dispute. Local trace retention is controlled on the WordPress installation and must be bounded by quotas and resumable cleanup before public v1.</p></article>
+      <article class="content-card"><h2>Access and correction</h2><p>You may request access, correction, deletion, or a copy of personal information held by the WP Flame project, subject to identity verification and legal obligations. Anonymous data may not be linkable back to a person after identifiers are removed.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="security-title">
+    <div class="content-callout"><h2 id="security-title">Security is shared work</h2><p>Use least-privilege access, conservative capture, bounded retention, redacted exports, and an approved secure channel. No system can promise absolute security. Report a suspected WP Flame vulnerability privately through the <a href="/support/">responsible-disclosure process</a>.</p></div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="contact-title">
+    <div class="content-section-header"><p class="content-eyebrow">Contact and changes</p><h2 id="contact-title">Ask before sending sensitive material.</h2></div>
+    <p>Privacy questions and requests can be sent to <a href="mailto:hello@wpflame.com?subject=WP%20Flame%20privacy">hello@wpflame.com</a>. Material changes to data handling should update the date and explanation on this page before the changed processing begins.</p>
+    <div class="content-link-list"><a href="/terms/">Current website and programme terms</a><a href="/support/">Support and responsible disclosure</a><a href="/docs/quickstart/">Safe capture quickstart</a><a href="/compatibility/">Compatibility and limitations</a></div>
+  </section>
+</Content>

@@ -1,182 +1,45 @@
----
-interface Row {
-  feature: string;
-  wpflame: string;
-  querymonitor: string;
-  newrelic: string;
-  blackfire: string;
-}
-
-const rows: Row[] = [
-  { feature: "Visual flame graphs",    wpflame: "Free",       querymonitor: "No",      newrelic: "Paid",    blackfire: "Paid"    },
-  { feature: "Per-plugin attribution", wpflame: "Free",       querymonitor: "Partial", newrelic: "No",      blackfire: "No"      },
-  { feature: "AI recommendations",     wpflame: "From $29/mo",querymonitor: "No",      newrelic: "No",      blackfire: "No"      },
-  { feature: "Self-hosted data",       wpflame: "Yes",        querymonitor: "Yes",     newrelic: "No",      blackfire: "No"      },
-  { feature: "PHP extension required", wpflame: "No",         querymonitor: "No",      newrelic: "Yes",     blackfire: "Yes"     },
-  { feature: "Real-time profiling",    wpflame: "Yes",        querymonitor: "Yes",     newrelic: "No",      blackfire: "Yes"     },
-  { feature: "Trace history",          wpflame: "Free",       querymonitor: "No",      newrelic: "Paid",    blackfire: "Paid"    },
-  { feature: "Starting price",         wpflame: "Free",       querymonitor: "Free",    newrelic: "~$99/mo", blackfire: "~$23/mo" },
-];
-
-function cellClass(value: string, isWpFlame: boolean): string {
-  if (isWpFlame && (value === "Free" || value === "Yes" || value === "No")) return "cell-positive";
-  if (value === "No") return "cell-negative";
-  if (value === "Partial" || value === "Paid" || value.startsWith("From") || value.startsWith("~")) return "cell-neutral";
-  return "";
-}
----
-
-<section class="section" id="compare">
+<section class="section comparison-section" id="compare">
   <div class="container">
-    <div class="compare-header reveal">
-      <div class="label">Comparison</div>
-      <h2 class="sec-title">How WP Flame <em>compares</em></h2>
+    <div class="comparison-header reveal">
+      <div class="label">Choose the right workflow</div>
+      <h2 class="sec-title">WP Flame complements tools that solve different parts of performance work.</h2>
+      <p class="sec-desc">The useful question is not which logo wins a checklist. It is which evidence and operating model fit the incident in front of you.</p>
     </div>
-
-    <div class="table-wrapper reveal">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th class="col-feature">Feature</th>
-            <th class="col-wpflame">
-              <span class="col-brand">WP Flame</span>
-            </th>
-            <th>Query Monitor</th>
-            <th>New Relic</th>
-            <th>Blackfire</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr>
-              <td class="col-feature">{row.feature}</td>
-              <td class={`col-wpflame ${cellClass(row.wpflame, true)}`}>{row.wpflame}</td>
-              <td class={cellClass(row.querymonitor, false)}>{row.querymonitor}</td>
-              <td class={cellClass(row.newrelic, false)}>{row.newrelic}</td>
-              <td class={cellClass(row.blackfire, false)}>{row.blackfire}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div class="comparison-grid">
+      <article class="comparison-card reveal">
+        <span>Current-request debugging</span>
+        <h3>Query Monitor</h3>
+        <p class="strength"><strong>Strong at:</strong> rich developer inspection of the current WordPress request.</p>
+        <p><strong>WP Flame's intended difference:</strong> bounded retained evidence, guided diagnosis, capability reporting, compatible before/after work, and agency handoff.</p>
+        <a href="/compare/query-monitor/">Read the balanced comparison →</a>
+      </article>
+      <article class="comparison-card reveal">
+        <span>Infrastructure observability</span>
+        <h3>Generic APM</h3>
+        <p class="strength"><strong>Strong at:</strong> broader infrastructure visibility and, in some products, deeper PHP instrumentation.</p>
+        <p><strong>WP Flame's intended difference:</strong> low-friction WordPress semantics without requiring a particular host or server agent.</p>
+        <a href="/compare/generic-apm/">Read the balanced comparison →</a>
+      </article>
+      <article class="comparison-card reveal">
+        <span>Public-page acceleration</span>
+        <h3>Cache plugins</h3>
+        <p class="strength"><strong>Strong at:</strong> bypassing PHP for eligible public requests and improving delivery.</p>
+        <p><strong>WP Flame's intended difference:</strong> diagnosing dynamic requests that still execute WordPress, including checkout, admin, APIs, and background work.</p>
+        <a href="/compare/cache-plugin/">Read the balanced comparison →</a>
+      </article>
     </div>
   </div>
 </section>
 
 <style>
-  .compare-header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.03);
-    font-size: 14px;
-    min-width: 640px;
-  }
-
-  /* Header row */
-  .compare-table thead tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .compare-table th {
-    padding: 18px 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--carbon-400);
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  /* WP Flame column header */
-  .compare-table th.col-wpflame {
-    color: var(--flame-400);
-    border-left: 2px solid var(--flame-400);
-  }
-
-  .col-brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* Feature label column */
-  .compare-table th.col-feature,
-  .compare-table td.col-feature {
-    color: var(--carbon-300);
-    font-weight: 500;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    text-transform: none;
-    letter-spacing: 0;
-    min-width: 200px;
-  }
-
-  .compare-table th.col-feature {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--carbon-400);
-  }
-
-  /* Body rows */
-  .compare-table tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    transition: background 0.15s;
-  }
-
-  .compare-table tbody tr:last-child {
-    border-bottom: none;
-  }
-
-  .compare-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .compare-table td {
-    padding: 16px 20px;
-    color: var(--carbon-300);
-    vertical-align: middle;
-    white-space: nowrap;
-  }
-
-  /* WP Flame column body cells */
-  .compare-table td.col-wpflame {
-    border-left: 2px solid var(--flame-400);
-    background: rgba(255, 150, 50, 0.04);
-    font-weight: 600;
-  }
-
-  /* Cell value states */
-  .cell-positive {
-    color: var(--insight-400) !important;
-  }
-
-  .cell-negative {
-    color: var(--carbon-500) !important;
-  }
-
-  .cell-neutral {
-    color: var(--carbon-300) !important;
-  }
-
-  @media (max-width: 900px) {
-    .compare-table th,
-    .compare-table td {
-      padding: 14px 16px;
-    }
-  }
+  .comparison-section { background: var(--carbon-800); border-block: 1px solid rgba(255,255,255,.05); }
+  .comparison-header { max-width: 780px; margin-bottom: 52px; }
+  .comparison-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+  .comparison-card { padding: 30px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.025); }
+  .comparison-card > span { color: var(--flame-300); font: 600 9px 'JetBrains Mono',monospace; letter-spacing: .07em; text-transform: uppercase; }
+  .comparison-card h3 { color: white; font-size: 23px; margin: 20px 0; }
+  .comparison-card p { color: var(--carbon-300); font-size: 14px; margin-bottom: 16px; }
+  .comparison-card strong { color: var(--carbon-100); }
+  .comparison-card a { color: var(--flame-300); font-size: 13px; font-weight: 700; }
+  @media (max-width: 900px) { .comparison-grid { grid-template-columns: 1fr; } }
 </style>

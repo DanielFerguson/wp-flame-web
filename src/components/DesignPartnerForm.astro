@@ -1,0 +1,369 @@
+---
+const endpoint = import.meta.env.PUBLIC_DESIGN_PARTNER_FORM_ENDPOINT?.trim() ?? '';
+const usesEndpoint = endpoint.length > 0;
+---
+
+<div
+  class="application-panel"
+  data-design-partner-form
+  data-endpoint={endpoint}
+  data-mode={usesEndpoint ? 'endpoint' : 'email'}
+>
+  <div class="application-intro">
+    <div class="label">Design-partner application</div>
+    <h2>Bring one real slow workflow.</h2>
+    <p>
+      The programme is for agencies, freelancers, and operators who can reproduce a
+      slow dynamic WordPress request and act on the evidence with us.
+    </p>
+  </div>
+
+  <form class="application-form" novalidate>
+    <div class="form-grid">
+      <div class="field">
+        <label for="partner-name">Your name</label>
+        <input id="partner-name" name="name" type="text" autocomplete="name" required />
+      </div>
+
+      <div class="field">
+        <label for="partner-email">Work email</label>
+        <input id="partner-email" name="email" type="email" autocomplete="email" required />
+      </div>
+
+      <div class="field">
+        <label for="partner-role">Your role</label>
+        <select id="partner-role" name="role" required>
+          <option value="">Select one</option>
+          <option>Agency owner or lead</option>
+          <option>Freelance WordPress developer</option>
+          <option>In-house developer or operator</option>
+          <option>Plugin or theme vendor</option>
+          <option>Managed hosting or support team</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="partner-organisation">Organisation <span>optional</span></label>
+        <input id="partner-organisation" name="organisation" type="text" autocomplete="organization" />
+      </div>
+
+      <div class="field">
+        <label for="partner-sites">Production sites you manage</label>
+        <select id="partner-sites" name="site_count" required>
+          <option value="">Select a range</option>
+          <option>1–4</option>
+          <option>5–10</option>
+          <option>11–25</option>
+          <option>26–50</option>
+          <option>More than 50</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="partner-workflow">Slow workflow</label>
+        <select id="partner-workflow" name="workflow" required>
+          <option value="">Select the closest match</option>
+          <option>wp-admin or editor</option>
+          <option>WooCommerce cart or checkout</option>
+          <option>Logged-in or membership page</option>
+          <option>REST or AJAX request</option>
+          <option>Cron or Action Scheduler job</option>
+          <option>External API call</option>
+          <option>Suspected plugin or theme regression</option>
+          <option>Other dynamic request</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field field-wide">
+      <label for="partner-incident">Tell us about the incident</label>
+      <textarea
+        id="partner-incident"
+        name="incident"
+        rows="6"
+        minlength="40"
+        required
+        aria-describedby="incident-help"
+      ></textarea>
+      <p class="field-help" id="incident-help">
+        Include what feels slow, how often it happens, and how you investigate it today.
+      </p>
+    </div>
+
+    <div class="honeypot" aria-hidden="true">
+      <label for="partner-website">Leave this field empty</label>
+      <input id="partner-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <label class="check-row">
+      <input name="authority_acknowledged" type="checkbox" value="yes" required />
+      <span>
+        I understand that each client or production site will require separate
+        authorisation before installation or trace review.
+      </span>
+    </label>
+
+    <label class="check-row">
+      <input name="privacy_acknowledged" type="checkbox" value="yes" required />
+      <span>
+        I agree that WP Flame may use these details to assess and respond to this
+        application. This does not grant testimonial or case-study permission.
+      </span>
+    </label>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">
+        {usesEndpoint ? 'Apply to the programme' : 'Prepare email application'}
+      </button>
+      <p class="submission-note">
+        {usesEndpoint
+          ? 'Your application is sent only after the server confirms receipt.'
+          : 'No form service is configured. Your email app will open with the application; send it to complete submission.'}
+      </p>
+    </div>
+
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </form>
+
+  <p class="email-fallback">
+    Prefer email? Write to <a href="mailto:hello@wpflame.com">hello@wpflame.com</a>.
+  </p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-design-partner-form]').forEach((wrapper) => {
+    const form = wrapper.querySelector<HTMLFormElement>('.application-form');
+    const status = wrapper.querySelector<HTMLElement>('.form-status');
+    const button = wrapper.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const endpoint = wrapper.dataset.endpoint ?? '';
+    const mode = wrapper.dataset.mode ?? 'email';
+
+    if (!form || !status || !button) return;
+
+    form.addEventListener('focusin', () => {
+      window.dispatchEvent(new CustomEvent('wpflame:commercial-event', {
+        detail: { event: 'design_partner_application_started' },
+      }));
+    }, { once: true });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) {
+        status.textContent = 'Please complete the required fields before continuing.';
+        return;
+      }
+
+      const values = Object.fromEntries(new FormData(form).entries());
+      if (values.website) return;
+
+      button.disabled = true;
+      status.className = 'form-status';
+
+      if (mode === 'email' || !endpoint) {
+        const subject = 'WP Flame design-partner application';
+        const body = [
+          `Name: ${values.name ?? ''}`,
+          `Email: ${values.email ?? ''}`,
+          `Role: ${values.role ?? ''}`,
+          `Organisation: ${values.organisation ?? ''}`,
+          `Sites managed: ${values.site_count ?? ''}`,
+          `Workflow: ${values.workflow ?? ''}`,
+          '',
+          'Incident:',
+          String(values.incident ?? ''),
+          '',
+          'Site-authorisation requirement acknowledged: yes',
+          'Application privacy acknowledgement: yes',
+        ].join('\n');
+
+        status.textContent = 'Your email app should open now. Send the message to complete your application.';
+        status.classList.add('is-notice');
+        window.location.href = `mailto:hello@wpflame.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        button.disabled = false;
+        return;
+      }
+
+      status.textContent = 'Sending your application…';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            source: 'wpflame-design-partner',
+            submitted_at: new Date().toISOString(),
+            ...values,
+          }),
+        });
+
+        if (!response.ok) throw new Error('Submission was not accepted');
+
+        form.reset();
+        status.textContent = 'Application received. We will review the workflow and reply by email.';
+        status.classList.add('is-success');
+        window.dispatchEvent(new CustomEvent('wpflame:commercial-event', {
+          detail: { event: 'design_partner_application_submitted' },
+        }));
+      } catch {
+        status.innerHTML = 'We could not confirm receipt. Please email <a href="mailto:hello@wpflame.com">hello@wpflame.com</a> instead.';
+        status.classList.add('is-error');
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .application-panel {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 56px);
+    border: 1px solid rgba(255, 150, 50, 0.2);
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 90% 0%, rgba(240, 122, 24, 0.09), transparent 35%),
+      rgba(255, 255, 255, 0.025);
+  }
+
+  .application-intro {
+    max-width: 650px;
+    margin-bottom: 36px;
+  }
+
+  .application-intro h2 {
+    color: white;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 14px;
+  }
+
+  .application-intro p,
+  .submission-note,
+  .email-fallback,
+  .field-help {
+    color: var(--carbon-300);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field-wide {
+    margin-top: 20px;
+  }
+
+  .field label {
+    color: var(--carbon-100);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .field label span {
+    color: var(--carbon-300);
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    background: var(--carbon-800);
+    color: white;
+    font: inherit;
+    padding: 13px 14px;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 150px;
+  }
+
+  .field-help {
+    font-size: 12px;
+  }
+
+  .check-row {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    margin-top: 20px;
+    color: var(--carbon-200);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .check-row input {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--flame-400);
+  }
+
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 28px;
+  }
+
+  .form-actions button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+
+  .submission-note {
+    max-width: 430px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .form-status {
+    min-height: 24px;
+    margin-top: 16px;
+    color: var(--carbon-200);
+    font-size: 14px;
+  }
+
+  .form-status.is-success { color: #7ce8bd; }
+  .form-status.is-error { color: #ff9980; }
+  .form-status.is-notice { color: #ffb86b; }
+  .form-status a,
+  .email-fallback a { color: var(--flame-300); }
+
+  .email-fallback {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 24px;
+    padding-top: 20px;
+    font-size: 13px;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 700px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-actions { align-items: stretch; flex-direction: column; }
+    .form-actions .btn-primary { justify-content: center; width: 100%; }
+  }
+</style>

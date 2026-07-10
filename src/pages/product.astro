@@ -1,0 +1,142 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Product: A Performance Flight Recorder for Dynamic WordPress"
+  description="Understand WP Flame’s intended request-diagnosis workflow, capture modes, measurement boundaries, and current pre-release status."
+  eyebrow="Product"
+  heading="The performance flight recorder for dynamic WordPress."
+  intro="WP Flame is being built to capture a bounded real WordPress request, show where supported server-side time went, identify the largest measured contributors, and verify whether a change helped."
+>
+  <section class="content-section content-section--narrow" aria-labelledby="current-status-title">
+    <div class="content-status-panel">
+      <span class="content-status-dot" aria-hidden="true"></span>
+      <div>
+        <strong id="current-status-title">Current phase: paid design partners</strong>
+        <p>
+          The core tracing architecture exists, but public-v1 correctness, safety, comparison,
+          benchmark, compatibility, packaging, and release gates have not been publicly passed.
+          This page describes the product direction—not a finished general-availability feature list.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="job-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">The job</p>
+      <h2 id="job-title">When a WordPress request is slow, produce evidence for the next action.</h2>
+      <p>
+        WP Flame focuses on dynamic requests that still execute WordPress: wp-admin, checkout,
+        logged-in pages, REST, AJAX, cron, CLI, and other eligible workflows. It is not a browser
+        speed score or an automatic optimization plugin.
+      </p>
+    </div>
+    <div class="content-grid content-grid--3">
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">01 · Capture</p>
+        <h3>Record one bounded workflow</h3>
+        <p>Choose a route or action, select an appropriate mode, and record what the capture could and could not observe.</p>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">02 · Understand</p>
+        <h3>See measured contributors</h3>
+        <p>Lead with supported ownership, impact, evidence, confidence, completeness, and the safest next action.</p>
+      </article>
+      <article class="content-card">
+        <p class="content-kicker">03 · Verify</p>
+        <h3>Repeat a compatible workflow</h3>
+        <p>Compare compatible route, request type, mode, capability, score, and environment cohorts instead of two convenient screenshots.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="modes-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Capture modes</p>
+      <h2 id="modes-title">Increase detail deliberately.</h2>
+      <p>Every mode adds work. The capture report must make requested, available, failed, and intentionally excluded telemetry visible.</p>
+    </div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Intended public-v1 capture-mode contract</caption>
+        <thead><tr><th scope="col">Mode</th><th scope="col">Intended observation</th><th scope="col">Boundary</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Safe</th><td>Supported lifecycle and WordPress HTTP API activity.</td><td>Database and callback capture are intentionally not requested.</td><td>Low-risk observation and initial health checks.</td></tr>
+          <tr><th scope="row">Standard</th><td>Safe-mode evidence plus compatible database capture.</td><td>Custom database layers may be unavailable and must remain untouched.</td><td>Default manual diagnosis when compatibility succeeds.</td></tr>
+          <tr><th scope="row">Deep</th><td>Supported WordPress hook-callback timing in addition to available Standard evidence.</td><td>Not arbitrary PHP functions; one-shot or time-boxed because it adds more work.</td><td>Focused developer diagnosis when callback detail is necessary.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="truth-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card">
+        <p class="content-kicker">Product truth</p>
+        <h2 id="truth-title">What a trace can describe</h2>
+        <ul>
+          <li>Observed duration from the earliest available WP Flame bootstrap point.</li>
+          <li>Supported lifecycle, WordPress HTTP, compatible database, and optional callback spans.</li>
+          <li>Best-supported WordPress ownership across core, plugins, themes, mu-plugins, and supported drop-ins.</li>
+          <li>Capture mode, origin, sampling policy, capabilities, dropped data, and incomplete reasons.</li>
+          <li>Compatible request cohorts when the comparison release gate passes.</li>
+        </ul>
+      </article>
+      <article class="content-card content-card--purple">
+        <p class="content-kicker">Deliberate boundary</p>
+        <h2>What WP Flame is not</h2>
+        <ul>
+          <li>A page cache, CDN, image optimizer, or CSS/JavaScript optimization suite.</li>
+          <li>A Core Web Vitals or full browser-experience measurement product.</li>
+          <li>A complete PHP call-stack profiler or generic infrastructure APM.</li>
+          <li>A promise that every host, database layer, or request exposes identical detail.</li>
+          <li>An automatic plugin-disabling, code-rewriting, or site-repair system.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="capability-title">
+    <div class="content-section-header">
+      <p class="content-eyebrow">Capability-aware evidence</p>
+      <h2 id="capability-title">Unavailable is unknown, never zero.</h2>
+      <p>A trace should record a status for each requested instrumentor so missing evidence cannot silently improve a score or confidence.</p>
+    </div>
+    <dl>
+      <div class="content-definition"><dt>Captured</dt><dd>The requested capability registered and produced supported evidence for this trace.</dd></div>
+      <div class="content-definition"><dt>Not requested</dt><dd>The selected mode intentionally excluded this capability; that absence is expected.</dd></div>
+      <div class="content-definition"><dt>Unavailable</dt><dd>The environment could not support the requested capture path, such as an incompatible database layer.</dd></div>
+      <div class="content-definition"><dt>Failed</dt><dd>The requested instrumentor encountered an error. The trace must explain the degradation.</dd></div>
+    </dl>
+  </section>
+
+  <section class="content-section" aria-labelledby="privacy-title">
+    <div class="content-card content-card--accent">
+      <p class="content-kicker">Local-first by default</p>
+      <h2 id="privacy-title">Trace data stays on the WordPress installation unless a separately disclosed service is explicitly chosen.</h2>
+      <p>
+        Public v1 is intended to work without a required SaaS service. Any future licensing,
+        analytics, hosted report, AI, or fleet request must be separately disclosed, minimized,
+        and consented to. Redacted local export remains the default handoff direction.
+      </p>
+      <div class="content-link-list">
+        <a href="/privacy/">Read data handling</a>
+        <a href="/compatibility/">Review compatibility status</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="workflows-title">
+    <div class="content-section-header"><p class="content-eyebrow">Start with a real incident</p><h2 id="workflows-title">Choose a bounded workflow.</h2></div>
+    <div class="content-link-list">
+      <a href="/use-cases/slow-wp-admin/">Slow wp-admin</a>
+      <a href="/use-cases/woocommerce-checkout/">WooCommerce checkout</a>
+      <a href="/use-cases/external-api/">External APIs</a>
+      <a href="/use-cases/plugin-regression/">Plugin regression</a>
+      <a href="/use-cases/rest-ajax/">REST and AJAX</a>
+      <a href="/use-cases/cron-action-scheduler/">Cron and Action Scheduler</a>
+    </div>
+  </section>
+</Content>

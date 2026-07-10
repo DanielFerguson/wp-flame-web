@@ -1,356 +1,86 @@
 ---
-import { links } from '../config/links';
-interface Props {
-  highlight?: "spark" | "pro" | "agency";
-}
-const { highlight = "pro" } = Astro.props;
+interface Props { highlight?: 'spark' | 'pro' | 'agency' | 'partner'; }
+Astro.props;
 ---
 
+<div class="offer-status reveal" role="note">
+  <strong>Current phase:</strong> paid design partners. Community and Pro packaging below
+  describes the intended direction and remains subject to roadmap evidence and paid validation.
+</div>
+
 <div class="pricing-grid reveal">
-  <div class="pricing-card">
-    <div class="pricing-tier" style="color:var(--carbon-400)">Free</div>
-    <div class="pricing-audience">For developers exploring performance</div>
-    <div class="pricing-price"><span class="amount">$0</span></div>
-    <div class="pricing-desc">Full APM. No limits. No trial. Free forever.</div>
-    <ul class="pricing-features free-features">
-      <li>Interactive flame graphs</li>
-      <li>Per-plugin attribution</li>
-      <li>DB query tracking</li>
-      <li>HTTP call monitoring</li>
-      <li>Trace history</li>
-      <li>WP-CLI support</li>
-      <li>JSON export</li>
+  <article class="pricing-card current-offer">
+    <div class="pricing-state">Available to accepted partners</div>
+    <h3>Founding design partner</h3>
+    <div class="pricing-price"><strong>$99</strong><span>/ year</span></div>
+    <p class="pricing-audience">For agencies and operators bringing a real eligible incident.</p>
+    <ul>
+      <li>Up to five authorised production sites</li>
+      <li>Staging and local environments excluded from the site count</li>
+      <li>Direct founder onboarding</li>
+      <li>Regular evidence and issue review</li>
+      <li>Advance notice before the final public tier applies</li>
     </ul>
-    <a href="#download" class="pricing-btn btn-free">Install free</a>
-  </div>
-  <div class={`pricing-card ${highlight === "spark" ? "featured" : ""}`}>
-    <div class="pricing-tier" style="color:var(--ai-400)">Spark</div>
-    <div class="pricing-audience">For solo site owners who want fixes</div>
-    <div class="pricing-price">
-      <span class="amount">$29</span><span class="period">/mo</span>
-    </div>
-    <div class="pricing-founding">Will be $39/mo after launch</div>
-    <div class="pricing-desc">AI insights for a single WordPress site.</div>
-    <ul class="pricing-features ai-features">
-      <li>Everything in Free</li>
-      <li>AI trace recommendations</li>
-      <li>Root cause analysis</li>
-      <li>Severity scoring</li>
-      <li>50 AI analyses per month</li>
-      <li>Email support</li>
+    <a href="/design-partner/" class="pricing-btn current-btn">Apply with a workflow</a>
+    <p class="fine-print">No lifetime entitlement. Currency, tax, payment, cancellation, renewal, and refund terms are confirmed in writing before payment. Participation alone grants no trace-publication, testimonial, or case-study permission.</p>
+  </article>
+
+  <article class="pricing-card">
+    <div class="pricing-state planned">Public-v1 direction</div>
+    <h3>WP Flame Community</h3>
+    <div class="pricing-promise">One useful diagnosis</div>
+    <p class="pricing-audience">For reproducing a slow request and sharing supported evidence.</p>
+    <ul>
+      <li>Manual bounded capture</li>
+      <li>Interactive trace and supported span details</li>
+      <li>Visible capability and limitation report</li>
+      <li>Bounded recent local history</li>
+      <li>Basic top-contributor findings</li>
+      <li>Single-trace redacted export</li>
     </ul>
-    <a href={links.sparkTrial} class="pricing-btn btn-paid">Start with Spark</a>
-  </div>
-  <div class={`pricing-card ${highlight === "pro" ? "featured" : ""}`}>
-    <div class="pricing-tier" style="color:var(--ai-300)">Pro</div>
-    <div class="pricing-audience">For freelancers and small agencies</div>
-    <div class="pricing-price">
-      <span class="amount">$79</span><span class="period">/mo</span>
-    </div>
-    <div class="pricing-founding">Will be $99/mo after launch</div>
-    <div class="pricing-desc">
-      Full AI suite for agencies and serious sites.
-    </div>
-    <ul class="pricing-features ai-features">
-      <li>Everything in Spark</li>
-      <li>Unlimited AI analyses</li>
-      <li>"Ask Flame" conversational AI</li>
-      <li>Regression detection</li>
-      <li>Weekly performance digests</li>
-      <li>Up to 5 sites</li>
+    <a href="/community-vs-pro/" class="pricing-btn secondary-btn">Review the proposed boundary</a>
+    <p class="fine-print">No account, expiry, or intentionally incomplete result is planned for the diagnosis workflow.</p>
+  </article>
+
+  <article class="pricing-card">
+    <div class="pricing-state hypothesis">Packaging hypothesis</div>
+    <h3>WP Flame Pro</h3>
+    <div class="pricing-promise">Ongoing confidence</div>
+    <p class="pricing-audience">For comparable workflows, longer history, reporting, and support.</p>
+    <ul>
+      <li>Controlled automatic sampling</li>
+      <li>Longer configurable history</li>
+      <li>Route distributions and comparable traces</li>
+      <li>Saved monitored workflows</li>
+      <li>Client-ready redacted reports and CSV export</li>
       <li>Priority support</li>
     </ul>
-    <a href={links.proTrial} class="pricing-btn btn-paid">Start with Pro</a>
-  </div>
-  <div class={`pricing-card ${highlight === "agency" ? "featured" : ""}`}>
-    <div class="pricing-tier" style="color:var(--ai-200)">Agency</div>
-    <div class="pricing-audience">For teams managing client portfolios</div>
-    <div class="pricing-price">
-      <span class="amount">$199</span><span class="period">/mo</span>
-    </div>
-    <div class="pricing-founding">Will be $249/mo after launch</div>
-    <div class="pricing-desc">
-      For teams managing client portfolios at scale.
-    </div>
-    <ul class="pricing-features ai-features">
-      <li>Everything in Pro</li>
-      <li>Unlimited sites</li>
-      <li>Client-ready reports</li>
-      <li>Multi-site dashboard</li>
-      <li>Custom AI rules</li>
-      <li>Team accounts</li>
-      <li>Dedicated support</li>
-    </ul>
-    <a href={links.agencyTrial} class="pricing-btn btn-paid">Start with Agency</a>
-  </div>
-</div>
-<p class="pricing-note reveal">
-  All paid plans include a 14-day free trial. No credit card required.
-</p>
-<div class="pricing-capture reveal">
-  <p class="pricing-capture-text">Launching soon — founding members get these prices locked in forever.</p>
-  <form class="pricing-capture-form" id="pricing-capture-form">
-    <input type="email" placeholder="you@example.com" required class="pricing-capture-input" />
-    <button type="submit" class="btn-primary pricing-capture-btn">Claim my spot</button>
-  </form>
-  <div class="pricing-capture-success" id="pricing-capture-success" style="display:none;">
-    <p>You're in. We'll email you at launch with your founding member pricing.</p>
-  </div>
+    <a href="/community-vs-pro/" class="pricing-btn secondary-btn">See what remains to validate</a>
+    <p class="fine-print">Final price, site tiers, licensing, and feature boundary are not yet public commitments.</p>
+  </article>
 </div>
 
 <style>
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    align-items: start;
-  }
-  .pricing-card {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
-    padding: 36px 28px;
-    text-align: left;
-    transition:
-      transform 0.2s,
-      border-color 0.3s;
-  }
-  .pricing-card:hover {
-    transform: translateY(-3px);
-  }
-  .pricing-card.featured {
-    border-color: rgba(123, 92, 255, 0.3);
-    background: linear-gradient(
-      170deg,
-      rgba(123, 92, 255, 0.06) 0%,
-      rgba(99, 68, 224, 0.02) 100%
-    );
-    position: relative;
-  }
-  .pricing-card.featured::before {
-    content: "Most popular";
-    position: absolute;
-    top: -11px;
-    left: 28px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    background: linear-gradient(135deg, var(--ai-500), var(--ai-400));
-    color: white;
-    padding: 4px 12px;
-    border-radius: 5px;
-  }
-  .pricing-tier {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .pricing-price {
-    display: flex;
-    align-items: baseline;
-    gap: 4px;
-    margin-bottom: 4px;
-  }
-  .pricing-price .amount {
-    font-size: 44px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: -0.03em;
-  }
-  .pricing-price .period {
-    font-size: 15px;
-    color: var(--carbon-400);
-  }
-  .pricing-desc {
-    font-size: 14px;
-    color: var(--carbon-300);
-    margin-bottom: 28px;
-    line-height: 1.5;
-    min-height: 42px;
-  }
-  .pricing-features {
-    list-style: none;
-    margin-bottom: 28px;
-  }
-  .pricing-features li {
-    padding: 8px 0;
-    font-size: 13px;
-    color: var(--carbon-200);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    line-height: 1.5;
-  }
-  .pricing-features li:last-child {
-    border-bottom: none;
-  }
-  .free-features li::before {
-    content: "✓";
-    color: var(--insight-400);
-    font-weight: 700;
-    font-size: 12px;
-    margin-top: 2px;
-  }
-  .ai-features li::before {
-    content: "✓";
-    color: var(--ai-400);
-    font-weight: 700;
-    font-size: 12px;
-    margin-top: 2px;
-  }
-  .pricing-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-    border: none;
-    font-family: "DM Sans", sans-serif;
-  }
-  .btn-free {
-    background: rgba(255, 255, 255, 0.06);
-    color: white;
-  }
-  .btn-free:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  .btn-paid {
-    background: linear-gradient(135deg, var(--ai-500), var(--ai-400));
-    color: white;
-  }
-  .btn-paid:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-  }
-  .pricing-note {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 13px;
-    color: var(--carbon-400);
-  }
-  .pricing-audience {
-    font-size: 13px;
-    color: var(--carbon-400);
-    margin-bottom: 12px;
-  }
-  .pricing-founding {
-    font-size: 12px;
-    color: var(--carbon-500);
-    margin-bottom: 4px;
-  }
-  .pricing-capture {
-    text-align: center;
-    margin-top: 32px;
-    max-width: 540px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .pricing-capture-text {
-    font-size: 15px;
-    color: var(--carbon-300);
-    margin-bottom: 20px;
-  }
-  .pricing-capture-form {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .pricing-capture-input {
-    padding: 14px 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-    color: white;
-    font-size: 16px;
-    font-family: 'DM Sans', sans-serif;
-    width: 260px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .pricing-capture-input:focus {
-    border-color: var(--flame-400);
-  }
-  .pricing-capture-input::placeholder {
-    color: var(--carbon-500);
-  }
-  .pricing-capture-btn {
-    white-space: nowrap;
-  }
-  .pricing-capture-success p {
-    font-size: 15px;
-    color: var(--insight-400);
-    font-weight: 600;
-  }
-  @media (max-width: 640px) {
-    .pricing-capture-input { width: 100%; }
-  }
-
-  @media (max-width: 1024px) {
-    .pricing-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (max-width: 640px) {
-    .pricing-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  .offer-status { max-width: 900px; margin: 0 auto 26px; padding: 16px 20px; border-left: 3px solid var(--flame-400); background: rgba(240,122,24,.055); color: var(--carbon-200); font-size: 13px; }
+  .offer-status strong { color: white; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; align-items: stretch; }
+  .pricing-card { display: flex; flex-direction: column; padding: 32px; border: 1px solid rgba(255,255,255,.08); border-radius: 17px; background: rgba(255,255,255,.025); }
+  .current-offer { border-color: rgba(240,122,24,.26); background: linear-gradient(160deg,rgba(240,122,24,.08),rgba(255,255,255,.02)); }
+  .pricing-state { align-self: flex-start; color: var(--flame-300); background: rgba(240,122,24,.09); border-radius: 999px; padding: 6px 10px; font: 600 9px 'JetBrains Mono',monospace; letter-spacing: .07em; text-transform: uppercase; }
+  .pricing-state.planned { color: #7ce8bd; background: rgba(52,212,152,.08); }
+  .pricing-state.hypothesis { color: #b8a8ff; background: rgba(123,92,255,.1); }
+  .pricing-card h3 { color: white; font-size: 23px; margin: 24px 0 14px; }
+  .pricing-price { display: flex; align-items: baseline; gap: 5px; margin-bottom: 12px; }
+  .pricing-price strong { color: white; font-size: 44px; line-height: 1; }
+  .pricing-price span { color: var(--carbon-300); }
+  .pricing-promise { color: white; font-size: 22px; font-weight: 700; margin-bottom: 13px; }
+  .pricing-audience { color: var(--carbon-300); min-height: 70px; }
+  .pricing-card ul { list-style: none; margin: 20px 0 28px; }
+  .pricing-card li { color: var(--carbon-200); font-size: 13px; padding: 8px 0 8px 23px; border-bottom: 1px solid rgba(255,255,255,.05); position: relative; }
+  .pricing-card li::before { content: '✓'; position: absolute; left: 0; color: var(--flame-300); }
+  .pricing-btn { display: flex; justify-content: center; align-items: center; text-align: center; margin-top: auto; min-height: 46px; border-radius: 9px; padding: 11px 14px; text-decoration: none; font-weight: 700; font-size: 13px; }
+  .current-btn { background: var(--flame-500); color: #171014; }
+  .secondary-btn { border: 1px solid rgba(255,255,255,.13); color: white; }
+  .fine-print { color: var(--carbon-300); font-size: 10px; line-height: 1.55; margin-top: 16px; }
+  @media (max-width: 950px) { .pricing-grid { grid-template-columns: 1fr; } .pricing-audience { min-height: 0; } }
 </style>
-
-<script>
-  import { lemonSqueezy } from '../config/links';
-
-  const form = document.getElementById('pricing-capture-form');
-  const success = document.getElementById('pricing-capture-success');
-  if (form && success) {
-    if (localStorage.getItem('wpflame-founding-member') === 'true') {
-      form.style.display = 'none';
-      success.style.display = 'block';
-    } else {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const input = form.querySelector('input[type="email"]') as HTMLInputElement;
-        const email = input?.value;
-        if (!email) return;
-
-        if (!lemonSqueezy.audienceEndpoint) {
-          form.style.display = 'none';
-          success.style.display = 'block';
-          localStorage.setItem('wpflame-founding-member', 'true');
-          return;
-        }
-
-        try {
-          const res = await fetch(lemonSqueezy.audienceEndpoint, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${lemonSqueezy.apiKey}`,
-              'Content-Type': 'application/vnd.api+json',
-              'Accept': 'application/vnd.api+json',
-            },
-            body: JSON.stringify({
-              data: { type: 'subscribers', attributes: { email } },
-            }),
-          });
-          if (res.ok || res.status === 201 || res.status === 409) {
-            form.style.display = 'none';
-            success.style.display = 'block';
-            localStorage.setItem('wpflame-founding-member', 'true');
-          }
-        } catch {}
-      });
-    }
-  }
-</script>

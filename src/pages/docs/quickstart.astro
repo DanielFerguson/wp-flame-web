@@ -1,0 +1,91 @@
+---
+import Content from '../../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Design-Partner Quickstart"
+  description="Prepare a safe, bounded WordPress performance investigation during the paid WP Flame design-partner programme."
+  eyebrow="Documentation · Quickstart"
+  heading="Trace one slow WordPress workflow with a clear safety boundary."
+  intro="WP Flame is pre-release. Access is currently provided through founder-led paid design-partner onboarding, not a public download. This guide helps you prepare a useful incident and understand the intended capture process."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-callout">
+      <p><strong>Do not install an unreviewed pre-release build on a client production site without written authorization.</strong> Design-partner participation, production-site permission, trace review, research use, testimonial use, and case-study use are separate decisions.</p>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="prepare-title">
+    <div class="content-section-header"><p class="content-eyebrow">Before onboarding</p><h2 id="prepare-title">Bring a specific incident.</h2><p>“The site is slow” is not yet a capture plan. Choose one reproducible request and one person who can act on the result.</p></div>
+    <div class="content-grid content-grid--3">
+      <article class="content-card"><h3>Eligible workflow</h3><p>A dynamic request that executes WordPress: wp-admin, checkout, logged-in page, REST, AJAX, cron, CLI, or another agreed route.</p></article>
+      <article class="content-card"><h3>Safe environment</h3><p>Prefer staging or a controlled test account. Use synthetic data for checkout and sensitive user workflows wherever practical.</p></article>
+      <article class="content-card"><h3>Action owner</h3><p>A developer, agency, vendor, or capable operator who can evaluate the evidence and implement or delegate the next action.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="steps-title">
+    <div class="content-section-header"><p class="content-eyebrow">Guided capture</p><h2 id="steps-title">The intended design-partner flow</h2></div>
+    <ol class="content-steps">
+      <li><span><strong>Define the workflow.</strong> Record the URL or operation, user role, inputs, expected result, affected environment, and how the slowdown appears.</span></li>
+      <li><span><strong>Confirm permission and sensitivity.</strong> Obtain production-site authorization and decide which data fields must remain excluded or redacted.</span></li>
+      <li><span><strong>Run health and capability checks.</strong> Confirm storage, early bootstrap, database strategy, retention, and the available capture modes before collecting evidence.</span></li>
+      <li><span><strong>Choose the least detailed useful mode.</strong> Begin with Standard when compatible. Use Safe when database capture is unsuitable and one-shot Deep only when callback detail is needed.</span></li>
+      <li><span><strong>Bound the capture.</strong> Set the route or workflow, requested count, expiry, and phase. Do not enable broad indefinite production capture.</span></li>
+      <li><span><strong>Reproduce the exact action.</strong> Keep account, route, data scale, cache state, and environmental conditions as consistent as practical.</span></li>
+      <li><span><strong>Read the capture report first.</strong> Check mode, capabilities, start stage, dropped spans, truncation, auto-closed spans, and incomplete reasons before interpreting findings.</span></li>
+      <li><span><strong>Choose one next action.</strong> Review the largest supported measured opportunity, its evidence, confidence, owner, and whether specialist help is required.</span></li>
+      <li><span><strong>Verify cautiously.</strong> Repeat compatible samples after one change. A single before and after request is directional, not a verified improvement.</span></li>
+      <li><span><strong>Stop and clean up.</strong> Confirm the capture expired, review retained data, export only a redacted report, and remove data according to the agreed retention plan.</span></li>
+    </ol>
+  </section>
+
+  <section class="content-section" aria-labelledby="report-title">
+    <div class="content-section-header"><p class="content-eyebrow">Read before interpreting</p><h2 id="report-title">Capability status changes what the trace can support.</h2></div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card"><h3>Captured</h3><p>The requested instrumentor registered and produced supported evidence. This still does not mean every internal operation was observed.</p></article>
+      <article class="content-card"><h3>Not requested</h3><p>The selected mode intentionally excluded that capability. Safe mode, for example, should not be judged as having zero database activity.</p></article>
+      <article class="content-card"><h3>Unavailable</h3><p>The environment could not provide the requested capture path. Treat the missing area as unknown and disclose the limitation.</p></article>
+      <article class="content-card"><h3>Failed</h3><p>The instrumentor encountered an error. Reduce confidence and investigate the capture failure before making a strong conclusion.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="baseline-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">Baseline checklist</p>
+        <h2 id="baseline-title">Keep comparison cohorts compatible</h2>
+        <ul>
+          <li>Same normalized route and request type.</li>
+          <li>Same mode and capability set.</li>
+          <li>Same score and trace schema version.</li>
+          <li>Relevant WordPress, PHP, plugin, theme, and configuration context recorded.</li>
+          <li>Sufficient samples and uncertainty disclosed.</li>
+        </ul>
+      </article>
+      <article class="content-card content-card--purple">
+        <p class="content-kicker">Never include by default</p>
+        <h2>Sensitive trace material</h2>
+        <ul>
+          <li>Authentication secrets, cookies, nonces, or authorization headers.</li>
+          <li>Payment information or real checkout/customer data.</li>
+          <li>Unredacted full URLs, SQL values, IP addresses, user agents, or identity fields.</li>
+          <li>Raw exports in support tickets unless explicitly requested through an approved secure channel.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="blocked-title">
+    <div class="content-callout">
+      <h2 id="blocked-title">Stop the capture if the site behaves differently.</h2>
+      <p>Unexpected errors, request interference, storage growth, queue pressure, or material performance change are reasons to stop, preserve evidence, and contact the design-partner support channel. Pre-release investigation never outranks site safety.</p>
+    </div>
+    <div class="content-link-list">
+      <a href="/support/">Prepare a support request</a>
+      <a href="/compatibility/">Review compatibility status</a>
+      <a href="/privacy/">Review data handling</a>
+      <a href="/use-cases/">Choose a workflow guide</a>
+    </div>
+  </section>
+</Content>

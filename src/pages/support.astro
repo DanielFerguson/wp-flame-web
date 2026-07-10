@@ -1,0 +1,59 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Support and Responsible Disclosure"
+  description="Learn the current design-partner support scope, how to prepare a safe diagnostic request, and how to report a WP Flame security issue."
+  eyebrow="Support"
+  heading="Get help without exposing the site you are trying to protect."
+  intro="Support is currently founder-led for paid design partners. Public Community and Pro channels, service levels, and response targets remain hypotheses until support volume and capacity are measured."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>Current channel</strong><p>Email <a href="mailto:hello@wpflame.com">hello@wpflame.com</a> with the subject “WP Flame design-partner support”. Do not attach raw trace exports, credentials, production database dumps, or customer data to an initial email.</p></div></div>
+  </section>
+
+  <section class="content-section" aria-labelledby="scope-title">
+    <div class="content-section-header"><p class="content-eyebrow">Current support scope</p><h2 id="scope-title">Focused on safe diagnosis and pre-release evidence.</h2></div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent"><h3>Included in the design-partner programme</h3><ul><li>Onboarding and capture-safety review.</li><li>Health, capability, storage, and retention triage.</li><li>Review of one agreed slow workflow and its supported findings.</li><li>Help preparing a redacted developer or vendor handoff.</li><li>Recording compatibility gaps and misleading conclusions against the release roadmap.</li></ul></article>
+      <article class="content-card"><h3>Outside the current product support scope</h3><ul><li>Emergency hosting, security, malware, backup, or disaster-recovery service.</li><li>Guaranteed remediation of third-party plugin, theme, host, or external-service defects.</li><li>Automatic optimization or unrestricted custom development.</li><li>General infrastructure, Core Web Vitals, SEO, conversion, or capacity consulting.</li><li>A fixed response-time SLA before beta support capacity has been measured.</li></ul></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="request-title">
+    <div class="content-section-header"><p class="content-eyebrow">Prepare the request</p><h2 id="request-title">Send enough context, not sensitive payloads.</h2></div>
+    <ol class="content-steps">
+      <li><span><strong>Describe impact.</strong> Name the affected workflow, when it began, who is affected, and whether disabling WP Flame changes the behavior.</span></li>
+      <li><span><strong>Record environment.</strong> Include WordPress, PHP, database, host type, multisite, relevant plugin/theme, and WP Flame versions.</span></li>
+      <li><span><strong>Include capture state.</strong> Provide mode, capability statuses, health warnings, incomplete reasons, and capture-session policy.</span></li>
+      <li><span><strong>Write reproduction steps.</strong> Use a test account and synthetic values; identify the route/action without copying credentials or personal data.</span></li>
+      <li><span><strong>Wait for a secure handoff.</strong> If a diagnostic bundle or trace is necessary, use the agreed redacted export and approved transfer method.</span></li>
+    </ol>
+  </section>
+
+  <section class="content-section" aria-labelledby="priority-title">
+    <div class="content-section-header"><p class="content-eyebrow">Triage guide</p><h2 id="priority-title">Stop first when site safety changes.</h2></div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Design-partner support priority guide</caption>
+        <thead><tr><th scope="col">Situation</th><th scope="col">Immediate action</th><th scope="col">What to report</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Fatal error, request interference, or data loss</th><td>Stop capture, deactivate WP Flame if safe, preserve logs, and restore the site through normal operational procedures.</td><td>Timestamp, affected request, environment, whether deactivation restored behavior, and redacted error details.</td></tr>
+          <tr><th scope="row">Unexpected overhead or storage growth</th><td>Stop broad capture, note mode/policy, check expiry and retention, and preserve health state.</td><td>Mode, requested count, duration, storage growth, trace size, and reproduction.</td></tr>
+          <tr><th scope="row">Unavailable capability</th><td>Do not force an unsupported instrumentor. Continue only if the degraded trace remains useful.</td><td>Capability report, database/drop-in context, and health warning.</td></tr>
+          <tr><th scope="row">Questionable finding</th><td>Do not act on a high-impact conclusion until supporting evidence and completeness are reviewed.</td><td>Finding, related spans, evidence count, confidence, and incomplete reasons.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="security-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--purple"><p class="content-kicker">Responsible disclosure</p><h2 id="security-title">Report vulnerabilities privately</h2><p>Email <a href="mailto:hello@wpflame.com?subject=WP%20Flame%20security%20report">hello@wpflame.com</a> with the subject “WP Flame security report”. Describe the affected version, impact, prerequisites, and reproduction without placing exploit details in a public issue. Do not access data or systems beyond your authorization.</p></article>
+      <article class="content-card"><p class="content-kicker">Public channels later</p><h2>No promises before capacity evidence</h2><p>The proposed Community model uses documentation and a public support channel. Proposed paid editions add ticket support and may add priority routing. Exact channels and targets will be published only after beta support demand is measured.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow"><div class="content-link-list"><a href="/docs/quickstart/">Review safe capture steps</a><a href="/compatibility/">Check compatibility status</a><a href="/privacy/">Review data handling</a><a href="/changelog/">Review project status changes</a></div></section>
+</Content>

@@ -1,106 +1,38 @@
 ---
-interface Props {
-  src?: string;
-  poster?: string;
-}
+interface Props { src?: string; poster?: string; }
 const { src, poster } = Astro.props;
 ---
 
-<section class="section">
+<section class="section proof-media-section">
   <div class="container">
-    <div class="video-header reveal">
-      <div class="label">See it in action</div>
-      <h2 class="sec-title">Watch WP Flame find the <em>problem</em></h2>
+    <div class="proof-media-header reveal">
+      <div class="label">Product walkthrough</div>
+      <h2 class="sec-title">See the capture, evidence, and verification workflow.</h2>
     </div>
-
-    <div class="video-wrapper reveal">
-      {src ? (
-        <video
-          class="video-player"
-          controls
-          poster={poster}
-        >
-          <source src={src} />
-          Your browser does not support the video tag.
-        </video>
-      ) : (
-        <>
-          <div class="video-placeholder">
-            <svg class="play-btn" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="40" cy="40" r="39" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="rgba(255,255,255,0.08)" />
-              <polygon points="33,26 57,40 33,54" fill="rgba(255,255,255,0.7)" />
-            </svg>
-            <p class="placeholder-text">Product walkthrough coming soon</p>
-          </div>
-          <div class="video-below">
-            <p class="video-below-text">Install the free plugin to try it yourself</p>
-            <a href="#download" class="btn-primary">Install free ↓</a>
-          </div>
-        </>
-      )}
-    </div>
+    {src ? (
+      <video class="video-player reveal" controls preload="metadata" poster={poster}>
+        <source src={src} />
+        Your browser does not support the video element.
+      </video>
+    ) : (
+      <div class="sample-link-card reveal">
+        <div>
+          <span>Interactive alternative</span>
+          <h3>Explore the sample trace now.</h3>
+          <p>The sample is available without an installation and clearly labels its illustrative data and measurement limits.</p>
+        </div>
+        <a href="/sample-trace/" class="btn-primary">Open the sample trace</a>
+      </div>
+    )}
   </div>
 </section>
 
 <style>
-  .video-header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-
-  .video-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    overflow: hidden;
-  }
-
-  .video-player {
-    width: 100%;
-    display: block;
-    border-radius: 16px;
-  }
-
-  .video-placeholder {
-    aspect-ratio: 16 / 9;
-    background: rgba(255, 255, 255, 0.025);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  .play-btn {
-    flex-shrink: 0;
-  }
-
-  .placeholder-text {
-    font-size: 16px;
-    color: var(--carbon-300);
-    font-weight: 500;
-  }
-
-  .video-below {
-    padding: 32px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.015);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .video-below-text {
-    font-size: 16px;
-    color: var(--carbon-300);
-  }
-
-  @media (max-width: 640px) {
-    .video-below {
-      padding: 24px 16px;
-    }
-  }
+  .proof-media-header { max-width: 720px; margin-bottom: 42px; }
+  .video-player { width: 100%; max-width: 960px; display: block; margin: 0 auto; border-radius: 16px; }
+  .sample-link-card { display: flex; justify-content: space-between; align-items: center; gap: 40px; max-width: 960px; margin: 0 auto; padding: 38px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.025); }
+  .sample-link-card span { color: var(--flame-300); font: 600 10px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+  .sample-link-card h3 { color: white; font-size: 25px; margin: 12px 0 8px; }
+  .sample-link-card p { color: var(--carbon-300); max-width: 620px; }
+  @media (max-width: 720px) { .sample-link-card { align-items: flex-start; flex-direction: column; padding: 28px; } }
 </style>

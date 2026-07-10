@@ -1,0 +1,88 @@
+---
+import Content from '../layouts/Content.astro';
+---
+
+<Content
+  title="WP Flame Compatibility and Known Limitations"
+  description="Understand WP Flame’s capability-based compatibility model, planned public-v1 test matrix, degraded states, and current pre-release evidence status."
+  eyebrow="Compatibility"
+  heading="Compatibility is a capability report, not a universal yes or no."
+  intro="WordPress hosts, database layers, drop-ins, plugins, and loading paths expose different evidence. WP Flame is designed to continue visibly degraded where practical and to say what each trace did not observe."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>Current status: no public compatibility matrix has passed the release gate</strong><p>Named hosts, plugins, PHP versions, and database stacks must not be marketed as supported until their expected, degraded, and unavailable capabilities have current test evidence.</p></div></div>
+  </section>
+
+  <section class="content-section" aria-labelledby="model-title">
+    <div class="content-section-header"><p class="content-eyebrow">Compatibility model</p><h2 id="model-title">A site can work while some evidence remains unavailable.</h2><p>Every eligible trace should record a status for early lifecycle, database, callbacks, HTTP, GraphQL, cache counters, and other requested capabilities.</p></div>
+    <div class="content-grid content-grid--2">
+      <article class="content-card"><h3>Captured</h3><p>The requested capability registered and produced supported evidence.</p></article>
+      <article class="content-card"><h3>Not requested</h3><p>The selected mode deliberately excluded the capability; absence is expected.</p></article>
+      <article class="content-card"><h3>Unavailable</h3><p>The environment could not support the requested strategy. The product should remain safe and explain the limitation.</p></article>
+      <article class="content-card"><h3>Failed</h3><p>An instrumentor error reduced trace completeness. The failure must be visible and must not silently improve a conclusion.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="matrix-title">
+    <div class="content-section-header"><p class="content-eyebrow">Planned public-v1 matrix</p><h2 id="matrix-title">Evidence still required</h2></div>
+    <div class="content-table-wrap">
+      <table class="content-table">
+        <caption>Compatibility test plan — not a supported-environment claim</caption>
+        <thead><tr><th scope="col">Environment</th><th scope="col">What must be verified</th><th scope="col">Current public status</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">WordPress lower bound and current release</th><td>Install, capture, schema, UI, privacy, deactivate, and uninstall behavior.</td><td>Awaiting published matrix</td></tr>
+          <tr><th scope="row">PHP versions</th><td>Decide whether 7.4 remains supported; test 8.1, 8.3, 8.4, and 8.5 release paths.</td><td>Awaiting product decision and matrix</td></tr>
+          <tr><th scope="row">MySQL and MariaDB</th><td>Schema, migrations, query capture, storage, retention, and failure behavior.</td><td>Awaiting published matrix</td></tr>
+          <tr><th scope="row">Managed host without early mu-plugin</th><td>Safe degraded lifecycle, visible start gap, and no false full-request claim.</td><td>Expected degraded path; evidence pending</td></tr>
+          <tr><th scope="row">Custom database layer</th><td>Leave unsupported layers untouched; show database capability unavailable.</td><td>Strategy defined; evidence pending</td></tr>
+          <tr><th scope="row">Persistent object-cache drop-ins</th><td>Ownership, cache evidence, uncertainty, and safe operation.</td><td>Awaiting published matrix</td></tr>
+          <tr><th scope="row">Multisite</th><td>Bounded activation, upgrade, storage, prune, deactivate, and uninstall.</td><td>Awaiting published matrix</td></tr>
+          <tr><th scope="row">WooCommerce</th><td>Frontend, checkout, admin, AJAX, cron, and Action Scheduler fixtures.</td><td>Priority design-partner target; compatibility not yet claimed</td></tr>
+          <tr><th scope="row">Elementor and other builders</th><td>Known ownership fixtures, lifecycle behavior, and overhead evidence.</td><td>Representative benchmark planned; named support not yet claimed</td></tr>
+          <tr><th scope="row">WPGraphQL</th><td>Current end-to-end operation and resolver fixtures.</td><td>Do not advertise until gate passes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section" aria-labelledby="known-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--purple">
+        <p class="content-kicker">Known product boundaries</p>
+        <h2 id="known-title">Expected limitations</h2>
+        <ul>
+          <li>Requests served entirely by a page cache or CDN do not execute PHP and cannot be traced.</li>
+          <li>Observed duration begins at the earliest WP Flame bootstrap point available.</li>
+          <li>Standard database capture depends on a compatible strategy.</li>
+          <li>Deep mode observes supported WordPress callbacks, not arbitrary PHP functions.</li>
+          <li>WordPress HTTP instrumentation does not represent every possible network call.</li>
+          <li>Browser rendering, network quality, Core Web Vitals, and infrastructure metrics are outside scope.</li>
+        </ul>
+      </article>
+      <article class="content-card content-card--accent">
+        <p class="content-kicker">Safe degradation contract</p>
+        <h2>What should happen</h2>
+        <ul>
+          <li>Unsupported database layers remain untouched.</li>
+          <li>Unavailable telemetry is labelled unknown.</li>
+          <li>Early-loading gaps are disclosed on the trace.</li>
+          <li>Instrumentor failures reduce confidence and become visible health issues.</li>
+          <li>Dropped, trimmed, or auto-closed spans are counted and disclosed.</li>
+          <li>WP Flame failure should not take down the monitored application response.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="report-title">
+    <div class="content-section-header"><p class="content-eyebrow">Design-partner compatibility report</p><h2 id="report-title">What to send when an environment degrades</h2></div>
+    <ul class="content-checklist">
+      <li>WordPress, PHP, database, host type, multisite, object-cache, and relevant plugin/theme versions.</li>
+      <li>The capture mode and complete capability report.</li>
+      <li>Health warnings, incomplete reasons, and exact reproduction steps.</li>
+      <li>A redacted diagnostic bundle; never include credentials or unreviewed raw trace data.</li>
+      <li>Whether disabling WP Flame immediately restores the original behavior.</li>
+    </ul>
+    <div class="content-link-list"><a href="/support/">Open a safe support request</a><a href="/benchmarks/">Read the benchmark methodology</a><a href="/docs/quickstart/">Review capture safety</a><a href="/privacy/">Review sensitive data handling</a></div>
+  </section>
+</Content>

@@ -1,21 +1,67 @@
 ---
-import Base from '../layouts/Base.astro';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
+import Content from '../layouts/Content.astro';
 ---
-<Base title="Terms of Service — WP Flame" noindex={true}>
-  <Nav />
-  <section class="section" style="min-height:60vh;">
-    <div class="container">
-      <h1 style="font-size:clamp(28px,3.5vw,40px);font-weight:700;color:white;letter-spacing:-0.02em;margin-bottom:20px;">Terms of Service</h1>
-      <p style="font-size:17px;color:var(--carbon-300);line-height:1.7;max-width:640px;">
-        Our terms of service are being prepared and will be published here before launch. The free WP Flame plugin is open-source software. AI Insights is a paid subscription service with separate terms.
-      </p>
-      <p style="font-size:15px;color:var(--carbon-400);margin-top:24px;">
-        Questions? Contact us at <a href="mailto:hello@wpflame.com" style="color:var(--flame-400);">hello@wpflame.com</a>
-      </p>
+
+<Content
+  title="Website and Design-Partner Terms — WP Flame"
+  description="Read the current terms for the WP Flame website and pre-release paid design-partner programme, including product boundaries and separate agreement requirements."
+  eyebrow="Terms"
+  heading="Clear terms for a pre-release evidence programme."
+  intro="These website terms apply from 10 July 2026. Paid design-partner participation, software access, site authorization, fees, refunds, confidentiality, support, and deliverables require a separate written agreement."
+  showActions={false}
+  showClosing={false}
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-status-panel"><span class="content-status-dot" aria-hidden="true"></span><div><strong>No public self-service subscription is offered yet</strong><p>Community, Pro, plan names, prices, site limits, trials, renewal, and refund terms remain commercial hypotheses until the release and checkout gates pass. A website description does not create an entitlement to an unlaunched feature or plan.</p></div></div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="scope-title">
+    <div class="content-section-header"><p class="content-eyebrow">1 · Scope</p><h2 id="scope-title">Using this website</h2></div>
+    <p>You may use the website to learn about WP Flame, review sample and educational material, apply for the design-partner programme, and contact the project. You must not disrupt the site, attempt unauthorized access, submit malicious content, impersonate another person, or use forms to transmit secrets or unlawful material.</p>
+    <p>The website and programme are intended for business and professional evaluation of WordPress performance workflows. They are not an emergency hosting, security, backup, payment, or disaster-recovery service.</p>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="pre-release-title">
+    <div class="content-section-header"><p class="content-eyebrow">2 · Pre-release product</p><h2 id="pre-release-title">Expect change and visible limitations.</h2></div>
+    <ul class="content-checklist"><li>WP Flame is under active development and has not passed its public-v1 release gates.</li><li>Features, schemas, interfaces, packaging, and availability may change during the programme.</li><li>Every profiler adds work; no fixed overhead or universal compatibility promise applies without published evidence.</li><li>Pre-release access must follow the agreed environment, capture, retention, and support boundaries.</li><li>Unexpected interference, data risk, or unbounded behavior is a reason to stop and report the issue.</li></ul>
+  </section>
+
+  <section class="content-section" aria-labelledby="programme-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--accent"><p class="content-kicker">3 · Design partners</p><h2 id="programme-title">A separate agreement controls participation</h2><p>The signed agreement should identify the participant, term, fees, sites, authorized workflows, onboarding, support scope, confidentiality, intellectual property, data handling, termination, refund treatment, and any deliverables.</p><p>Authorization is required for each client or third-party production site. Participation alone does not authorize WP Flame to access, review, or publish site or trace information.</p></article>
+      <article class="content-card"><p class="content-kicker">4 · Consent is not bundled</p><h2>Research and publicity are optional</h2><p>Trace review, anonymized research notes, testimonials, logos, attributed quotes, and case studies require separate, specific permission. Refusing publicity must not remove the software and support rights set out in the signed programme agreement.</p></article>
     </div>
   </section>
-  <Footer />
-</Base>
+
+  <section class="content-section content-section--narrow" aria-labelledby="diagnosis-title">
+    <div class="content-section-header"><p class="content-eyebrow">5 · Diagnosis boundary</p><h2 id="diagnosis-title">Evidence supports a decision; it does not guarantee an outcome.</h2></div>
+    <p>WP Flame measures supported WordPress server-side spans from the earliest available bootstrap point. It may not observe cached requests, browser work, infrastructure, arbitrary PHP functions, every database layer, or every network call. The largest measured contributor is not automatically the definitive cause.</p>
+    <p>You remain responsible for reviewing recommendations, backups, staging, change control, access permissions, privacy obligations, and the decision to modify a site. WP Flame does not guarantee a faster website, higher revenue, better rankings, improved conversions, or compatibility with every environment.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="software-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card"><p class="content-kicker">6 · Software and brand</p><h2 id="software-title">Code licensing and commercial service are distinct</h2><p>When software is provided, its included license controls rights in the code. The intended public structure is GPL-compatible Community software plus a separately distributed Pro add-on and optional substantive services. WP Flame names, logos, website copy, and brand assets are not granted for misleading endorsement or impersonation.</p></article>
+      <article class="content-card"><p class="content-kicker">7 · Third-party services</p><h2>Other products have their own terms</h2><p>WordPress, hosts, plugins, themes, payment providers, external APIs, repositories, and linked services are operated by third parties. WP Flame is not responsible for their availability, terms, or conduct. Comparisons are educational workflow guidance, not affiliation or endorsement.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="fees-title">
+    <div class="content-section-header"><p class="content-eyebrow">8 · Fees, refunds, and renewal</p><h2 id="fees-title">Only the signed offer can create a payment obligation.</h2></div>
+    <p>No public pricing page, trial, automatic renewal, or checkout is currently authoritative. A design-partner invoice or agreement must state the amount, currency, tax treatment, term, payment schedule, renewal or non-renewal, cancellation, and refund treatment before payment.</p>
+    <p>Future public checkout must display automatic-renewal, license-expiry, update, support, tax, and refund terms before purchase. Nothing in these terms excludes rights or remedies that cannot lawfully be excluded.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="risk-title">
+    <div class="content-grid content-grid--2">
+      <article class="content-card content-card--purple"><p class="content-kicker">9 · Availability and risk</p><h2 id="risk-title">Pre-release service is provided within the agreed programme scope</h2><p>To the extent permitted by law and subject to the signed agreement, the website and pre-release materials are provided without a promise of uninterrupted availability or fitness for every site. Participants should maintain normal backups, access controls, staging, and operational recovery practices.</p></article>
+      <article class="content-card"><p class="content-kicker">10 · Ending access</p><h2>Stop safely</h2><p>Access may be suspended for security risk, misuse, non-payment under an agreement, or material breach. On termination, the parties should follow the signed agreement for software access, retained local traces, confidential material, outstanding fees, and any continuing obligations.</p></article>
+    </div>
+  </section>
+
+  <section class="content-section content-section--narrow" aria-labelledby="changes-title">
+    <div class="content-section-header"><p class="content-eyebrow">11 · Changes and contact</p><h2 id="changes-title">Material terms should not change silently.</h2></div>
+    <p>Updated website terms will show a new effective date. Changes to an active paid design-partner engagement are governed by its signed agreement. Questions can be sent to <a href="mailto:hello@wpflame.com?subject=WP%20Flame%20terms">hello@wpflame.com</a>.</p>
+    <div class="content-link-list"><a href="/privacy/">Privacy and data handling</a><a href="/support/">Support and responsible disclosure</a><a href="/community-vs-pro/">Packaging hypothesis</a><a href="/product/">Product boundaries</a></div>
+  </section>
+</Content>

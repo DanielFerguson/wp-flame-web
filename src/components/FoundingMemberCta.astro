@@ -1,185 +1,48 @@
----
----
-
-<section class="section">
+<section class="section programme-cta">
   <div class="container">
-    <div class="founding-cta reveal">
-      <div class="label">Early access</div>
-      <h2 class="sec-title">Lock in founding member pricing — <em>forever</em></h2>
-      <p class="sec-desc">We're launching soon. Sign up now and lock in our lowest price — it'll never go up as long as you stay subscribed.</p>
-
-      <form id="founding-form" class="founding-form" novalidate>
-        <input
-          type="email"
-          id="founding-email"
-          class="founding-input"
-          placeholder="you@yoursite.com"
-          autocomplete="email"
-          required
-        />
-        <button type="submit" class="btn-primary">Claim my spot</button>
-      </form>
-
-      <div id="founding-success" class="founding-success" hidden>
-        You're in. We'll email you at launch with your founding member pricing.
+    <div class="programme-panel reveal">
+      <div>
+        <div class="label">Current founding programme</div>
+        <h2 class="sec-title">Diagnose one real workflow with the founder.</h2>
+        <p>
+          The initial offer being tested is $99/year for up to five authorised
+          production sites, with direct onboarding and regular evidence review.
+          Final public packaging remains subject to validation.
+        </p>
       </div>
-
-      <div id="founding-error" class="founding-error" hidden>
-        Something went wrong. Try again or email <a href="mailto:hello@wpflame.com">hello@wpflame.com</a>
+      <div class="programme-actions">
+        <a class="btn-primary" href="/design-partner/" data-analytics-event="design_partner_cta_clicked" data-analytics-placement="programme_panel">Apply with an incident</a>
+        <a class="btn-secondary" href="/sample-trace/" data-analytics-event="sample_trace_cta_clicked" data-analytics-placement="programme_panel">Explore the sample first</a>
       </div>
-
-      <p class="founding-note" id="founding-note">We'll email you once at launch. No spam.</p>
+      <p class="programme-note">
+        No lifetime entitlement. Currency, tax, payment, cancellation, renewal, and
+        refund terms are confirmed in writing before payment. Every client site and
+        trace review requires separate authorisation; testimonials and case studies
+        require separate consent.
+      </p>
     </div>
   </div>
 </section>
 
 <style>
-  .founding-cta {
-    max-width: 640px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(240, 122, 24, 0.15);
-    border-radius: 20px;
-    padding: 64px 48px;
-    text-align: center;
-  }
-
-  .founding-form {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
+  .programme-cta { padding-top: 95px; }
+  .programme-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 38px 56px;
     align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+    padding: clamp(32px, 5vw, 58px);
+    border: 1px solid rgba(240, 122, 24, .22);
+    border-radius: 22px;
+    background: radial-gradient(circle at 90% 0%, rgba(240, 122, 24, .11), transparent 38%), rgba(255,255,255,.025);
   }
-
-  .founding-input {
-    width: 280px;
-    padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: white;
-    font-size: 16px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .founding-input::placeholder {
-    color: var(--carbon-500);
-  }
-
-  .founding-input:focus {
-    border-color: var(--flame-400);
-  }
-
-  .founding-success {
-    color: var(--insight-400);
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 16px;
-  }
-
-  .founding-error {
-    color: var(--ember-400);
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  .founding-error a {
-    color: var(--flame-400);
-    text-decoration: underline;
-  }
-
-  .founding-note {
-    font-size: 12px;
-    color: var(--carbon-500);
-    margin-top: 4px;
-  }
-
-  @media (max-width: 640px) {
-    .founding-cta {
-      padding: 40px 20px;
-    }
-
-    .founding-input {
-      width: 100%;
-    }
-
-    .founding-form {
-      flex-direction: column;
-    }
+  .programme-panel > div:first-child { max-width: 720px; }
+  .programme-panel p { color: var(--carbon-200); max-width: 720px; }
+  .programme-actions { display: flex; flex-direction: column; gap: 12px; min-width: 240px; }
+  .programme-actions a { justify-content: center; text-align: center; }
+  .programme-note { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.08); padding-top: 22px; font-size: 12px; color: var(--carbon-300) !important; }
+  @media (max-width: 820px) {
+    .programme-panel { grid-template-columns: 1fr; }
+    .programme-actions { min-width: 0; width: 100%; }
   }
 </style>
-
-<script>
-  import { lemonSqueezy } from '../config/links';
-
-  const form = document.getElementById('founding-form') as HTMLFormElement | null;
-  const emailInput = document.getElementById('founding-email') as HTMLInputElement | null;
-  const successEl = document.getElementById('founding-success') as HTMLElement | null;
-  const errorEl = document.getElementById('founding-error') as HTMLElement | null;
-  const noteEl = document.getElementById('founding-note') as HTMLElement | null;
-
-  function showSuccess() {
-    if (form) form.hidden = true;
-    if (successEl) successEl.hidden = false;
-    if (noteEl) noteEl.hidden = true;
-    if (errorEl) errorEl.hidden = true;
-  }
-
-  function showError() {
-    if (errorEl) errorEl.hidden = false;
-  }
-
-  // On load: check if already signed up
-  if (localStorage.getItem('wpflame-founding-member') === 'true') {
-    showSuccess();
-  }
-
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const email = emailInput?.value?.trim() ?? '';
-      if (!email) return;
-
-      // Hide any previous error
-      if (errorEl) errorEl.hidden = true;
-
-      // Placeholder mode: no endpoint configured
-      if (!lemonSqueezy.audienceEndpoint) {
-        localStorage.setItem('wpflame-founding-member', 'true');
-        showSuccess();
-        return;
-      }
-
-      // Live mode: POST to Lemon Squeezy audience endpoint
-      try {
-        const res = await fetch(lemonSqueezy.audienceEndpoint, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${lemonSqueezy.apiKey}`,
-            'Content-Type': 'application/vnd.api+json',
-          },
-          body: JSON.stringify({
-            data: {
-              type: 'subscribers',
-              attributes: { email },
-            },
-          }),
-        });
-
-        if (res.status === 200 || res.status === 201 || res.status === 409) {
-          localStorage.setItem('wpflame-founding-member', 'true');
-          showSuccess();
-        } else {
-          showError();
-        }
-      } catch {
-        showError();
-      }
-    });
-  }
-</script>

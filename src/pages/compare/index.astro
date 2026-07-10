@@ -1,0 +1,28 @@
+---
+import Content from '../../layouts/Content.astro';
+import { comparisons } from '../../data/comparisons';
+---
+
+<Content
+  title="Compare WP Flame With Other WordPress Performance Tools"
+  description="Balanced workflow comparisons covering Query Monitor, generic APM, and cache plugins without unsupported checkbox claims."
+  eyebrow="Comparisons"
+  heading="Different tools answer different performance questions."
+  intro="WP Flame is a pre-release WordPress request-diagnosis product. These guides explain when an established alternative is the better choice, where WP Flame is intended to fit, and when the tools can complement one another."
+>
+  <section class="content-section content-section--narrow">
+    <div class="content-callout"><p><strong>No manufactured victories:</strong> comparison claims are framed around scope and workflow. Product-specific details should be rechecked before publication when either product changes.</p></div>
+  </section>
+  <section class="content-section" aria-labelledby="comparison-list-title">
+    <div class="content-section-header"><p class="content-eyebrow">Choose a comparison</p><h2 id="comparison-list-title">Start with your current tool and job.</h2></div>
+    <div class="content-grid content-grid--3">
+      {comparisons.map((comparison) => (
+        <article class="content-card">
+          <p class="content-kicker">{comparison.alternativeName}</p>
+          <h3><a href={`/compare/${comparison.slug}/`}>{comparison.title}</a></h3>
+          <p>{comparison.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</Content>

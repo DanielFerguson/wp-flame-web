@@ -1,159 +1,74 @@
 ---
-interface FaqItem {
-  question: string;
-  answer: string;
-}
-interface Props {
-  audience?: "woocommerce" | "agency" | "pagebuilder";
-}
+interface FaqItem { question: string; answer: string; }
+interface Props { audience?: 'woocommerce' | 'agency' | 'pagebuilder'; }
 const { audience } = Astro.props;
 
 const shared: FaqItem[] = [
   {
-    question: "Will WP Flame slow down my site?",
-    answer: "No. WP Flame adds under 5ms of overhead when tracing is active, and zero when it's not. Tracing is on-demand — it only runs when you trigger it. Your visitors never see a difference.",
+    question: 'Does WP Flame make a WordPress site faster automatically?',
+    answer: 'No. WP Flame is a diagnosis and verification product. It is intended to identify supported measured contributors, recommend a safe next action, and help check the result. Public v1 will not rewrite code, change settings, disable plugins, cache pages, or optimise assets automatically.',
   },
   {
-    question: "How is this different from Query Monitor?",
-    answer: "Query Monitor gives you a flat list of queries and hooks. WP Flame gives you a visual flame graph — a timeline that shows exactly when each operation runs, how long it takes, and what triggered it. AI insights then tell you what to fix and how.",
+    question: 'What part of a request can it observe?',
+    answer: 'WP Flame measures observed WordPress server execution from its earliest available bootstrap point. Depending on capture mode and compatibility, a trace may include supported lifecycle work, WordPress HTTP API calls, compatible database activity, and focused WordPress callback spans. It is not the web server request start and is not a complete arbitrary PHP call stack.',
   },
   {
-    question: "Do I need to configure anything?",
-    answer: "No. Install the plugin, activate it, and visit any page on your site. WP Flame automatically instruments the request and shows you the flame graph. No config files, no PHP extensions, no API keys for the free version.",
+    question: 'Will profiling add overhead?',
+    answer: 'Every profiler adds some work. WP Flame is being designed around bounded capture and mode-specific limits, with focused Deep diagnostics reserved for short investigations. Fixed overhead claims will not be published until dated, reproducible evidence is available.',
   },
   {
-    question: "What if I just want the free version?",
-    answer: "The free version is the full profiler — flame graphs, query tracking, plugin attribution, trace history, and JSON export. It's not a trial or a limited version. AI-powered insights are a separate subscription you can add when you're ready.",
+    question: 'How is this different from Query Monitor?',
+    answer: 'Query Monitor is an excellent developer tool for inspecting the current WordPress request. WP Flame’s intended public-v1 difference is retained bounded evidence, guided diagnosis, visible capture capability, compatible before-and-after comparison, and an agency-friendly handoff workflow.',
   },
   {
-    question: "Can I uninstall it easily?",
-    answer: "Yes. Standard WordPress plugin uninstall — deactivate and delete. WP Flame cleans up all its data on uninstall. No leftover tables, no lock-in, no residual hooks.",
+    question: 'Where does trace data go?',
+    answer: 'The launch direction is local-first: trace data remains in the WordPress installation by default. Any future licensing, analytics, hosted report, or fleet service must be separately disclosed and consented to. Design-partner trace review also requires explicit site-specific authorisation.',
+  },
+  {
+    question: 'Can I install the public plugin now?',
+    answer: 'Not yet. WP Flame is in a paid design-partner phase while measurement correctness, operational safety, compatibility, evidence, and release gates are completed. The current call to action is to apply with a real eligible workflow or explore the illustrative sample trace.',
   },
 ];
 
-const audienceItems: Record<string, FaqItem[]> = {
-  woocommerce: [
-    {
-      question: "Will it conflict with my payment gateway?",
-      answer: "No. WP Flame is read-only — it observes your request lifecycle without modifying any data or intercepting any transactions. It's compatible with Stripe, PayPal, Square, and all major WooCommerce payment gateways.",
-    },
-    {
-      question: "Does it work with page caching?",
-      answer: "Yes. WP Flame traces the uncached request when you trigger it. Page caching (WP Super Cache, W3 Total Cache, LiteSpeed, etc.) continues to serve cached pages to your visitors normally. The two don't interfere.",
-    },
-  ],
-  agency: [
-    {
-      question: "Can I control client access to WP Flame?",
-      answer: "Yes. WP Flame respects WordPress roles and capabilities. You can restrict access to administrators only, or grant it to specific roles. On the Agency plan, you get team accounts with granular permissions.",
-    },
-    {
-      question: "Does it work on managed hosting?",
-      answer: "Yes. WP Flame is a standard WordPress plugin with no server-level requirements. It works on WP Engine, Flywheel, Kinsta, Cloudways, and all major managed hosts. No PHP extensions or shell access needed.",
-    },
-  ],
-  pagebuilder: [
-    {
-      question: "Does it work with Divi, Beaver Builder, and WPBakery?",
-      answer: "Yes. WP Flame profiles any WordPress request regardless of which page builder you use. It works with Elementor, Divi, Beaver Builder, WPBakery, Oxygen, Bricks, and any other builder that runs within the WordPress lifecycle.",
-    },
-  ],
+const extras: Record<string, FaqItem[]> = {
+  woocommerce: [{ question: 'Does this replace WooCommerce caching or optimisation?', answer: 'No. Caching and front-end optimisation remain valuable. WP Flame is intended for eligible dynamic WooCommerce work that still executes WordPress, such as cart, checkout, account, payment, shipping, or background operations. Named extension compatibility will be published only after it is tested.' }],
+  agency: [{ question: 'Can I use a client trace in a report or case study?', answer: 'Only with the appropriate permission. Every client production site requires separate authorisation for installation and trace review. Publishing trace data, a testimonial, research notes, or a case study requires separate, specific consent.' }],
+  pagebuilder: [{ question: 'Does this guarantee page-builder attribution?', answer: 'No. WP Flame can attribute supported observed spans to the best available WordPress owner. Exact detail depends on capture mode, code path, and compatibility. It does not measure browser rendering or guarantee visibility into every internal page-builder operation.' }],
 };
 
-const extraItems = audience ? (audienceItems[audience] || []) : [];
-const items = [...shared, ...extraItems];
+const items = [...shared, ...(audience ? extras[audience] ?? [] : [])];
 ---
 
 <div class="faq-section reveal">
   <div class="faq-header">
     <div class="label">FAQ</div>
-    <h2 class="sec-title">Common questions</h2>
+    <h2 class="sec-title">Direct answers, including the limits.</h2>
   </div>
   <div class="faq-list">
     {items.map((item) => (
       <details class="faq-item">
-        <summary class="faq-question">{item.question}</summary>
-        <p class="faq-answer">{item.answer}</p>
+        <summary>{item.question}</summary>
+        <p>{item.answer}</p>
       </details>
     ))}
   </div>
 </div>
 
 <script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": items.map(item => ({
-    "@type": "Question",
-    "name": item.question,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": item.answer,
-    },
-  })),
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
 })} />
 
 <style>
-  .faq-section {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-  .faq-header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .faq-item {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: border-color 0.3s;
-  }
-  .faq-item:hover {
-    border-color: rgba(255,255,255,0.1);
-  }
-  .faq-item[open] {
-    border-color: rgba(240,122,24,0.15);
-  }
-  .faq-question {
-    padding: 20px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    color: white;
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-  .faq-question::-webkit-details-marker { display: none; }
-  .faq-question::after {
-    content: '+';
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px;
-    color: var(--carbon-400);
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-  .faq-item[open] .faq-question::after {
-    transform: rotate(45deg);
-    color: var(--flame-400);
-  }
-  .faq-answer {
-    padding: 0 24px 20px;
-    font-size: 14px;
-    color: var(--carbon-300);
-    line-height: 1.7;
-  }
-  @media (max-width: 640px) {
-    .faq-section { padding: 0 16px; }
-    .faq-question { padding: 16px 20px; font-size: 14px; }
-    .faq-answer { padding: 0 20px 16px; font-size: 13px; }
-  }
+  .faq-section { max-width: 820px; margin: 0 auto; padding-inline: 20px; }
+  .faq-header { text-align: center; margin-bottom: 46px; }
+  .faq-list { display: grid; gap: 9px; }
+  .faq-item { border: 1px solid rgba(255,255,255,.08); border-radius: 12px; background: rgba(255,255,255,.025); overflow: clip; }
+  .faq-item[open] { border-color: rgba(240,122,24,.24); }
+  .faq-item summary { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 19px 22px; color: white; font-weight: 700; cursor: pointer; list-style: none; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; color: var(--flame-300); font: 500 20px 'JetBrains Mono',monospace; }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p { color: var(--carbon-200); padding: 0 22px 22px; font-size: 14px; line-height: 1.7; }
 </style>

@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import FlameDemo from '../components/FlameDemo.astro';
+import '../styles/global.css';
+
+const title = 'Interactive Sample WordPress Request Trace — WP Flame';
+const description = 'Explore an illustrative WP Flame request timeline, its capture boundaries, measured contributors, and verification workflow.';
+---
+
+<Base title={title} description={description}>
+  <Nav cta="Apply with a workflow" ctaHref="/design-partner/" />
+  <main id="main-content">
+    <section class="sample-hero">
+      <div class="container">
+        <div class="hero-copy">
+          <div class="label">Interactive sample trace</div>
+          <h1>Explore the evidence before installing anything.</h1>
+          <p>
+            This synthetic WooCommerce example demonstrates the intended diagnosis workflow.
+            Its timings are illustrative, not a benchmark or a claim about your site.
+          </p>
+          <div class="sample-legend" aria-label="Sample status">
+            <span>Illustrative data</span>
+            <span>Dynamic WordPress request</span>
+            <span>Not a compatibility claim</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trace-stage" aria-labelledby="trace-heading">
+      <div class="container-wide">
+        <h2 id="trace-heading" class="visually-hidden">Illustrative request trace</h2>
+        <FlameDemo variant="woocommerce" showAi={true} />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">How to read it</div>
+          <h2 class="sec-title">A graph is useful only when its boundaries are visible.</h2>
+        </div>
+        <div class="explain-grid">
+          <article>
+            <span>01</span>
+            <h3>Start with capture capability</h3>
+            <p>Check the route, capture mode, completeness, and unavailable telemetry before interpreting a number.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Open the largest supported span</h3>
+            <p>Use the timeline to inspect measured duration, WordPress ownership, and the evidence supporting a likely next action.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Repeat a compatible workflow</h3>
+            <p>A single trace suggests where to investigate. Compatible baseline and after samples help show whether a change improved it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section boundaries-section">
+      <div class="container boundaries-grid">
+        <div>
+          <div class="label">Measurement boundary</div>
+          <h2 class="sec-title">What this kind of trace can and cannot say.</h2>
+        </div>
+        <div class="boundary-list">
+          <article>
+            <h3>It can show</h3>
+            <ul>
+              <li>Observed time from WP Flame's earliest available bootstrap point</li>
+              <li>Supported lifecycle, HTTP API, compatible database, and focused callback spans</li>
+              <li>The best supported WordPress owner for captured work</li>
+            </ul>
+          </article>
+          <article>
+            <h3>It cannot guarantee</h3>
+            <ul>
+              <li>The absolute web-server request start or browser load experience</li>
+              <li>Requests served without executing PHP</li>
+              <li>Every arbitrary PHP function, query, host, or definitive root cause</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section sample-cta">
+      <div class="container">
+        <div class="cta-panel">
+          <div>
+            <div class="label">Have an eligible incident?</div>
+            <h2>Bring the real workflow to the design-partner programme.</h2>
+          </div>
+          <a class="btn-primary" href="/design-partner/">Apply with a slow workflow</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .sample-hero { padding: 165px 0 80px; }
+  .hero-copy { max-width: 850px; }
+  h1 { color: white; font-size: clamp(44px, 6vw, 72px); line-height: 1.04; letter-spacing: -0.045em; }
+  .hero-copy > p { max-width: 740px; color: var(--carbon-200); font-size: 19px; margin-top: 26px; }
+  .sample-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+  .sample-legend span { color: var(--carbon-200); font: 500 11px 'JetBrains Mono', monospace; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 8px 12px; }
+  .trace-stage { padding: 0 32px 100px; }
+  .container-wide { max-width: 1220px; margin: 0 auto; }
+  .section-heading { max-width: 780px; margin-bottom: 50px; }
+  .explain-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+  .explain-grid article { padding: 30px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.025); }
+  .explain-grid span { color: var(--flame-300); font: 600 11px 'JetBrains Mono', monospace; }
+  .explain-grid h3, .boundary-list h3 { color: white; font-size: 19px; margin: 18px 0 10px; }
+  .explain-grid p, .boundary-list li { color: var(--carbon-300); }
+  .boundaries-section { background: var(--carbon-800); border-block: 1px solid rgba(255,255,255,.05); }
+  .boundaries-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 80px; }
+  .boundary-list { display: grid; gap: 16px; }
+  .boundary-list article { padding: 26px 30px; border-left: 3px solid var(--flame-400); background: rgba(255,255,255,.025); }
+  .boundary-list h3 { margin-top: 0; }
+  .boundary-list ul { padding-left: 20px; }
+  .boundary-list li { margin: 8px 0; }
+  .sample-cta { padding-top: 90px; }
+  .cta-panel { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 44px; border: 1px solid rgba(240,122,24,.2); border-radius: 20px; background: rgba(240,122,24,.05); }
+  .cta-panel h2 { color: white; font-size: clamp(26px,4vw,40px); line-height: 1.1; max-width: 680px; }
+  @media (max-width: 800px) {
+    .explain-grid, .boundaries-grid { grid-template-columns: 1fr; }
+    .boundaries-grid { gap: 32px; }
+    .cta-panel { align-items: flex-start; flex-direction: column; padding: 30px; }
+    .trace-stage { padding-inline: 16px; }
+  }
+</style>

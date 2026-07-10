@@ -1,19 +1,15 @@
 ---
-interface StatItem {
-  value: string;
-  label: string;
-}
-interface Props {
-  stats?: StatItem[];
-}
+interface Principle { value: string; label: string; }
+interface Props { stats?: Principle[]; }
+
 const { stats = [
-  { value: "4.9/5", label: "rating" },
-  { value: "<5ms", label: "overhead" },
-  { value: "30 sec", label: "to first graph" },
+  { value: 'Local-first', label: 'trace data stays on the site by default' },
+  { value: 'Bounded', label: 'capture and retention have explicit limits' },
+  { value: 'Capability-aware', label: 'unavailable telemetry is shown as unknown' },
 ] } = Astro.props;
 ---
 
-<div class="trust-bar reveal">
+<div class="trust-bar reveal" aria-label="WP Flame product principles">
   {stats.map((stat) => (
     <div class="trust-stat">
       <span class="trust-value">{stat.value}</span>
@@ -23,41 +19,9 @@ const { stats = [
 </div>
 
 <style>
-  .trust-bar {
-    display: flex;
-    justify-content: center;
-    gap: 48px;
-    padding: 40px;
-    margin: 0 auto;
-    max-width: 800px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 14px;
-    flex-wrap: wrap;
-  }
-  .trust-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .trust-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: -0.02em;
-  }
-  .trust-label {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: var(--carbon-400);
-  }
-  @media (max-width: 640px) {
-    .trust-bar {
-      gap: 24px;
-      padding: 28px 20px;
-    }
-    .trust-value { font-size: 20px; }
-  }
+  .trust-bar { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; max-width: 980px; margin: 0 auto; overflow: hidden; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.08); }
+  .trust-stat { padding: 26px; background: var(--carbon-800); }
+  .trust-value { display: block; color: white; font-size: 16px; font-weight: 700; margin-bottom: 7px; }
+  .trust-label { color: var(--carbon-300); font-size: 12px; line-height: 1.5; }
+  @media (max-width: 700px) { .trust-bar { grid-template-columns: 1fr; } }
 </style>
